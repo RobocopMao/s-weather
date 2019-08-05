@@ -1,0 +1,210 @@
+/** container **/
+// flex-direction
+.flex {display: flex;}
+.flex-row {
+  display: flex;
+  flex-direction: row; // default
+}
+.flex-row-reverse {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+.flex-col-reverse {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+// justify-content & align-item 的组合, space-around简写spa， space-between简写spb
+.flex-start {
+  justify-content: flex-start; // default
+  align-items: flex-start;
+}
+.flex-start-center {
+  justify-content: flex-start;
+  align-items: center;
+}
+.flex-start-end {
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+.flex-start-stretch {
+  justify-content: flex-start;
+  align-items: stretch; // default
+}
+.flex-start-baseline {
+  justify-content: flex-start;
+  align-items: baseline;
+}
+
+.flex-center-start {
+  justify-content: center;
+  align-items: flex-start;
+}
+.flex-center {
+  justify-content: center;
+  align-items: center;
+}
+.flex-center-end {
+  justify-content: center;
+  align-items: flex-end;
+}
+.flex-center-stretch {
+  justify-content: center;
+  align-items: stretch;
+}
+.flex-center-baseline {
+  justify-content: center;
+  align-items: baseline;
+}
+
+.flex-end-start {
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+.flex-end-center {
+  justify-content: flex-end;
+  align-items: center;
+}
+.flex-end {
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+.flex-end-stretch {
+  justify-content: flex-end;
+  align-items: stretch;
+}
+.flex-end-baseline {
+  justify-content: flex-end;
+  align-items: baseline;
+}
+
+.flex-spa-start {
+  justify-content: space-around;
+  align-items: flex-start;
+}
+.flex-spa-center {
+  justify-content: space-around;
+  align-items: center;
+}
+.flex-spa-end {
+  justify-content: space-around;
+  align-items: flex-end;
+}
+.flex-spa-stretch {
+  justify-content: space-around;
+  align-items: stretch;
+}
+.flex-spa-baseline {
+  justify-content: space-around;
+  align-items: baseline;
+}
+
+.flex-spb-start {
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.flex-spb-center {
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.flex-spb-end {
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.flex-spb-stretch {
+  justify-content: space-between;
+  align-items: stretch;
+}
+.flex-spb-baseline {
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+// flex-wrap
+.flex-nowrap {flex-wrap: nowrap;} // default
+.flex-wrap {flex-wrap: wrap;}
+.flex-wrap-reverse {flex-wrap: wrap-reverse;}
+
+// align-content, 简写alc；  多行间布局，类似于justify-content，注意：一行的时候对其子元素无影响
+.flex-alc-start {align-content: flex-start;}
+.flex-alc-center {align-content: center;}
+.flex-alc-end {align-content: flex-end;}
+.flex-alc-stretch {align-content: stretch;}  // default
+.flex-alc-spa {align-content: space-around;}
+.flex-alc-spb { align-content: space-between;}
+
+/** item **/
+// order 排序， plus正，minus负
+.item-order-0 {order: 0;} // default
+.item-order-p1 {order: 1;}
+.item-order-p2 {order: 2;}
+.item-order-p3 {order: 3;}
+.item-order-p4 {order: 4;}
+.item-order-p5 {order: 5;}
+.item-order-p6 {order: 6;}
+.item-order-p7 {order: 7;}
+.item-order-p8 {order: 8;}
+.item-order-p9 {order: 9;}
+.item-order-p10 {order: 10;}
+.item-order-m1 {order: -1;}
+.item-order-m2 {order: -2;}
+.item-order-m3 {order: -3;}
+.item-order-m4 {order: -4;}
+.item-order-m5 {order: -5;}
+.item-order-m6 {order: -6;}
+.item-order-m7 {order: -7;}
+.item-order-m8 {order: -8;}
+.item-order-m9 {order: -9;}
+.item-order-m10 {order: -10;}
+
+// align-self ,Note that float, clear and vertical-align have no effect on a flex item.
+.item-als-auto {align-self: auto;}
+.item-als-start {align-self: flex-start;}
+.item-als-center {align-self: center;}
+.item-als-end {align-self: flex-end;}
+.item-als-baseline {align-self: baseline;}
+.item-als-stretch {align-self: stretch;}
+
+// flex-grow
+.item-flg-0 {flex-grow: 0;}  // default
+.item-flg-1 {flex-grow: 1;}
+.item-flg-2 {flex-grow: 2;}
+.item-flg-3 {flex-grow: 3;}
+.item-flg-4 {flex-grow: 4;}
+.item-flg-5 {flex-grow: 5;}
+
+// flex-shrink
+.item-fls-0 {flex-shrink: 0;}
+.item-fls-1 {flex-shrink: 1;} // default
+.item-fls-2 {flex-shrink: 2;}
+.item-fls-3 {flex-shrink: 3;}
+.item-fls-4 {flex-shrink: 4;}
+.item-fls-5 {flex-shrink: 5;}
+
+// flex-basis
+.item-flb-90per {flex-basis: 90%;}
+.item-flb-80per {flex-basis: 80%;}
+.item-flb-75per {flex-basis: 75%;}
+.item-flb-70per {flex-basis: 70%;}
+.item-flb-60per {flex-basis: 60%;}
+.item-flb-50per {flex-basis: 50%;}
+.item-flb-45per {flex-basis: 45%;}
+.item-flb-40per {flex-basis: 40%;}
+.item-flb-33per {flex-basis: 33.33%;}
+.item-flb-30per {flex-basis: 30%;}
+.item-flb-25per {flex-basis: 25%;}
+.item-flb-20per {flex-basis: 20%;}
+.item-flb-10per {flex-basis: 10%;}
+
+@for $i from 0 through 200 {
+  @if ($i % 2 == 0) {
+    .item-flb-#{$i} {flex-basis: #{$i}px;}
+  }
+  @if($i == 1) {
+    .item-flb-#{$i} {flex-basis: #{$i}Px;}
+  }
+}

@@ -1,0 +1,30 @@
+@import "./amber_var";
+
+$amber: 'amber';
+// color
+@each $number, $color in (50: $amber50, 100:$amber100, 200: $amber200, 300: $amber300, 400: $amber400, 500: $amber500, 600: $amber600,
+  700: $amber700, 800: $amber800, 900: $amber900, A100: $amberA100, A200: $amberA200, A400: $amberA400, A700: $amberA700) {
+  .#{$amber}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$amber}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$amber}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$amber}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+
+}
+

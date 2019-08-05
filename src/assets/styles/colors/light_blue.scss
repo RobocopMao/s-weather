@@ -1,0 +1,28 @@
+@import "./light_blue_var";
+
+$lightBlue: 'light-blue';
+// color
+@each $number, $color in (50: $lightBlue50, 100:$lightBlue100, 200: $lightBlue200, 300: $lightBlue300, 400: $lightBlue400, 500: $lightBlue500, 600: $lightBlue600,
+  700: $lightBlue700, 800: $lightBlue800, 900: $lightBlue900, A100: $lightBlueA100, A200: $lightBlueA200, A400: $lightBlueA400, A700: $lightBlueA700) {
+  .#{$lightBlue}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$lightBlue}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$lightBlue}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$lightBlue}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

@@ -1,0 +1,28 @@
+@import "./pink_var";
+
+$pink: 'pink';
+// color
+@each $number, $color in (50: $pink50, 100:$pink100, 200: $pink200, 300: $pink300, 400: $pink400, 500: $pink500, 600: $pink600,
+  700: $pink700, 800: $pink800, 900: $pink900, A100: $pinkA100, A200: $pinkA200, A400: $pinkA400, A700: $pinkA700) {
+  .#{$pink}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$pink}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$pink}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$pink}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

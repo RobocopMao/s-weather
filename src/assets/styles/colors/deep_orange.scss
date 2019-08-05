@@ -1,0 +1,28 @@
+@import "./deep_orange_var";
+
+$deepOrange: 'deep-orange';
+// color
+@each $number, $color in (50: $deepOrange50, 100:$deepOrange100, 200: $deepOrange200, 300: $deepOrange300, 400: $deepOrange400, 500: $deepOrange500, 600: $deepOrange600,
+  700: $deepOrange700, 800: $deepOrange800, 900: $deepOrange900, A100: $deepOrangeA100, A200: $deepOrangeA200, A400: $deepOrangeA400, A700: $deepOrangeA700) {
+  .#{$deepOrange}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$deepOrange}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$deepOrange}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$deepOrange}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

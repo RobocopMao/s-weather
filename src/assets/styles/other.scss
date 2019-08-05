@@ -1,0 +1,32 @@
+@import "./colors/white_var";
+@import "./colors/gray_var";
+page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: $white;
+  height: 100%;
+  color: $gray700;
+  font-size: 28px;
+}
+page > view, page > block {width: 100%;}
+view {box-sizing: border-box;}
+
+image {display: block;}
+
+// 透明
+.transparent {color: transparent};
+.bg-transparent {background-color: transparent};
+
+button::after {border: none;}
+button::before {border: none;}
+.icon-btn, .icon-btn-hover {
+  background-color: transparent !important;
+  line-height: 1 !important;
+}
+
+::-webkit-scrollbar{
+  width: 0;
+  height: 0;
+  color: transparent;
+}

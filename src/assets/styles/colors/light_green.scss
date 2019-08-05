@@ -1,0 +1,28 @@
+@import "./light_green_var";
+
+$lightGreen: 'light-green';
+// color
+@each $number, $color in (50: $lightGreen50, 100:$lightGreen100, 200: $lightGreen200, 300: $lightGreen300, 400: $lightGreen400, 500: $lightGreen500, 600: $lightGreen600,
+  700: $lightGreen700, 800: $lightGreen800, 900: $lightGreen900, A100: $lightGreenA100, A200: $lightGreenA200, A400: $lightGreenA400, A700: $lightGreenA700) {
+  .#{$lightGreen}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$lightGreen}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$lightGreen}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$lightGreen}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

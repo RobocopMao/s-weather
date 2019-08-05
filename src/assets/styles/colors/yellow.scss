@@ -1,0 +1,28 @@
+@import "./yellow_var";
+
+$yellow: 'yellow';
+// color
+@each $number, $color in (50: $yellow50, 100:$yellow100, 200: $yellow200, 300: $yellow300, 400: $yellow400, 500: $yellow500, 600: $yellow600,
+  700: $yellow700, 800: $yellow800, 900: $yellow900, A100: $yellowA100, A200: $yellowA200, A400: $yellowA400, A700: $yellowA700) {
+  .#{$yellow}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$yellow}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$yellow}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$yellow}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

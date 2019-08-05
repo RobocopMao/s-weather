@@ -1,0 +1,36 @@
+@import "../../../assets/styles/iconfont";
+@import "../../../assets/styles/font";
+.fx-w {
+  transform: rotate(-90deg);
+}
+.fx-e {
+  transform: rotate(90deg);
+}
+.fx-s {
+  transform: rotate(180deg);
+}
+.fx-en {
+  transform: rotate(45deg);
+}
+.fx-wn {
+  transform: rotate(-45deg);
+}
+.fx-ws {
+  transform: rotate(-135deg);
+}
+.fx-es {
+  transform: rotate(135deg);
+}
+
+@keyframes nd {
+  0% {transform: rotate(0deg);}
+  25% {transform: rotate(90deg);}
+  50% {transform: rotate(180deg);}
+  75% {transform: rotate(270deg);}
+  100% {transform: rotate(3600deg);}
+}
+
+
+.fx-nd {
+  animation: nd 2s ease-in-out 0s infinite alternate;
+}

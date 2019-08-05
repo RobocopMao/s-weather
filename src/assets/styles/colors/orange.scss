@@ -1,0 +1,28 @@
+@import "./orange_var";
+
+$orange: 'orange';
+// color
+@each $number, $color in (50: $orange50, 100:$orange100, 200: $orange200, 300: $orange300, 400: $orange400, 500: $orange500, 600: $orange600,
+  700: $orange700, 800: $orange800, 900: $orange900, A100: $orangeA100, A200: $orangeA200, A400: $orangeA400, A700: $orangeA700) {
+  .#{$orange}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$orange}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$orange}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$orange}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

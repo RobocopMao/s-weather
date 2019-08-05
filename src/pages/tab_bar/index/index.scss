@@ -1,0 +1,62 @@
+@import "../../../assets/styles/colors/blue_var";
+@import "../../../assets/styles/colors/white_var";
+@import "../../../assets/styles/colors/black_var";
+@import "../../../assets/styles/colors/gray_var";
+
+@keyframes selfLocation {
+  0% {transform: translateY(0px);}
+  50% {transform: translateY(-12px);}
+  100% {transform: translateY(0px);}
+}
+
+.weather {
+  .weather-day {
+    background: linear-gradient(top, $blueA700, $white);
+  }
+  .weather-night {
+    background: linear-gradient(top, $black, $white);
+  }
+  .bg-black-opacity {
+    background: rgba(0, 0, 0, 0.3);
+  }
+  .bg-blue-opacity {
+    background: rgba(41, 98, 255, 0.4);
+  }
+  .bd-radius-20 {
+    border-radius: 20px;
+  }
+  .btn-circle {
+    border-radius: 50px;
+  }
+  .hourly-weather {
+    flex: 0 0 300px;
+    .cond-txt {
+      flex: 0 0 100px;
+    }
+  }
+  .tmp-line {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    z-index: 1;
+  }
+  .tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    box-shadow: 0 0 10px 5px $gray300;
+  }
+  .self-loc-anim {
+    animation: selfLocation 2s ease-in-out 0s infinite;
+  }
+  .nav-addr-box {
+    margin-right: 180px;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+  }
+}

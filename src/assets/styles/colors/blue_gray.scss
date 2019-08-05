@@ -1,0 +1,28 @@
+@import "./blue_gray_var";
+
+$blueGray: 'blue_gray';
+// color
+@each $number, $color in (50: $blueGray50, 100:$blueGray100, 200: $blueGray200, 300: $blueGray300, 400: $blueGray400, 500: $blueGray500, 600: $blueGray600,
+  700: $blueGray700, 800: $blueGray800, 900: $blueGray900, A100: $blueGrayA100, A200: $blueGrayA200, A400: $blueGrayA400, A700: $blueGrayA700) {
+  .#{$blueGray}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$blueGray}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$blueGray}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$blueGray}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

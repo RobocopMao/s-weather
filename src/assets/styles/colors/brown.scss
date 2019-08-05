@@ -1,0 +1,28 @@
+@import "./brown_var";
+
+$brown: 'brown';
+// color
+@each $number, $color in (50: $brown50, 100:$brown100, 200: $brown200, 300: $brown300, 400: $brown400, 500: $brown500, 600: $brown600,
+  700: $brown700, 800: $brown800, 900: $brown900) {
+  .#{$brown}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$brown}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$brown}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$brown}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

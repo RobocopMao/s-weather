@@ -1,0 +1,28 @@
+@import "./lime_var";
+
+$lime: 'lime';
+// color
+@each $number, $color in (50: $lime50, 100:$lime100, 200: $lime200, 300: $lime300, 400: $lime400, 500: $lime500, 600: $lime600,
+  700: $lime700, 800: $lime800, 900: $lime900, A100: $limeA100, A200: $limeA200, A400: $limeA400, A700: $limeA700) {
+  .#{$lime}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$lime}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$lime}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$lime}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

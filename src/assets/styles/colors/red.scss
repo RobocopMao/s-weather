@@ -1,0 +1,28 @@
+@import "./red_var";
+
+$red: 'red';
+// color
+@each $number, $color in (50: $red50, 100:$red100, 200: $red200, 300: $red300, 400: $red400, 500: $red500, 600: $red600,
+  700: $red700, 800: $red800, 900: $red900, A100: $redA100, A200: $redA200, A400: $redA400, A700: $redA700) {
+  .#{$red}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$red}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$red}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$red}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

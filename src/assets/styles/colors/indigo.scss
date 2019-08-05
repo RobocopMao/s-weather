@@ -1,0 +1,28 @@
+@import "./indigo_var";
+
+$indigo: 'indigo';
+// color
+@each $number, $color in (50: $indigo50, 100:$indigo100, 200: $indigo200, 300: $indigo300, 400: $indigo400, 500: $indigo500, 600: $indigo600,
+  700: $indigo700, 800: $indigo800, 900: $indigo900, A100: $indigoA100, A200: $indigoA200, A400: $indigoA400, A700: $indigoA700) {
+  .#{$indigo}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$indigo}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$indigo}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$indigo}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

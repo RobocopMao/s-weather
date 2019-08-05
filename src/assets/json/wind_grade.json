@@ -1,0 +1,116 @@
+[
+  {
+    "windScale": "0",
+    "name": "无风",
+    "max": 0.2,
+    "min": 0.0
+  },
+  {
+    "windScale": "1",
+    "name": "软风",
+    "max": 1.5,
+    "min": 0.3
+  },
+  {
+    "windScale": "2",
+    "name": "轻风",
+    "max": 3.3,
+    "min": 1.6
+  },
+  {
+    "windScale": "3",
+    "name": "微风",
+    "max": 5.4,
+    "min": 3.4
+  },
+  {
+    "windScale": "4",
+    "name": "和风",
+    "max": 7.9,
+    "min": 5.5
+  },
+  {
+    "windScale": "5",
+    "name": "清风",
+    "max": 10.7,
+    "min": 8.0
+  },
+  {
+    "windScale": "6",
+    "name": "强风",
+    "max": 13.8,
+    "min": 10.8
+  },
+  {
+    "windScale": "7",
+    "name": "劲风",
+    "max": 17.1,
+    "min": 13.9
+  },
+  {
+    "windScale": "8",
+    "name": "大风",
+    "max": 20.7,
+    "min": 17.2
+  },
+  {
+    "windScale": "9",
+    "name": "烈风",
+    "max": 24.4,
+    "min": 20.8
+  },
+  {
+    "windScale": "10",
+    "name": "狂风",
+    "max": 28.4,
+    "min": 24.5
+  },
+  {
+    "windScale": "11",
+    "name": "暴风",
+    "max": 32.6,
+    "min": 28.5
+  },
+  {
+    "windScale": "12",
+    "name": "台风",
+    "max": 36.9,
+    "min": 32.7
+  },
+  {
+    "windScale": "13",
+    "name": "台风",
+    "max": 41.4,
+    "min": 37.0
+  },
+  {
+    "windScale": "14",
+    "name": "强台风",
+    "max": 46.1,
+    "min": 41.5
+  },
+  {
+    "windScale": "15",
+    "name": "强台风",
+    "max": 50.9,
+    "min": 46.2
+  },
+  {
+    "windScale": "16",
+    "name": "超强台风",
+    "max": 56.0,
+    "min": 51.0
+  },
+  {
+    "windScale": "17",
+    "name": "超强台风",
+    "max": 61.2,
+    "min": 56.1
+  },
+  {
+    "windScale": "17+",
+    "name": "超强台风",
+    "max": 1000,
+    "min": 61.3
+  }
+]

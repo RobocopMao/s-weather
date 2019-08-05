@@ -1,0 +1,37 @@
+// 大写的PX单位是为了告诉Taro，不要转换成单位rpx
+// 通过测试和观察发现，微信顶部的胶囊宽高如下，并且各个屏幕下一致
+// 因此采用PX单位
+$capsule-padding: 6Px; // 胶囊的上下padding距离
+$capsule-height: 32Px; // 胶囊的高度
+$capsule-width: 88Px; // 胶囊的宽度
+
+$navigation-height: $capsule-padding * 2 + $capsule-height;
+$navigation-font-size: 15Px;
+$navigation-icon-font-size: 25Px;
+$navigation-box-shadow: 0 2Px 2Px #222;
+
+.navigation {
+  position: relative;
+  background: transparent;
+  .bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: $navigation-height;
+    z-index: 999;
+    font-size: $navigation-font-size;
+    box-sizing: content-box;
+  }
+
+  .placeholder {
+    display: block;
+    height: $navigation-height;
+    background: transparent;
+    box-sizing: content-box;
+  }
+}

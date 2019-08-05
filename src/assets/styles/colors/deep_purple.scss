@@ -1,0 +1,28 @@
+@import "./deep_purple_var";
+
+$deepPurple: 'deep-purple';
+// color
+@each $number, $color in (50: $deepPurple50, 100:$deepPurple100, 200: $deepPurple200, 300: $deepPurple300, 400: $deepPurple400, 500: $deepPurple500, 600: $deepPurple600,
+  700: $deepPurple700, 800: $deepPurple800, 900: $deepPurple900, A100: $deepPurpleA100, A200: $deepPurpleA200, A400: $deepPurpleA400, A700: $deepPurpleA700) {
+  .#{$deepPurple}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$deepPurple}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$deepPurple}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$deepPurple}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

@@ -1,0 +1,28 @@
+@import "./gray_var";
+
+$gray: 'gray';
+// color
+@each $number, $color in (50: $gray50, 100:$gray100, 200: $gray200, 300: $gray300, 400: $gray400, 500: $gray500, 600: $gray600,
+  700: $gray700, 800: $gray800, 900: $gray900) {
+  .#{$gray}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$gray}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$gray}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$gray}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

@@ -1,0 +1,28 @@
+@import "./blue_var";
+
+$blue: 'blue';
+// color
+@each $number, $color in (50: $blue50, 100: $blue100, 200: $blue200, 300: $blue300, 400: $blue400, 500: $blue500, 600: $blue600,
+  700: $blue700, 800: $blue800, 900: $blue900, A100: $blueA100, A200: $blueA200, A400: $blueA400, A700: $blueA700) {
+  .#{$blue}-#{$number} {
+    color: $color;
+  }
+
+  .bg-#{$blue}-#{$number} {
+    background-color: $color;
+  }
+
+  .h-line-#{$blue}-#{$number} {
+    width: 100%;
+    height: 1Px;
+    transform: scaleY(0.3);
+    background-color: $color;
+  }
+
+  .v-line-#{$blue}-#{$number} {
+    height: 100%;
+    width: 1Px;
+    transform: scaleX(0.3);
+    background-color: $color;
+  }
+}

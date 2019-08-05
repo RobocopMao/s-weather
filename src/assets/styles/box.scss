@@ -1,0 +1,278 @@
+@import "./colors/gray_var";
+@import "./colors/white_var";
+@import "./colors/black_var";
+// 盒模型
+// width & height
+@for $i from 0 through 200 {
+  .w-#{$i} {
+    @if $i == 1 {width: 1Px;}
+    @if $i % 2 == 0 {
+      width: #{$i}px;
+    }
+  }
+
+  .h-#{$i} {
+    @if $i == 1 {height: 1Px;}
+    @if $i % 2 == 0 {
+      height: #{$i}px;
+    }
+  }
+}
+.w-100-per {width: 100%;}
+.h-100-per {height: 100%;}
+
+// min-width/max-width & min-height/max-height
+@for $i from 0 through 300 {
+  .min-w-#{$i} {
+    @if $i == 1 {min-width: 1Px;}
+    @if $i % 2 == 0 {
+      min-width: #{$i}px;
+    }
+  }
+
+  .max-w-#{$i} {
+    @if $i == 1 {max-width: 1Px;}
+    @if $i % 2 == 0 {
+      max-width: #{$i}px;
+    }
+  }
+
+  .min-h-#{$i} {
+    @if $i == 1 {min-height: 1Px;}
+    @if $i % 2 == 0 {
+      min-height: #{$i}px;
+    }
+  }
+
+  .max-h-#{$i} {
+    @if $i == 1 {max-height: 1Px;}
+    @if $i % 2 == 0 {
+      max-height: #{$i}px;
+    }
+  }
+}
+
+// padding & margin
+@for $i from 0 through 50 {
+  .pd-#{$i} {
+    @if $i % 2 == 0 {
+      padding: #{$i}px;
+    }
+  }
+  .pd-t-#{$i} {
+    @if $i % 2 == 0 {
+      padding-top: #{$i}px;
+    }
+  }
+  .pd-b-#{$i} {
+    @if $i % 2 == 0 {
+      padding-bottom: #{$i}px;
+    }
+  }
+  .pd-l-#{$i} {
+    @if $i % 2 == 0 {
+      padding-left: #{$i}px;
+    }
+  }
+  .pd-r-#{$i} {
+    @if $i % 2 == 0 {
+      padding-right: #{$i}px;
+    }
+  }
+  .pd-lr-#{$i} {
+    @if $i % 2 == 0 {
+      padding-left: #{$i}px;
+      padding-right: #{$i}px;
+    }
+  }
+  .pd-tb-#{$i} {
+    @if $i % 2 == 0 {
+      padding-top: #{$i}px;
+      padding-bottom: #{$i}px;
+    }
+  }
+
+  .mg-#{$i} {
+    @if $i % 2 == 0 {
+      margin: #{$i}px;
+    }
+  }
+  .mg-t-#{$i} {
+    @if $i % 2 == 0 {
+      margin-top: #{$i}px;
+    }
+  }
+  .mg-b-#{$i} {
+    @if $i % 2 == 0 {
+      margin-bottom: #{$i}px;
+    }
+  }
+  .mg-l-#{$i} {
+    @if $i % 2 == 0 {
+      margin-left: #{$i}px;
+    }
+  }
+  .mg-r-#{$i} {
+    @if $i % 2 == 0 {
+      margin-right: #{$i}px;
+    }
+  }
+  .mg-tb-#{$i} {
+    @if $i % 2 == 0 {
+      margin-top: #{$i}px;
+      margin-bottom: #{$i}px;
+    }
+  }
+  .mg-lr-#{$i} {
+    @if $i % 2 == 0 {
+      margin-left: #{$i}px;
+      margin-right: #{$i}px;
+    }
+  }
+}
+.mg-lr-auto {margin: 0 auto;}
+
+// border-width
+@for $i from 0 through 6 {
+  .bd-w-#{$i} {
+    border-width: #{$i}px;
+  }
+  .bd-t-w-#{$i} {
+    border-top-width: #{$i}px;
+  }
+  .bd-b-w-#{$i} {
+    border-bottom-width: #{$i}px;
+  }
+  .bd-l-w-#{$i} {
+    border-left-width: #{$i}px;
+  }
+  .bd-r-w-#{$i} {
+    border-right-width: #{$i}px;
+  }
+}
+
+// border-style
+@each $style in (solid, dashed, dotted, hidden, none) {
+  .bd-#{$style} {
+    border-style: $style;
+  }
+  .bd-t-#{$style} {
+    border-top-style: $style;
+  }
+  .bd-b-#{$style} {
+    border-bottom-style: $style;
+  }
+  .bd-l-#{$style} {
+    border-left-style: $style;
+  }
+  .bd-r-#{$style} {
+    border-right-style: $style;
+  }
+}
+
+// border-color
+@each $color, $name in ($white, $gray50, $gray100, $gray200, $gray300, $gray400, $gray500, $gray600, $gray700, $gray800, $gray900, $black),
+  (white, gray-50, gray-100, gray-200, gray-300, gray-400, gray-500, gray-600, gray-700, gray-800, gray-900, black) {
+  .bd-#{$name} {
+    border-style: $color;
+  }
+  .bd-t-#{$name} {
+    border-top-style: $color;
+  }
+  .bd-b-#{$name} {
+    border-bottom-style: $color;
+  }
+  .bd-l-#{$name} {
+    border-left-style: $color;
+  }
+  .bd-r-#{$name} {
+    border-right-style: $color;
+  }
+
+  // 模拟细边,不要多用，一般用一边的时候用
+  view.bd-t-thin-#{$name}:before {
+    content: '';
+    width: 100%;
+    height: 1Px;
+    background-color: $color;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    transform: scaleY(0.3);
+  }
+  view.bd-b-thin-#{$name}:after {
+    content: '';
+    width: 100%;
+    height: 1Px;
+    background-color: $color;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    transform: scaleY(0.3);
+  }
+  view.bd-l-thin-#{$name}:before {
+     content: '';
+     width: 1Px;
+     height: 100%;
+     background-color: $color;
+     position: absolute;
+     left: 0;
+     top: 0;
+     bottom: 0;
+     z-index: 1;
+     transform: scaleX(0.3);
+  }
+  view.bd-r-thin-#{$name}:after {
+    content: '';
+    width: 1Px;
+    height: 100%;
+    background-color: $color;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    transform: scaleX(0.3);
+  }
+}
+
+//border-radius
+@for $i from 0 through 50 {
+  @if $i % 2 == 0 {
+    .bd-radius-#{$i} {
+      border-radius: #{$i}px;
+    }
+    .bd-tl-radius-#{$i} {
+      border-top-left-radius: #{$i}px;
+    }
+    .bd-tr-radius-#{$i} {
+      border-top-right-radius: #{$i}px;
+    }
+    .bd-bl-radius-#{$i} {
+      border-bottom-left-radius: #{$i}px;
+    }
+    .bd-br-radius-#{$i} {
+      border-bottom-right-radius: #{$i}px;
+    }
+  }
+}
+.circle {border-radius: 50%;}
+
+// box-sizing
+.bd-box {box-sizing: border-box;}
+
+.box-hd {
+  overflow: hidden;
+}
+
+.relative {
+  position: relative;
+}
+
+.block {display: block}
+.inline-block {display: inline-block}
+
