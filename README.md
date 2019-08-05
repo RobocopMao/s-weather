@@ -16,7 +16,7 @@
 
 ###2.骨架屏
 
-这个采用的jayZOU/skeleton的github开源代码：https://github.com/jayZOU/skeleton，原生的，不过我用Taro转换成Taro的代码了。实际用起来和想的不太一样，所以我只在小程序初始化时添加添加了整屏加载，有需要你可以自己去加class。代码我放在了components/common下。
+这个采用的jayZOU/skeleton的github开源代码，原生的，不过我用Taro转换成Taro的代码了。实际用起来和想的不太一样，所以我只在小程序初始化时添加添加了整屏加载，有需要你可以自己去加class。代码我放在了components/common下。参考：https://github.com/jayZOU/skeleton
 
 ###3.redux
 
@@ -28,11 +28,11 @@ Taro初始化的redux项目模版，三个文件夹，自己把constant，reduce
 
 ###5.小程序的分包
 
-虽然页面不多，但是还是做了分包，以后万一需要呢？分包配置可以去小程序文档https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/basic.html查看，我是参见文档下面的示例项目整理的文件目录，不是按照文档的目录整理的。看个人吧。
+虽然页面不多，但是还是做了分包，以后万一需要呢？分包配置可以去小程序文档查看，我是参见文档下面的示例项目整理的文件目录，不是按照文档的目录整理的。看个人吧。参考文档：https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/basic.html
 
 ###6.自定义头部导航栏
 
-我现在只用了首页的自定义导航栏，代码放在components/base下面。这个百度也很多，我也是参照别人的弄的https://www.jianshu.com/p/5877a3dc0b1e。
+我现在只用了首页的自定义导航栏，代码放在components/base下面。这个百度也很多，我也是参照别人的弄的。参考：https://www.jianshu.com/p/5877a3dc0b1e。
 
 
 小程序目前还没有发布，因为还有页面没写完，开发不易，禁止二次打包发布。
