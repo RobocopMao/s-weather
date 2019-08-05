@@ -6,7 +6,7 @@ import Base64 from 'crypto-js/enc-base64'
 // export const HOST = 'https://www.mxnzp.com';
 export const HOST = 'https://api.seniverse.com';
 
-// export const HFKEY = '4c2fbe62b94b430281c7244b8cb1da41';  // 和风天气的key
+// export const HFKEY = '';  // 和风天气的key
 // export const CONDICONHOST = 'https://cdn.heweather.com';
 
 // 腾讯地图key
