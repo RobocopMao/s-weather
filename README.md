@@ -24,7 +24,7 @@ Taro初始化的redux项目模版，三个文件夹，自己把constant，reduce
 
 ###4.样式布局
 
-布局采用的flex布局，在assets/style下初始化了很多基础样式，material design的颜色，iconfont.scss是阿里矢量图的在线字体图标，具体使用可自行百度。基础样式写好后，真的很方便，虽然jsx里面很多class，但是页面css很少写，个人觉得很好。初始化也很方面，比如初始化1-100px的高度只需要用到sass的一些循环语句，一下就搞定了，具体语法参见：https://www.sass.hk/docs/。
+布局采用的flex布局，在assets/styles下初始化了很多基础样式，material design的颜色，iconfont.scss是阿里矢量图的在线字体图标，具体使用可自行百度。基础样式写好后，真的很方便，虽然jsx里面很多class，但是页面css很少写，个人觉得很好。初始化也很方面，比如初始化1-100px的高度只需要用到sass的一些循环语句，一下就搞定了，具体语法参见：https://www.sass.hk/docs/。
 
 ###5.小程序的分包
 
