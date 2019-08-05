@@ -16,7 +16,7 @@
 
 ###2.骨架屏
 
-这个采用的jayZOU/skeleton的github开源代码，原生的，不过我用Taro转换成Taro的代码了。实际用起来和想的不太一样，所以我只在小程序初始化时添加添加了整屏加载，有需要你可以自己去加class。代码我放在了components/common下。参考：https://github.com/jayZOU/skeleton
+这个采用的jayZOU/skeleton的github开源代码，原生的，不过我用Taro转换成Taro的代码了。实际用起来和想的不太一样，所以我只在小程序初始化时添加了整屏加载，有需要你可以自己去加class。代码我放在了components/common下。参考：https://github.com/jayZOU/skeleton
 
 ###3.redux
 
