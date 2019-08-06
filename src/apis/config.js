@@ -7,7 +7,7 @@ import Utf8 from 'crypto-js/enc-utf8'
 import forEach from 'lodash/each'
 
 // 腾讯地图key
-export const QQ_MAP_SDK_KEY = 'WATBZ-IBNR4-4VHU2-D2LSO-PBQBQ-G3BKJ';
+export const QQ_MAP_SDK_KEY = '';
 
 // 和风天气接口标识
 export const HF_HOST_TYPE = 'HF';
