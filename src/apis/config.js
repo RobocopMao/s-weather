@@ -1,10 +1,10 @@
 import Taro from '@tarojs/taro'
 import moment from 'moment'
 import HmacSHA1 from 'crypto-js/hmac-sha1'
-import MD5 from 'crypto-js/md5'
+// import MD5 from 'crypto-js/md5'
 import Base64 from 'crypto-js/enc-base64'
-import Utf8 from 'crypto-js/enc-utf8'
-import forEach from 'lodash/each'
+// import Utf8 from 'crypto-js/enc-utf8'
+// import forEach from 'lodash/each'
 
 // 腾讯地图key
 export const QQ_MAP_SDK_KEY = '';
