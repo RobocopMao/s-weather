@@ -24,6 +24,9 @@ button::before {border: none;}
   background-color: transparent !important;
   line-height: 1 !important;
 }
+.btn-hover {
+  opacity: 0.8;
+}
 
 ::-webkit-scrollbar{
   width: 0;

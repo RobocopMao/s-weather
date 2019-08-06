@@ -1,4 +1,6 @@
+// 地理类
 import Request from './request';
+import {XZ_HOST_TYPE} from './config';
 
 const request = new Request();
 
@@ -10,5 +12,6 @@ export const getGeoSun = async (data) => {
   return await request.get({
     url: '/v3/geo/sun.json',
     data,
+    hostType: XZ_HOST_TYPE
   });
 };

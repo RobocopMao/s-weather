@@ -200,6 +200,7 @@
 .item-flb-20per {flex-basis: 20%;}
 .item-flb-10per {flex-basis: 10%;}
 
+
 @for $i from 0 through 200 {
   @if ($i % 2 == 0) {
     .item-flb-#{$i} {flex-basis: #{$i}px;}

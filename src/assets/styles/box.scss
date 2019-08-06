@@ -171,22 +171,22 @@
 }
 
 // border-color
-@each $color, $name in ($white, $gray50, $gray100, $gray200, $gray300, $gray400, $gray500, $gray600, $gray700, $gray800, $gray900, $black),
-  (white, gray-50, gray-100, gray-200, gray-300, gray-400, gray-500, gray-600, gray-700, gray-800, gray-900, black) {
+@each $name, $color in (white: $white, gray-50: $gray50, gray-100: $gray100, gray-200: $gray200, gray-300: $gray300, gray-400: $gray400,
+  gray-500: $gray500, gray-600: $gray600, gray-700: $gray700, gray-800: $gray800, gray-900: $gray900, black: $black){
   .bd-#{$name} {
-    border-style: $color;
+    border-color: $color;
   }
   .bd-t-#{$name} {
-    border-top-style: $color;
+    border-top-color: $color;
   }
   .bd-b-#{$name} {
-    border-bottom-style: $color;
+    border-bottom-color: $color;
   }
   .bd-l-#{$name} {
-    border-left-style: $color;
+    border-left-color: $color;
   }
   .bd-r-#{$name} {
-    border-right-style: $color;
+    border-right-color: $color;
   }
 
   // 模拟细边,不要多用，一般用一边的时候用

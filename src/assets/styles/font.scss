@@ -24,8 +24,13 @@
 // line-height
 @for $i from 20 through 100 {
   .lh-#{$i} {
+     @if $i % 2 == 0 {
+       line-height: #{$i}px;
+     }
+   }
+  .lh-#{$i}-i {
     @if $i % 2 == 0 {
-      line-height: #{$i}px;
+      line-height: #{$i}px !important;
     }
   }
 }

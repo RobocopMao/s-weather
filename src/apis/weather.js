@@ -1,4 +1,6 @@
+// 天气类
 import Request from './request';
+import {XZ_HOST_TYPE} from './config';
 
 const request = new Request();
 
@@ -10,6 +12,7 @@ export const getWeatherNow = async (data) => {
   return await request.get({
     url: '/v3/weather/now.json',
     data,
+    hostType: XZ_HOST_TYPE
   });
 };
 
@@ -21,6 +24,7 @@ export const getWeatherHourly = async (data) => {
   return await request.get({
     url: '/v3/weather/hourly.json',
     data,
+    hostType: XZ_HOST_TYPE,
   });
 };
 
@@ -31,6 +35,7 @@ export const getWeatherDaily = async (data) => {
   return await request.get({
     url: '/v3/weather/daily.json',
     data,
+    hostType: XZ_HOST_TYPE,
   });
 };
 

@@ -12,6 +12,10 @@ $blue: 'blue';
     background-color: $color;
   }
 
+  .bg-#{$blue}-#{$number}-i {
+    background-color: $color !important;
+  }
+
   .h-line-#{$blue}-#{$number} {
     width: 100%;
     height: 1Px;

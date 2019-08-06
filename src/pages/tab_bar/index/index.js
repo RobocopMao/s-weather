@@ -36,6 +36,7 @@ import ComponentIconWeather from '../../../components/icon/weather'
 // import ComponentTagName from '../../components/common/component_tag_name'
 import Skeleton from '../../../components/common/skeleton'
 import xzLogoGrayImg from '../../../assets/images/xinzhi_logo_gray.png';
+import hfLogoGrayImg from '../../../assets/images/hefeng_logo_gray.png';
 
 function Index() {
   const location = useSelector(state => state.location);
@@ -55,6 +56,7 @@ function Index() {
   const [tmpLineImgPath, setTmpLineImgPath] = useState('');
   const [scrollHeight, setScrollHeight] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
+  const [scrollToTop, setScrollToTop] = useState(0);
   const [showSkeleton, setShowSkeleton] = useState(true);
 
   const lifeSuggestion = [
@@ -74,7 +76,7 @@ function Index() {
     let tId = setTimeout(() => {
       setShowSkeleton(false);
       clearTimeout(tId);
-    }, 3000);
+    }, 2000);
   }, []);
 
   // 实时天气
@@ -135,6 +137,7 @@ function Index() {
     const {from} = this.$router.params;
     if (user.isCurrentAddr && user.geoSun && from !== 'SHARE') { // 当前用户，且日出日落已存在， 比如当用户点击当行定位按钮就不会在此发请求
       setSun(user.geoSun);
+      setDayNight([user.geoSun]);
     } else { // 否则就去请求
       const res = await getGeoSun({location: `${location.latitude}:${location.longitude}`, days: 1});
       if (!res) {return}
@@ -269,6 +272,8 @@ function Index() {
           };
           dispatch(setUserLocation(userLocation));
           dispatch(setUserIsCurAddr(true));
+        } else {
+          dispatch(setUserIsCurAddr(false));
         }
       },
       // fail: _res => {
@@ -278,11 +283,6 @@ function Index() {
       //   // console.log(res);
       // }
     });
-  };
-
-  // 去15天天气预报
-  const goDailyDetails = () => {
-    Taro.navigateTo({url: `../../../pages/forecast/pages/daily_forecast/index?lon=${location.longitude}&lat=${location.latitude}&isDay=${isDay}`});
   };
 
   // 画逐小时图
@@ -374,6 +374,7 @@ function Index() {
   const locationSelf = () => {
     const {latitude, longitude,} = user.location;
     qqMapSetLocation({latitude, longitude, isUser: true});
+    scrollToPageTop();
   };
 
   // 分享的事件
@@ -386,10 +387,36 @@ function Index() {
     };
   };
 
-  // scroll caontainer 滚动事件
+  // scroll container 滚动事件
   const onContainerScroll = async (e) => {
     const {scrollTop} = e.detail;
     setScrollTop(scrollTop);
+  };
+
+  // 滚动到顶部
+  const scrollToPageTop = () => {
+    setScrollToTop(prev => prev === 0 ? 0.1 : 0);
+  };
+
+  // 去15天天气预报
+  const goDailyDetails = () => {
+    Taro.navigateTo({url: `../../forecast/pages/daily_forecast/index?lon=${location.longitude}&lat=${location.latitude}&isDay=${isDay}`});
+  };
+
+  // 去位置搜索
+  const goLocationSearch = () => {
+    Taro.navigateTo({
+      url: `../../tab_bar/location_search/index?isDay=${isDay}`,
+      events: {
+        acceptDataFromLocationSearch(data) {  // 监听事件
+          console.log('acceptDataFromLocationSearch');
+          console.log(data);
+          const {lat, lon, cityName} = data;
+          qqMapSetLocation({latitude: lat, longitude: lon, isUser: false, name: cityName});  // 重新获取数据
+          scrollToPageTop();
+        }
+      }
+    });
   };
 
   return (
@@ -424,6 +451,7 @@ function Index() {
           scrollWithAnimation
           style={{height: `${scrollHeight}px`}}
           onScroll={e => onContainerScroll(e)}
+          scrollTop={scrollToTop}
         >
           <View className='white flex-col flex-center' id='nowContainer'>
             <View className='flex-row flex-center mg-t-40'>
@@ -456,7 +484,7 @@ function Index() {
 
           {/*24小时预报*/}
           {hourly.length && <View className={`mg-20 white bd-radius-20 ${bgItemClass}`}>
-            <View className='text-center fs-30 pd-30'>24小时预报</View>
+            <View className='text-center fs-30 pd-30'>24小时逐时预报</View>
             <View className='h-line-white' />
             <ScrollView
               className='flex-col'
@@ -571,12 +599,13 @@ function Index() {
           <View className='fs-24 text-center mg-t-20 mg-b-20 flex-row flex-center'>
             <Text>数据来源于</Text>
             <Image className='h-50 w-144' src={xzLogoGrayImg} />
-            </View>
+            <Image className='h-30 w-120' src={hfLogoGrayImg} />
+          </View>
         </ScrollView>
 
         <View className='flex-row flex-spa-center h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar' id='tabBar'>
           <View className='iconfont fs-50 black bold'>&#xe87e;</View>{/**收藏**/}
-          <View className='iconfont fs-50 black bold'>&#xe87f;</View>{/**添加**/}
+          <View className='iconfont fs-50 black bold' onClick={() => goLocationSearch()}>&#xe87f;</View>{/**添加**/}
           <View className={`iconfont fs-50 black bold ${user.isCurrentAddr ? '' : 'self-loc-anim blue-A700'}`} onClick={debounce(locationSelf, 5000, {leading: true, trailing: false})}>&#xe875;</View>{/**定位**/}
           <Button className='iconfont fs-50 black bold mg-0 pd-0 h-54 w-50 icon-btn' hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>{/**分享**/}
           <View className='iconfont fs-50 black bold'>&#xe87a;</View>{/**设置**/}

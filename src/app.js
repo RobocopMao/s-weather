@@ -30,6 +30,8 @@ class App extends Component {
     pages: [
       'pages/tab_bar/index/index',
       'pages/tab_bar/setting/index',
+      'pages/tab_bar/location_collection/index',
+      'pages/tab_bar/location_search/index',
     ],
     subpackages: [  // 分包配置
       {
@@ -58,6 +60,7 @@ class App extends Component {
       uploadFile: 10000,
       downloadFile: 10000
     },
+    workers: "workers",
     permission: {
       'scope.userLocation': {
         'desc': '你的位置信息将用于小程序查询天气'

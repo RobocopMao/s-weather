@@ -2,20 +2,20 @@ import Taro, {useEffect, useState} from '@tarojs/taro'
 import {View} from '@tarojs/components'
 import './index.scss'
 
-function Setting() {
+function LocationCollection() {
 
   return (
-    <View className='setting'>
+    <View className='location-collection'>
 
     </View>
   )
 }
 
-Setting.config = {
-  navigationBarTitleText: '设置',
+LocationCollection.config = {
+  navigationBarTitleText: '地址收藏',
   backgroundTextStyle: 'light',
   navigationBarBackgroundColor: 'white',
   navigationBarTextStyle: 'black'
 };
 
-export default Setting;
+export default LocationCollection;

@@ -1,8 +1,6 @@
 /**封装的网络请求**/
 import Taro from '@tarojs/taro';
-import {HOST, createSignParams} from './config';
-
-const sign = createSignParams();  // 获取签名参数
+import {XZ_API_HOST, HF_API_HOST_FREE, createSignParams} from './config';
 
 class Request {
   get(options) {
@@ -26,7 +24,8 @@ class Request {
       return;
     }
     // console.log(options)
-    let url = `${options.host || HOST}${options.url}`;
+    let sign = options.hostType === 'XZ' ? createSignParams(options.hostType) : createSignParams(options.hostType, options.data);  // 心知天气获取签名参数/和风天气的签名参数
+    let url = `${options.host || (options.hostType === 'XZ' ? XZ_API_HOST : HF_API_HOST_FREE)}${options.url}`;  // 判断url来源
     let data = Object.assign({}, options.data, sign) || {};
     let method = options.method || 'GET';
     let dataType = 'json';
@@ -56,6 +55,10 @@ class Request {
     }
 
     return new Promise((resolve, reject) => {
+      if (process.env.NODE_ENV !== 'production')  {
+        Taro.addInterceptor(Taro.interceptors.logInterceptor);
+        Taro.addInterceptor(Taro.interceptors.timeoutInterceptor);
+      }
       Taro.request({
         ...params,
         success: res => {
@@ -64,9 +67,17 @@ class Request {
           } else {
             let {statusCode, data} = res;
             if (statusCode === 200) {
-              resolve(data.results[0]);
+              if (options.hostType === 'XZ') {  // 心知天气返回数据
+                resolve(data.results[0]);
+              } else {  // 和风天气返回数据
+                resolve(data.HeWeather6[0]);
+              }
             } else {
-              Taro.showToast({title: `${statusCode}[${data.status_code}]: ${data.status}`, icon: 'none'});
+              if (options.hostType === 'XZ') {  // 心知天气请求错误状态提示
+                Taro.showToast({title: `${statusCode}[${data.status_code}]: ${data.status}`, icon: 'none'});
+              } else {// 和风天气请求错误状态提示
+                Taro.showToast({title: `${statusCode}: ${data.status}`, icon: 'none'});
+              }
             }
           }
         },
