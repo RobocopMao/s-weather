@@ -1,6 +1,7 @@
 import Taro, {useEffect, useState} from '@tarojs/taro'
 import {View, Input, Button, Text} from '@tarojs/components'
 import _ from 'lodash'
+import moment from 'moment'
 import './index.scss'
 import {useAsyncEffect} from '../../../utils'
 import {getTopCity, findCity} from '../../../apis/function'
@@ -49,9 +50,29 @@ function LocationSearch() {
 
   // 初始化数据
   useAsyncEffect(async () => {
-    const res = await getTopCity({group:'cn', number: 20});
-    setTopCity(res.basic);
+    const _topCity = Taro.getStorageSync('TOP_CITY');
+    if (_topCity) {  // 已缓存
+      if (_topCity.date === moment().format('YYYY-MM-DD')) {  // 当日用缓存
+        setTopCity(_topCity.cities);
+      } else { // 不是当天，更新缓存
+        _getTopCity();
+      }
+    } else {
+      _getTopCity();
+    }
   }, []);
+
+  // 获取热门城市并设置
+  const _getTopCity = async () => {
+    const res = await getTopCity({group:'cn', number: 20});
+    const {basic} = res;
+    let TOP_CITY = {
+      date: moment().format('YYYY-MM-DD'),
+      cities: basic
+    };
+    setTopCity(basic);
+    Taro.setStorageSync('TOP_CITY', TOP_CITY);
+  };
 
   // 搜索输入
   const searchInput = (e) => {
