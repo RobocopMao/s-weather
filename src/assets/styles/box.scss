@@ -268,6 +268,12 @@
 .box-hd {
   overflow: hidden;
 }
+.box-hd-x {
+  overflow-x: hidden;
+}
+.box-hd-y {
+  overflow-y: hidden;
+}
 
 .relative {
   position: relative;

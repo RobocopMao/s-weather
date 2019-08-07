@@ -133,8 +133,8 @@ function Index() {
   // 日出日落
   useAsyncEffect(async () => {
     const {from} = this.$router.params;
-    console.log(user.isCurrentAddr);
-    console.log(user.geo);
+    // console.log(user.isCurrentAddr);
+    // console.log(user.geo);
     if (user.isCurrentAddr && user.geoSun && from !== 'SHARE') { // 当前用户，且日出日落已存在， 比如当用户点击当行定位按钮就不会在此发请求
       setSun(user.geoSun);
       setDayNight(user.geoSun);
