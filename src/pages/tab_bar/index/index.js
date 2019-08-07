@@ -2,9 +2,7 @@ import Taro, {useEffect, useState} from '@tarojs/taro'
 import {Block, View, Text, ScrollView, Canvas, Image, Swiper, SwiperItem, Button} from '@tarojs/components'
 import { useSelector, useDispatch } from '@tarojs/redux'
 import moment from 'moment'
-import max from 'lodash/max'
-import min from 'lodash/min'
-import debounce from 'lodash/debounce'
+import _ from 'lodash'
 import QQMapWX from '../../../utils/qqmap-wx-jssdk'
 import {QQ_MAP_SDK_KEY} from '../../../apis/config'
 import './index.scss'
@@ -48,7 +46,7 @@ function Index() {
   const [daily, setDaily] = useState([]);
   const [suggestion, setSuggestion] = useState([]);
   const [nowAir, setNowAir] = useState({});
-  const [sun, setSun] = useState([]);
+  const [sun, setSun] = useState({});
   const [isDay, setIsDay] = useState(true);
   const [bgPageClass, setBgPageClass] = useState('');
   const [bgItemClass, setBgItemClass] = useState('');
@@ -135,16 +133,20 @@ function Index() {
   // 日出日落
   useAsyncEffect(async () => {
     const {from} = this.$router.params;
+    console.log(user.isCurrentAddr);
+    console.log(user.geo);
     if (user.isCurrentAddr && user.geoSun && from !== 'SHARE') { // 当前用户，且日出日落已存在， 比如当用户点击当行定位按钮就不会在此发请求
       setSun(user.geoSun);
-      setDayNight([user.geoSun]);
+      setDayNight(user.geoSun);
     } else { // 否则就去请求
       const res = await getGeoSun({location: `${location.latitude}:${location.longitude}`, days: 1});
       if (!res) {return}
       const {sun} = res;
-      setSun(sun);
+      setSun(sun[0]);
       setDayNight(sun[0]);
-      dispatch(setUserGeoSun(sun[0]));
+      if (user.isCurrentAddr) {
+        dispatch(setUserGeoSun(sun[0]));
+      }
     }
   }, [location]);
 
@@ -227,6 +229,7 @@ function Index() {
   // 获取用户位置信息
   const getUserLocation = () => {
     Taro.getLocation({
+      type: 'gcj02',
       success: res => {
         // console.log(res);
         qqMapSetLocation({latitude: res.latitude, longitude: res.longitude, isUser: true});
@@ -271,10 +274,8 @@ function Index() {
             name: ''
           };
           dispatch(setUserLocation(userLocation));
-          dispatch(setUserIsCurAddr(true));
-        } else {
-          dispatch(setUserIsCurAddr(false));
         }
+        dispatch(setUserIsCurAddr(isUser));
       },
       // fail: _res => {
       //   // console.log(_res);
@@ -293,8 +294,8 @@ function Index() {
       // console.log(v,i);
       tmp.push(Number(v.temperature));
     }
-    let maxTmp = max(tmp) + 3; // 最高温
-    let minTmp = min(tmp) - 1; // 最低温
+    let maxTmp = _.max(tmp) + 3; // 最高温
+    let minTmp = _.min(tmp) - 1; // 最低温
     let tmpRange = maxTmp - minTmp;
     // console.log(tmp, maxTmp, minTmp, tmpRange);
     let distance= Math.floor((100 / tmpRange));
@@ -403,7 +404,23 @@ function Index() {
     Taro.navigateTo({url: `../../forecast/pages/daily_forecast/index?lon=${location.longitude}&lat=${location.latitude}&isDay=${isDay}`});
   };
 
-  // 去位置搜索
+  // 去城市收藏夹
+  const goLocationCollection = () => {
+    Taro.navigateTo({
+      url: `../../tab_bar/location_collection/index?isDay=${isDay}`,
+      events: {
+        acceptDataFromLocationCollection(data) {  // 监听事件
+          console.log('acceptDataFromLocationCollection');
+          console.log(data);
+          const {lat, lon, cityName} = data;
+          qqMapSetLocation({latitude: lat, longitude: lon, isUser: false, name: cityName});  // 重新获取数据
+          scrollToPageTop();
+        }
+      }
+    });
+  };
+
+  // 去城市搜索
   const goLocationSearch = () => {
     Taro.navigateTo({
       url: `../../tab_bar/location_search/index?isDay=${isDay}`,
@@ -431,7 +448,7 @@ function Index() {
       <View className='weather h-100-per skeleton'>
         {/*<ComponentTagName />*/}
         <ComponentBaseNavigation backgroundColor={navBarBgColor} color='white' statusBarHeight={user.systemInfo.statusBarHeight}>
-          <View className='flex-row flex-start-center w-100-per pd-lr-20' onClick={debounce(chooseLocation, 5000, {leading: true, trailing: false})}>
+          <View className='flex-row flex-start-center w-100-per pd-lr-20' onClick={_.debounce(chooseLocation, 5000, {leading: true, trailing: false})}>
             <View className='iconfont mg-r-10 fs-36'>&#xe875;</View>
             <View className={`flex-col  ${scrollTop > 200 ? 'flex-spb-start' : 'flex-center-start'}`}>
               {scrollTop > 200 && <View className='flex-row flex-start-baseline white fs-26'>
@@ -604,13 +621,15 @@ function Index() {
         </ScrollView>
 
         <View className='flex-row flex-spa-center h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar' id='tabBar'>
-          <View className='iconfont fs-50 black bold'>&#xe87e;</View>{/**收藏**/}
+          <View className='iconfont fs-50 black bold' onClick={() => goLocationCollection()}>&#xe87e;</View>{/**收藏**/}
           <View className='iconfont fs-50 black bold' onClick={() => goLocationSearch()}>&#xe87f;</View>{/**添加**/}
-          <View className={`iconfont fs-50 black bold ${user.isCurrentAddr ? '' : 'self-loc-anim blue-A700'}`} onClick={debounce(locationSelf, 5000, {leading: true, trailing: false})}>&#xe875;</View>{/**定位**/}
+          <View className={`iconfont fs-50 black bold ${user.isCurrentAddr ? '' : 'self-loc-anim blue-A700'}`} onClick={_.debounce(locationSelf, 5000, {leading: true, trailing: false})}>&#xe875;</View>{/**定位**/}
           <Button className='iconfont fs-50 black bold mg-0 pd-0 h-54 w-50 icon-btn' hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>{/**分享**/}
           <View className='iconfont fs-50 black bold'>&#xe87a;</View>{/**设置**/}
         </View>
       </View>
+
+      <View>{sun.sunset}</View>
     </Block>
   )
 }

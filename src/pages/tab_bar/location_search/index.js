@@ -1,5 +1,6 @@
 import Taro, {useEffect, useState} from '@tarojs/taro'
 import {View, Input, Button, Text} from '@tarojs/components'
+import _ from 'lodash'
 import './index.scss'
 import {useAsyncEffect} from '../../../utils'
 import {getTopCity, findCity} from '../../../apis/function'
@@ -60,9 +61,10 @@ function LocationSearch() {
 
   // input change
   const searchInputChange = async (e) => {
-    console.log(e);
+    // console.log(e);
+    const {value} = e.detail;
     setIsSearching(true);
-    const res = await findCity({location: inputVal, group: 'cn', number: 20});
+    const res = await findCity({location: value, group: 'cn', number: 20});
     setSearchResult(res.basic || []);
     setIsSearching(false);
   };
@@ -87,10 +89,10 @@ function LocationSearch() {
           return v.lat === lat && v.lon === lon && v.cityName === cityName;
         });
         if (!findExit) {
-          LOCATION_SEARCH_HISTORY.push({lat, lon, cityName});
+          LOCATION_SEARCH_HISTORY.unshift({lat, lon, cityName});
           let len = LOCATION_SEARCH_HISTORY.length;
           if (len > 10) {
-            LOCATION_SEARCH_HISTORY.shift();
+            LOCATION_SEARCH_HISTORY.pop();
           }
           Taro.setStorageSync('LOCATION_SEARCH_HISTORY', LOCATION_SEARCH_HISTORY);
         }
@@ -103,12 +105,72 @@ function LocationSearch() {
     Taro.navigateBack(1);
   };
 
+  // 收藏地址
+  const collectCity = ({lat, lon, cityName}) => {
+    let COLLECTED_CITY =  Taro.getStorageSync('COLLECTED_CITY');
+    let len = COLLECTED_CITY.length;
+    if (len === 10) {  // 目前设定只能收藏10个
+      Taro.showToast({title: '您的10个收藏权限已经用满了，请到收藏夹删除后再收藏', icon: 'none'});
+      return;
+    }
+    if (COLLECTED_CITY) { // 已经建立缓存
+      let findExit = COLLECTED_CITY.find((v, k, arr) => {
+        return v.lat === lat && v.lon === lon && v.cityName === cityName;
+      });
+      if (!findExit) {
+        COLLECTED_CITY.unshift({lat, lon, cityName, active: false});
+        Taro.setStorageSync('COLLECTED_CITY', COLLECTED_CITY);
+        Taro.showToast({title: '已收藏', icon: 'none'});
+      } else {
+        Taro.showToast({title: '该城市已经收藏过', icon: 'none'});
+      }
+    } else {
+      Taro.setStorageSync('COLLECTED_CITY', [{lat, lon, cityName, active: false}]);
+      Taro.showToast({title: '已收藏', icon: 'none'});
+    }
+  };
+
+  /**
+   * 格式化地址
+   * @param city
+   * @param _type： 1-长地址：四川省成都市、北京市朝阳；2-短地址：成都市、朝阳
+   * @returns {string}
+   */
+  const formatSearchLocation = (city, _type) => {
+    const {location, parent_city, admin_area, type} = city;
+    let addr = '';
+    let _location = ''; // 比如成都，带个市字
+    if (admin_area === parent_city) {
+      if (parent_city === location) { // 直辖市-北京市
+        addr = `${admin_area}${type === 'city' ? '市': ''}`;
+        _location = `${addr}市`;
+      } else { // 直辖市下面的区县-北京市朝阳
+        addr = `${parent_city}${type === 'city' ? '市': ''} ${location}`;
+        _location = location;
+      }
+    } else {
+      if (parent_city === location) { // 省市-四川省成都市
+        addr = `${admin_area}省 ${parent_city}${type === 'city' ? '市': ''}`;
+        _location = `${parent_city}市`;
+      } else { // 省市区-四川省成都市青羊区
+        addr = `${admin_area}省 ${parent_city}市 ${location}`;
+        _location = location;
+      }
+    }
+
+    if (_type === 1) {
+      return addr;
+    } else {
+      return _location;
+    }
+  };
+
   return (
     <View className='location-search flex-col flex-start-stretch'>
       <View className='flex-row flex-start-stretch h-88 bd-radius-20 mg-20 bd-box search-bar'>
         <View className='flex-row flex-start-stretch item-flg-1 bd-w-1 bd-solid bd-gray-300 bd-radius-20'>
           <Input className='item-flg-1 h-88 pd-l-20 pd-r-20 bd-box lh-88' confirmType='search' value={inputVal} placeholder='请输入查询城市'
-            onInput={(e) => searchInput(e)} onChange={(e) => searchInputChange(e)}
+            onInput={_.throttle((e) => searchInput(e), 500, {leading: false, trailing: true})} onChange={(e) => searchInputChange(e)}
           />
           {inputVal && <Button className='iconfont icon-btn fs-50 pd-0 mg-0 h-100-per w-100 lh-88-i gray-700' onClick={() => resetInput()}>&#xe87b;</Button>}
           {!inputVal && <Button className='iconfont icon-btn fs-50 pd-0 mg-0 h-100-per w-100 lh-88-i gray-700'>&#xe87c;</Button>}
@@ -122,6 +184,7 @@ function LocationSearch() {
             return (
                 <Button className='h-50 pd-lr-10 mg-0 mg-r-20 mg-b-20 lh-50-i bg-gray-100-i gray-700 fs-28'
                   hoverClass='btn-hover' key={String(index)} onClick={() => searchWeather({lat, lon, cityName})}
+                  onLongPress={() => collectCity({lat, lon, cityName})}
                 >{cityName}</Button>
               )
           })}
@@ -140,12 +203,14 @@ function LocationSearch() {
             return (
               <View className={`item-flb-25per flex-center ${(index + 1) %4 === 1 ? 'pd-r-10' : ((index + 1) % 4 === 0 ? 'pd-l-10' : 'pd-lr-10')}`} key={String(index)}
                 onClick={() => searchWeather({lat, lon, cityName: `${location}${type === 'city' ? '市' : ''}`})}
+                onLongPress={() => collectCity({lat, lon, cityName: `${location}${type === 'city' ? '市' : ''}`})}
               >
                 <Button className='h-56 pd-lr-10 mg-0 mg-b-20 lh-56-i bg-gray-100-i gray-700 fs-28 item-flb-20per' hoverClass='btn-hover'>{location}</Button>
               </View>
             )
           })}
         </View>
+        <View className='mg-t-50 fs-26 gray-400 text-center' style={{textDecoration: 'underline'}}>小提示：长按历史记录城市和热门城市可以添加到收藏夹</View>
       </View>}
       {inputVal && <View className='flex-col mg-20 search-result'>
         <View className={`flex-row flex-start-center fs-40 mg-b-20 ${isDay ? 'blue-A700' : 'black'}`}>
@@ -156,11 +221,9 @@ function LocationSearch() {
           {searchResult.map((result, index) => {
             return (
               <Button className='h-50 pd-lr-10 mg-0 mg-r-20 mg-b-20 lh-50-i bg-gray-100-i gray-700 fs-28'
-                hoverClass='btn-hover' key={String(index)} onClick={() => searchWeather({lat: result.lat, lon: result.lon, cityName: `${result.location}${result.type === 'city' ? '市' : ''}`, store: true})}
+                hoverClass='btn-hover' key={String(index)} onClick={() => searchWeather({lat: result.lat, lon: result.lon, cityName: formatSearchLocation(result,2), store: true})}
               >
-                { result.admin_area === result.parent_city && <Text>{result.admin_area}{result.type === 'city' ? '市': ''}</Text> }
-                { result.admin_area !== result.parent_city && result.parent_city === result.location && <Text>{result.admin_area} {result.parent_city}{result.type === 'city' ? '市': ''}</Text>}
-                { result.admin_area !== result.parent_city && result.parent_city !== result.location && <Text>{result.admin_area} {result.parent_city} {result.location}{result.type === 'city' ? '市': ''}</Text>}
+                <Text>{formatSearchLocation(result, 1)}</Text>
               </Button>
             )
           })}

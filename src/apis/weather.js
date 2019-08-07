@@ -1,6 +1,6 @@
 // 天气类
 import Request from './request';
-import {XZ_HOST_TYPE} from './config';
+import {XZ_HOST_TYPE, HF_HOST_TYPE} from './config';
 
 const request = new Request();
 
@@ -28,6 +28,7 @@ export const getWeatherHourly = async (data) => {
   });
 };
 
+// 逐日天气
 export const getWeatherDaily = async (data) => {
   if (data.location === ':' || data.location === '') {
     return;
@@ -46,17 +47,17 @@ export const getWeatherDaily = async (data) => {
  * @param params
  * @returns {Promise<void>}
  */
-// export const getWeather = async ({weatherType, params}) => {
-//   if (params.reducer === ',') {
-//     return false;
-//   }
-//   return await request.get({
-//     host: 'https://free-api.heweather.net',
-//     url: '/s6/weather/' + weatherType,
-//     data: params,
-//     needCode: true,
-//   });
-// };
+export const getHFWeatherNow = async ({weatherType, params}) => {
+  if (params.location === ',' || params.location === '') {
+    return false;
+  }
+  return await request.get({
+    host: 'https://free-api.heweather.net',
+    url: '/s6/weather/' + weatherType,
+    data: params,
+    hostType: HF_HOST_TYPE,
+  });
+};
 //
 // /**
 //  * 获取空气质量：https://dev.heweather.com/docs/api/air

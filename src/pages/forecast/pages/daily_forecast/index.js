@@ -1,8 +1,7 @@
 import Taro, {useEffect, useState} from '@tarojs/taro'
 import {View, ScrollView, Canvas} from '@tarojs/components'
 import moment from 'moment'
-import max from 'lodash/max'
-import min from 'lodash/min'
+import _ from 'lodash'
 import './index.scss'
 import {useAsyncEffect} from '../../../../utils'
 import {getWeatherDaily} from '../../../../apis/weather'
@@ -71,8 +70,8 @@ function DailyForecast() {
       tmpMax.push(Number(v.high));
       tmpMin.push(Number(v.low));
     }
-    let maxTmp = max(tmpMax) + 5; // 最高温
-    let minTmp = min(tmpMin) - 5; // 最低温
+    let maxTmp = _.max(tmpMax) + 5; // 最高温
+    let minTmp = _.min(tmpMin) - 5; // 最低温
     let tmpRange = maxTmp - minTmp;
     // console.log(tmpMax, tmpMin, maxTmp, minTmp, tmpRange);
     let distance= Math.floor((scrollHeight / 3)  / tmpRange);
