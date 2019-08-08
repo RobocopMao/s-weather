@@ -138,24 +138,25 @@ function LocationSearch() {
    * @returns {string}
    */
   const formatSearchLocation = (city, _type) => {
-    const {location, parent_city, admin_area, type} = city;
+    const {parent_city, admin_area, type} = city;
+    const location1 = city.location;
     let addr = '';
     let _location = ''; // 比如成都，带个市字
     if (admin_area === parent_city) {
-      if (parent_city === location) { // 直辖市-北京市
-        addr = `${admin_area}${type === 'city' ? '市': ''}`;
-        _location = `${addr}市`;
+      if (parent_city === location1) { // 直辖市-北京市
+        addr = `${admin_area}${type === 'city' && location1 !== '香港' && location1 !== '澳门' ? '市': ''}`;
+        _location = `${addr}`;
       } else { // 直辖市下面的区县-北京市朝阳
-        addr = `${parent_city}${type === 'city' ? '市': ''} ${location}`;
-        _location = location;
+        addr = `${parent_city}${type === 'city' && parent_city !== '香港' && parent_city !== '澳门' ? '市': ''} ${location1}`;
+        _location = location1;
       }
     } else {
-      if (parent_city === location) { // 省市-四川省成都市
-        addr = `${admin_area}省 ${parent_city}${type === 'city' ? '市': ''}`;
-        _location = `${parent_city}市`;
+      if (parent_city === location1) { // 省市-四川省成都市
+        addr = `${admin_area} ${parent_city}${type === 'city' && location1 !== '香港' && location1 !== '澳门' ? '市': ''}`;
+        _location = `${parent_city}`;
       } else { // 省市区-四川省成都市青羊区
-        addr = `${admin_area}省 ${parent_city}市 ${location}`;
-        _location = location;
+        addr = `${admin_area} ${parent_city}市 ${location1}`;
+        _location = location1;
       }
     }
 

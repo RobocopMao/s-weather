@@ -591,8 +591,8 @@ function Index() {
             <View className='text-center fs-30 pd-30' onClick={() => goDailyDetails()}>15天天气趋势预报</View>
           </View>}
 
-          {/*今日生活指数*/}
-          <View className={`mg-20 white bd-radius-20 ${bgItemClass}`}>
+          {/*今日生活指数,香港澳门没有数据*/}
+          {location.name !== '香港' && location.name !== '澳门' && <View className={`mg-20 white bd-radius-20 ${bgItemClass}`}>
             <View className='text-center fs-30 pd-30'>今日生活指数</View>
             <View className='h-line-white' />
             <Swiper
@@ -626,7 +626,7 @@ function Index() {
             </Swiper>
             {/*<View className='h-line-white' />*/}
             {/*<View className='text-center fs-30 pd-30'>更多生活指数</View>*/}
-          </View>
+          </View>}
 
           <View className='fs-24 text-center mg-t-20 mg-b-20 flex-row flex-center'>
             <Text>天气数据来源于</Text>
