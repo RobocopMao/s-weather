@@ -6,7 +6,7 @@ import _ from 'lodash'
 import QQMapWX from '../../../utils/qqmap-wx-jssdk'
 import {QQ_MAP_SDK_KEY} from '../../../apis/config'
 import './index.scss'
-import {useAsyncEffect, getNodeRect, getSystemInfo, getWindParams} from '../../../utils'
+import {useAsyncEffect, getNodeRect, getSystemInfo, getWindParams, throttle} from '../../../utils'
 import {getWeatherNow, getWeatherHourly, getWeatherDaily} from '../../../apis/weather'
 import {getAirNow} from '../../../apis/air'
 import {getLifeSuggestion} from '../../../apis/life'
@@ -57,6 +57,7 @@ function Index() {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollToTop, setScrollToTop] = useState(0);
   const [showSkeleton, setShowSkeleton] = useState(true);
+  const [previous , setPrevious ] = useState(0);
 
   const lifeSuggestion = [
     {type: 'comfort', name: '舒适度指数'},
@@ -377,9 +378,15 @@ function Index() {
 
   // 定位自己
   const locationSelf = () => {
-    const {latitude, longitude,} = user.location;
-    qqMapSetLocation({latitude, longitude, isUser: true});
-    scrollToPageTop();
+    let _now = Date.now();
+    if (_now - previous > 5000) {
+      const {latitude, longitude,} = user.location;
+      qqMapSetLocation({latitude, longitude, isUser: true});
+      scrollToPageTop();
+      setPrevious(_now);
+    } else {
+      Taro.showToast({title: '客官，手速太快了', icon: 'none'});
+    }
   };
 
   // 分享的事件
@@ -387,7 +394,7 @@ function Index() {
     this.$scope.onShareAppMessage = (res) => {
       return {
         title: `我这儿现在天气${now.text},气温${now.temperature}℃,你那儿呢？`,
-        path: `/pages/tab_tar/index/index?from=SHARE`,
+        path: `/pages/tab_bar/index/index?from=SHARE`,
       }
     };
   };
@@ -627,7 +634,7 @@ function Index() {
         <View className='flex-row flex-spa-center h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar' id='tabBar'>
           <View className='iconfont fs-50 black bold' onClick={() => goLocationCollection()}>&#xe87e;</View>{/**收藏**/}
           <View className='iconfont fs-50 black bold' onClick={() => goLocationSearch()}>&#xe87f;</View>{/**添加**/}
-          <View className={`iconfont fs-50 black bold ${user.isCurrentAddr ? '' : 'self-loc-anim blue-A700'}`} onClick={_.debounce(locationSelf, 5000, {leading: true, trailing: false})}>&#xe875;</View>{/**定位**/}
+          <View className={`iconfont fs-50 black bold ${user.isCurrentAddr ? '' : 'self-loc-anim blue-A700'}`} onClick={() => locationSelf()}>&#xe875;</View>{/**定位**/}
           <Button className='iconfont fs-50 black bold mg-0 pd-0 h-54 w-50 icon-btn' hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>{/**分享**/}
           <View className='iconfont fs-50 black bold'>&#xe87a;</View>{/**设置**/}
         </View>
