@@ -17,6 +17,16 @@ function Setting() {
     Taro.openSetting();
   };
 
+  // 去数据来源页面
+  const goDataSource = () => {
+    Taro.navigateTo({url: `../../setting/pages/data_source/index`})
+  };
+
+  // 去数据来源页面
+  const goKnowledge = () => {
+    Taro.navigateTo({url: `../../setting/pages/knowledge/index`})
+  };
+
   // 去小工具S小程序
   const goStoolsMiniProgram = () => {
     Taro.navigateToMiniProgram({appId: 'wx2269fb8c2e106c9c'});
@@ -50,7 +60,7 @@ function Setting() {
             <View className='iconfont'>&#xe65b;</View>
           </View>
           <View className='h-line-gray-300' />
-          <View className='flex-row flex-spb-baseline pd-tb-30'>
+          <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goDataSource()}>
             <View className='flex-row flex-start-baseline'>
               <View className='iconfont mg-r-10'>&#xe603;</View>
               <View>数据来源</View>
@@ -60,10 +70,10 @@ function Setting() {
         </View>
 
         <View className='bd-radius-20 pd-lr-20 mg-b-20 bg-white'>
-          <View className='flex-row flex-spb-baseline pd-tb-30'>
+          <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goKnowledge()}>
             <View className='flex-row flex-start-baseline'>
               <View className='iconfont mg-r-10'>&#xe601;</View>
-              <View>知识百科</View>
+              <View>气象知识</View>
             </View>
             <View className='iconfont'>&#xe65b;</View>
           </View>

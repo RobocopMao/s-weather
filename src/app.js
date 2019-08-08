@@ -45,7 +45,9 @@ class App extends Component {
         root: 'pages/setting/',
         name: 'setting',  // 设置
         pages: [
-          'pages/about/index'
+          'pages/about/index',
+          'pages/data_source/index',
+          'pages/knowledge/index',
         ],
       }
     ],

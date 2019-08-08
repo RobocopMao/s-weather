@@ -510,7 +510,7 @@ function Index() {
                 <View className=''>空气{nowAir.city.quality} {nowAir.city.aqi}</View>
               </View>
             </View>
-            <View className='mg-b-40 fs-24'>天气更新于 {moment(updateTime).format('HH:mm')}</View>
+            <View className='mg-b-40 fs-24'>天气数据更新于 {moment(updateTime).format('HH:mm')}</View>
           </View>
           {/*{fixedContainerNow && <View style={{height: `${boxNowInitHeight - boxNowSmallHeight}px`}} />}*/}
 
@@ -629,7 +629,7 @@ function Index() {
           </View>
 
           <View className='fs-24 text-center mg-t-20 mg-b-20 flex-row flex-center'>
-            <Text>数据来源于</Text>
+            <Text>天气数据来源于</Text>
             <Image className='h-50 w-144' src={xzLogoGrayImg} />
             <Image className='h-30 w-120' src={hfLogoGrayImg} />
           </View>
