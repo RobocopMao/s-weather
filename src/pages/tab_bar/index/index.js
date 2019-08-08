@@ -52,6 +52,7 @@ function Index() {
   const [bgItemClass, setBgItemClass] = useState('');
   const [navBarBgColor, setNavBarBgColor] = useState('#FFFFFF');
   const [tmpLineImgPath, setTmpLineImgPath] = useState('');
+  const [delayRemoveCanvas, setDelayRemoveCanvas] = useState(true); // 防止移除canvas，加载image时闪烁
   const [scrollHeight, setScrollHeight] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollToTop, setScrollToTop] = useState(0);
@@ -349,7 +350,10 @@ function Index() {
       // console.log(res);
       // console.log('canvasToImg end');
       setTmpLineImgPath(res.tempFilePath);
-
+      let tId = setTimeout(() => {
+        setDelayRemoveCanvas(false);
+        clearTimeout(tId);
+      }, 2000);
     }).catch(err => {
       // console.log('canvasToImg err');
       console.log(err);
@@ -511,7 +515,7 @@ function Index() {
               style={{height: '300px'}}
             >
               <View className='flex-row flex-start-stretch pd-t-20 pd-b-40 h-100-per relative' id='tmpLineBox' style={{width: `${Taro.pxTransform(hourly.length * 150)}`}}>
-                {!tmpLineImgPath && <Canvas className='tmp-line' canvasId='tmpLine' id='tmpLine'
+                {delayRemoveCanvas && <Canvas className='tmp-line' canvasId='tmpLine' id='tmpLine'
                   style={{
                     width: `${Taro.pxTransform(hourly.length * 150)}`,
                     height: '100px'
@@ -628,8 +632,6 @@ function Index() {
           <View className='iconfont fs-50 black bold'>&#xe87a;</View>{/**设置**/}
         </View>
       </View>
-
-      <View>{sun.sunset}</View>
     </Block>
   )
 }
