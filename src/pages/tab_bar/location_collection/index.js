@@ -80,6 +80,21 @@ function LocationCollection() {
     if (isEditing) {
       return;
     }
+
+    // 给点击过的加上背景，下次进来可以看见上次点击的那个
+    let _collectedCity = collectedCity;
+    for (let [, v] of _collectedCity.entries()) {
+      if (v.active) {
+        v.active = false;
+      }
+      if (v.lat === lat && v.lon === lon && v.cityName === cityName) {
+        v.active = true;
+      }
+    }
+    setCollectedCity(_collectedCity);
+    Taro.setStorageSync('COLLECTED_CITY', _collectedCity);
+
+    // 传输数据
     const eventChannel = this.$scope.getOpenerEventChannel();
     eventChannel.emit('acceptDataFromLocationCollection', {lat, lon, cityName});  // 触发事件
     Taro.navigateBack(1);

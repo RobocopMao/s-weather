@@ -376,7 +376,7 @@ function Index() {
     })
   };
 
-  // 定位自己
+  // 定位自己,自己写节流，lodash的节流函数在这里不管用，不知道为什么
   const locationSelf = () => {
     let _now = Date.now();
     if (_now - previous > 5000) {
