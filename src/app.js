@@ -40,6 +40,13 @@ class App extends Component {
         pages: [
           'pages/daily_forecast/index'
         ],
+      },
+      {
+        root: 'pages/setting/',
+        name: 'setting',  // 设置
+        pages: [
+          'pages/about/index'
+        ],
       }
     ],
     preloadRule: {
@@ -60,6 +67,7 @@ class App extends Component {
       uploadFile: 10000,
       downloadFile: 10000
     },
+    navigateToMiniProgramAppIdList: ['wx2269fb8c2e106c9c'],
     workers: "workers",
     permission: {
       'scope.userLocation': {

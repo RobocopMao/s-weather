@@ -1,1 +1,28 @@
-.setting {}
+@import "../../../assets/styles/colors/gray_var";
+.setting {
+  .ctn-box {
+  }
+  .h-300 {
+    height: 280px;
+  }
+  .half-circle {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    z-index: 1;
+    margin-left: -450px;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    width: 900px;
+  }
+  .avatar-box {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    .avatar {
+      box-shadow: 0 0 10px 5px $gray300;
+    }
+  }
+}
