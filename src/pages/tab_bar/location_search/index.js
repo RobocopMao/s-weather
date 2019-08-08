@@ -2,12 +2,13 @@ import Taro, {useEffect, useState} from '@tarojs/taro'
 import {View, Input, Button, Text} from '@tarojs/components'
 import _ from 'lodash'
 import moment from 'moment'
+import {useSelector} from '@tarojs/redux';
 import './index.scss'
-import {useAsyncEffect} from '../../../utils'
+import {setNavStyle, useAsyncEffect} from '../../../utils'
 import {getTopCity, findCity} from '../../../apis/function'
 
 function LocationSearch() {
-  const [isDay, setIsDay] = useState(true);
+  const location = useSelector(state => state.location);
   const [topCity, setTopCity] = useState([]);
   const [locationHistory, setLocationHistory] = useState([]);
   const [inputVal, setInputVal] = useState('');
@@ -16,28 +17,7 @@ function LocationSearch() {
 
   // 设置白天、夜晚主题
   useEffect(() => {
-    // console.log(this);
-    let _isDay = this.$router.params.isDay === 'true';
-    setIsDay(_isDay);
-    if (_isDay) {
-      Taro.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: '#2962FF',
-        animation: {
-          duration: 300,
-          timingFunc: 'easeInOut'
-        }
-      });
-    } else {
-      Taro.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: '#000000',
-        animation: {
-          duration: 300,
-          timingFunc: 'easeInOut'
-        }
-      });
-    }
+    setNavStyle(location.isDay);
   }, []);
 
   // 读取缓存的搜索历史记录
@@ -198,7 +178,7 @@ function LocationSearch() {
         </View>
       </View>
       {!inputVal && <View className='flex-col mg-20 search-history'>
-        <View className={`fs-40 mg-b-20 ${isDay ? 'blue-A700' : 'black'}`}>历史记录</View>
+        <View className={`fs-40 mg-b-20 ${location.isDay ? 'blue-A700' : 'black'}`}>历史记录</View>
         <View className='flex-row flex-start flex-wrap'>
           {locationHistory.map((history, index) => {
             const {lat, lon, cityName} = history;
@@ -217,16 +197,17 @@ function LocationSearch() {
         </View>
       </View>}
       {!inputVal && <View className='flex-col mg-20 top-city'>
-        <View className={`fs-40 mg-b-20 ${isDay ? 'blue-A700' : 'black'}`}>热门城市</View>
+        <View className={`fs-40 mg-b-20 ${location.isDay ? 'blue-A700' : 'black'}`}>热门城市</View>
         <View className='flex-row flex-start flex-wrap'>
           {topCity.map((city, index) => {
-            const {lat, lon, location, type} = city;
+            const {lat, lon, type} = city;
+            let _location = city.location;
             return (
               <View className={`item-flb-25per flex-center ${(index + 1) %4 === 1 ? 'pd-r-10' : ((index + 1) % 4 === 0 ? 'pd-l-10' : 'pd-lr-10')}`} key={String(index)}
-                onClick={() => searchWeather({lat, lon, cityName: `${location}${type === 'city' ? '市' : ''}`})}
-                onLongPress={() => collectCity({lat, lon, cityName: `${location}${type === 'city' ? '市' : ''}`})}
+                onClick={() => searchWeather({lat, lon, cityName: `${_location}${type === 'city' ? '市' : ''}`})}
+                onLongPress={() => collectCity({lat, lon, cityName: `${_location}${type === 'city' ? '市' : ''}`})}
               >
-                <Button className='h-56 pd-lr-10 mg-0 mg-b-20 lh-56-i bg-gray-100-i gray-700 fs-28 item-flb-20per' hoverClass='btn-hover'>{location}</Button>
+                <Button className='h-56 pd-lr-10 mg-0 mg-b-20 lh-56-i bg-gray-100-i gray-700 fs-28 item-flb-20per' hoverClass='btn-hover'>{_location}</Button>
               </View>
             )
           })}
@@ -234,7 +215,7 @@ function LocationSearch() {
         <View className='mg-t-50 fs-26 gray-400 text-center' style={{textDecoration: 'underline'}}>小提示：长按历史记录城市和热门城市可以添加到收藏夹</View>
       </View>}
       {inputVal && <View className='flex-col mg-20 search-result'>
-        <View className={`flex-row flex-start-center fs-40 mg-b-20 ${isDay ? 'blue-A700' : 'black'}`}>
+        <View className={`flex-row flex-start-center fs-40 mg-b-20 ${location.isDay ? 'blue-A700' : 'black'}`}>
           <View className='mg-r-10'>{isSearching ? '正在搜索': '搜索结果'}</View>
           {isSearching && <View className='spin' />}
         </View>

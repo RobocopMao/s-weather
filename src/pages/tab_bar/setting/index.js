@@ -1,34 +1,15 @@
-import Taro, {useEffect, useState} from '@tarojs/taro'
+import Taro, {useEffect} from '@tarojs/taro'
 import {View, OpenData} from '@tarojs/components'
+import {useSelector} from '@tarojs/redux';
 import './index.scss'
+import {setNavStyle} from '../../../utils';
 
 function Setting() {
-  const [isDay, setIsDay] = useState(true);
+  const location = useSelector(state => state.location);
 
   // 设置白天、夜晚主题
   useEffect(() => {
-    // console.log(this);
-    let _isDay = this.$router.params.isDay === 'true';
-    setIsDay(_isDay);
-    if (_isDay) {
-      Taro.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: '#2962FF',
-        animation: {
-          duration: 300,
-          timingFunc: 'easeInOut'
-        }
-      });
-    } else {
-      Taro.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: '#000000',
-        animation: {
-          duration: 300,
-          timingFunc: 'easeInOut'
-        }
-      });
-    }
+    setNavStyle(location.isDay);
   }, []);
 
   // 打开授权
@@ -41,9 +22,14 @@ function Setting() {
     Taro.navigateToMiniProgram({appId: 'wx2269fb8c2e106c9c'});
   };
 
+  // 去关于页面
+  const goAbout = () => {
+    Taro.navigateTo({url: `../../setting/pages/about/index`})
+  };
+
   return (
     <View className='flex-col flex-start-center h-100-per bg-gray-100 setting'>
-      <View className={`w-100-per h-300 box-hd relative ${isDay ? 'bg-blue-A700' : 'bg-black'}`}>
+      <View className={`w-100-per h-300 box-hd relative ${location.isDay ? 'bg-blue-A700' : 'bg-black'}`}>
         <View className='flex-col flex-start-center bg-transparent avatar-box'>
           <View className='circle w-144 h-144 box-hd avatar'>
             <OpenData type='userAvatarUrl' />
@@ -92,7 +78,7 @@ function Setting() {
             <View className='iconfont'>&#xe65b;</View>
           </View>
           <View className='h-line-gray-300' />
-          <View className='flex-row flex-spb-baseline pd-tb-30'>
+          <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goAbout()}>
             <View className='flex-row flex-start-baseline'>
               <View className='iconfont mg-r-10'>&#xe654;</View>
               <View>关于</View>

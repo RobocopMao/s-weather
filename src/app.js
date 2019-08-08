@@ -54,6 +54,10 @@ class App extends Component {
         network: 'wifi',
         packages: ['forecast']
       },
+      'pages/tab_bar/setting/index': {
+        network: 'wifi',
+        packages: ['setting']
+      },
     },
     window: {
       backgroundTextStyle: 'light',

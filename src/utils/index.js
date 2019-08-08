@@ -37,3 +37,26 @@ export const getWindParams = (windSpeed) => {
     return speed >= v.min && speed <=v.max;
   });
 };
+
+// 设置导航栏的样式，白天还是夜晚
+export const setNavStyle = (isDay) => {
+  if (isDay) {
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#2962FF',
+      animation: {
+        duration: 300,
+        timingFunc: 'easeInOut'
+      }
+    });
+  } else {
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#000000',
+      animation: {
+        duration: 300,
+        timingFunc: 'easeInOut'
+      }
+    });
+  }
+};

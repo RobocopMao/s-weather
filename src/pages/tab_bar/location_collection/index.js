@@ -1,50 +1,20 @@
 import Taro, {useEffect, useState} from '@tarojs/taro'
 import {View, Text, Button} from '@tarojs/components'
+import {useSelector} from '@tarojs/redux'
 import _ from 'lodash'
 import './index.scss'
-import ComponentIconWindDirection from '../../../components/icon/wind_dir';
-import {useAsyncEffect} from '../../../utils';
-import {getHFWeatherNow} from '../../../apis/weather';
+import ComponentIconWindDirection from '../../../components/icon/wind_dir'
+import {setNavStyle, useAsyncEffect} from '../../../utils'
+import {getHFWeatherNow} from '../../../apis/weather'
 
 function LocationCollection() {
-  const [isDay, setIsDay] = useState(true);
+  const location = useSelector(state => state.location);
   const [collectedCity, setCollectedCity] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
 
   // 设置白天、夜晚主题
   useEffect(() => {
-    // console.log(this);
-    let _isDay = this.$router.params.isDay === 'true';
-    setIsDay(_isDay);
-    if (_isDay) {
-      Taro.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: '#2962FF',
-        animation: {
-          duration: 300,
-          timingFunc: 'easeInOut'
-        }
-      });
-    } else {
-      Taro.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: '#000000',
-        animation: {
-          duration: 300,
-          timingFunc: 'easeInOut'
-        }
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    // let COLLECTED_CITY = Taro.getStorageSync('COLLECTED_CITY');
-    // console.log(COLLECTED_CITY);
-    // if (COLLECTED_CITY) {
-    //   console.log(COLLECTED_CITY);
-    //   setCollectedCity(COLLECTED_CITY);
-    //   console.log(collectedCity);
-    // }
+    setNavStyle(location.isDay);
   }, []);
 
   useAsyncEffect(async () => {
@@ -149,7 +119,7 @@ function LocationCollection() {
         const {active, cityName, tmp, cond_txt, wind_dir, wind_sc, hum, lat, lon} = city;
         return (
           <View className={`item-flb-50per flex-row flex-center mg-t-20 ${isEditing ? 'shake' : ''}`} key={String(index)}>
-            <View className={`flex-col flex-spb-start pd-24 bg-gray-800 relative bd-radius-20 item-flg-1 ${isEditing ? 'bd-dashed' : ''} ${index % 2 === 0 ? 'mg-r-10 mg-l-20' : 'mg-l-10 mg-r-20'} ${isDay ? (active ? 'bg-gray-800' : 'bg-blue-A700') : (active ? 'bg-blue-A700' : 'bg-gray-800')}`}
+            <View className={`flex-col flex-spb-start pd-24 bg-gray-800 relative bd-radius-20 item-flg-1 ${isEditing ? 'bd-dashed' : ''} ${index % 2 === 0 ? 'mg-r-10 mg-l-20' : 'mg-l-10 mg-r-20'} ${location.isDay ? (active ? 'bg-gray-800' : 'bg-blue-A700') : (active ? 'bg-blue-A700' : 'bg-gray-800')}`}
               onClick={() => searchWeather({lat, lon, cityName})}
               onLongPress={() => editCollection()}
             >

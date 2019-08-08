@@ -2,8 +2,9 @@ import Taro, {useEffect, useState} from '@tarojs/taro'
 import {View, ScrollView, Canvas} from '@tarojs/components'
 import moment from 'moment'
 import _ from 'lodash'
+import {useSelector} from '@tarojs/redux';
 import './index.scss'
-import {useAsyncEffect} from '../../../../utils'
+import {setNavStyle, useAsyncEffect} from '../../../../utils'
 import {getWeatherDaily} from '../../../../apis/weather'
 import ComponentIconWeather from '../../../../components/icon/weather';
 import ComponentIconWindDirection from '../../../../components/icon/wind_dir';
@@ -11,37 +12,16 @@ import ComponentIconWindDirection from '../../../../components/icon/wind_dir';
 
 function DailyForecast() {
   const [daily, setDaily] = useState([]);
-  const [isDay, setIsDay] = useState(true);
+  const location = useSelector(state => state.location);
   const [scrollHeight, setScrollHeight] = useState(0); // 可使用窗口高度
   const [scrollWidth, setScrollWidth] = useState(0); // 可使用窗口高度
   const [windowWidth, setWindowWidth] = useState(0); // 可使用窗口高度
 
   // 15日预报
   useAsyncEffect(async () => {
-    let {lon, lat} = this.$router.params;
-    // console.log(this);
-    let _isDay = this.$router.params.isDay === 'true';
-    setIsDay(_isDay);
-    if (_isDay) {
-      Taro.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: '#2962FF',
-        animation: {
-          duration: 300,
-          timingFunc: 'easeInOut'
-        }
-      });
-    } else {
-      Taro.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: '#000000',
-        animation: {
-          duration: 300,
-          timingFunc: 'easeInOut'
-        }
-      });
-    }
+    setNavStyle(location.isDay);
 
+    let {lon, lat} = this.$router.params;
     const res = await getWeatherDaily({location: `${lat}:${lon}`, days: 15});
     // console.log(res);
     const {daily} = res;

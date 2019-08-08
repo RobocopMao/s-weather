@@ -6,20 +6,22 @@ import _ from 'lodash'
 import QQMapWX from '../../../utils/qqmap-wx-jssdk'
 import {QQ_MAP_SDK_KEY} from '../../../apis/config'
 import './index.scss'
-import {useAsyncEffect, getNodeRect, getSystemInfo, getWindParams, throttle} from '../../../utils'
+import {useAsyncEffect, getNodeRect, getSystemInfo, getWindParams, setNavStyle} from '../../../utils'
 import {getWeatherNow, getWeatherHourly, getWeatherDaily} from '../../../apis/weather'
 import {getAirNow} from '../../../apis/air'
 import {getLifeSuggestion} from '../../../apis/life'
 import {getGeoSun} from '../../../apis/goe'
 import {
-  setLng,
-  setLat,
+  // setLng,
+  // setLat,
   setProvince,
   setCity,
   setDistrict,
   setStreetNum,
   setAddress,
-  setName
+  setName,
+  setIsDay,
+  setLatAndLon
 } from '../../../redux/location/action'
 import {
   setSystemInfo,
@@ -47,7 +49,7 @@ function Index() {
   const [suggestion, setSuggestion] = useState([]);
   const [nowAir, setNowAir] = useState({});
   const [sun, setSun] = useState({});
-  const [isDay, setIsDay] = useState(true);
+  // const [isDay, setIsDay] = useState(true);
   const [bgPageClass, setBgPageClass] = useState('');
   const [bgItemClass, setBgItemClass] = useState('');
   const [navBarBgColor, setNavBarBgColor] = useState('#FFFFFF');
@@ -81,40 +83,44 @@ function Index() {
 
   // 实时天气
   useAsyncEffect(async () => {
-    const res = await getWeatherNow({location: `${location.latitude}:${location.longitude}`});
+    const {latitude, longitude} = location.latAndLon;
+    const res = await getWeatherNow({location: `${latitude}:${longitude}`});
     // console.log(res);
     if (!res) {return}
     const {now, last_update} = res;
     setNow(now);
     setUpdateTime(last_update);
-  }, [location]);
+  }, [location.latAndLon]);
 
   // 空气质量
   useAsyncEffect(async () => {
-    const res = await getAirNow({location: `${location.latitude}:${location.longitude}`});
+    const {latitude, longitude} = location.latAndLon;
+    const res = await getAirNow({location: `${latitude}:${longitude}`});
     // console.log(res);
     if (!res) {return}
     const {air} = res;
     setNowAir(air);
-  }, [location]);
+  }, [location.latAndLon]);
 
   // 逐小时预报
   useAsyncEffect(async () => {
-    const res = await getWeatherHourly({location: `${location.latitude}:${location.longitude}`});
+    const {latitude, longitude} = location.latAndLon;
+    const res = await getWeatherHourly({location: `${latitude}:${longitude}`});
     // console.log(res);
     if (!res) {return}
     const {hourly} = res;
     setHourly(hourly);
-  }, [location]);
+  }, [location.latAndLon]);
 
   // 3日预报
   useAsyncEffect(async () => {
-    const res = await getWeatherDaily({location: `${location.latitude}:${location.longitude}`, days: 3});
+    const {latitude, longitude} = location.latAndLon;
+    const res = await getWeatherDaily({location: `${latitude}:${longitude}`, days: 3});
     // console.log(res);
     if (!res) {return}
     const {daily} = res;
     setDaily(daily);
-  }, [location]);
+  }, [location.latAndLon]);
 
   // 生活指数
   useAsyncEffect(async () => {
@@ -129,7 +135,7 @@ function Index() {
       setSuggestion(suggestion);
       dispatch(setUserLifeSuggestion(suggestion));
     }
-  }, [location]);
+  }, [location.latAndLon]);
 
 
   // 日出日落
@@ -141,7 +147,8 @@ function Index() {
       setSun(user.geoSun);
       setDayNight(user.geoSun);
     } else { // 否则就去请求
-      const res = await getGeoSun({location: `${location.latitude}:${location.longitude}`, days: 1});
+      const {latitude, longitude} = location.latAndLon;
+      const res = await getGeoSun({location: `${latitude}:${longitude}`, days: 1});
       if (!res) {return}
       const {sun} = res;
       setSun(sun[0]);
@@ -150,7 +157,7 @@ function Index() {
         dispatch(setUserGeoSun(sun[0]));
       }
     }
-  }, [location]);
+  }, [location.latAndLon]);
 
   // 设备信息
   useEffect(async () => {
@@ -202,30 +209,13 @@ function Index() {
 
     let isDay = moment().isAfter(sr) && moment().isBefore(ss); // 判断是不是在白天
     // console.log(moment().isAfter(sr), moment().isBefore(ss));
-    setIsDay(isDay);
+    // setIsDay(isDay);
+    dispatch(setIsDay(isDay));
     setBgPageClass(isDay ? 'weather-day' : 'weather-night');
     setBgItemClass(isDay ? 'bg-blue-opacity' : 'bg-black-opacity');
     setNavBarBgColor(isDay ? '#2962FF' : '#000000');
 
-    if (isDay) {
-      Taro.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: '#2962FF',
-        animation: {
-          duration: 300,
-          timingFunc: 'easeInOut'
-        }
-      });
-    } else {
-      Taro.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: '#000000',
-        animation: {
-          duration: 300,
-          timingFunc: 'easeInOut'
-        }
-      });
-    }
+    setNavStyle(isDay);
   };
 
   // 获取用户位置信息
@@ -255,8 +245,8 @@ function Index() {
       success: (_res) => {
         // console.log(_res);
         const {province, city, district, street_number} = _res.result.address_component;
-        dispatch(setLng(longitude));
-        dispatch(setLat(latitude));
+        dispatch(setLatAndLon({longitude, latitude}));
+        // dispatch(setLat(latitude));
         dispatch(setProvince(province));
         dispatch(setCity(city));
         dispatch(setDistrict(district));
@@ -412,13 +402,14 @@ function Index() {
 
   // 去15天天气预报
   const goDailyDetails = () => {
-    Taro.navigateTo({url: `../../forecast/pages/daily_forecast/index?lon=${location.longitude}&lat=${location.latitude}&isDay=${isDay}`});
+    const {longitude, latitude} = location.latAndLon;
+    Taro.navigateTo({url: `../../forecast/pages/daily_forecast/index?lon=${longitude}&lat=${latitude}`});
   };
 
   // 去城市收藏夹
   const goLocationCollection = () => {
     Taro.navigateTo({
-      url: `../../tab_bar/location_collection/index?isDay=${isDay}`,
+      url: `../../tab_bar/location_collection/index`,
       events: {
         acceptDataFromLocationCollection(data) {  // 监听事件
           console.log('acceptDataFromLocationCollection');
@@ -434,7 +425,7 @@ function Index() {
   // 去城市搜索
   const goLocationSearch = () => {
     Taro.navigateTo({
-      url: `../../tab_bar/location_search/index?isDay=${isDay}`,
+      url: `../../tab_bar/location_search/index`,
       events: {
         acceptDataFromLocationSearch(data) {  // 监听事件
           console.log('acceptDataFromLocationSearch');
@@ -450,7 +441,7 @@ function Index() {
   // 去设置界面
   const goSetting = () => {
     Taro.navigateTo({
-      url: `../../tab_bar/setting/index?isDay=${isDay}`,
+      url: `../../tab_bar/setting/index`,
       events: {
         acceptDataFromSetting(data) {  // 监听事件
           console.log('acceptDataFromSetting');
@@ -588,8 +579,8 @@ function Index() {
                       {df.text_day === df.text_night && <View className='cond-txt'>{df.text_day}</View>}
                     </View>
                     <View className='flex-row'>
-                      {isDay && <ComponentIconWeather code={df.code_day} fontSize='fs-40' />}
-                      {!isDay && <ComponentIconWeather code={df.code_night} fontSize='fs-40' />}
+                      {location.isDay && <ComponentIconWeather code={df.code_day} fontSize='fs-40' />}
+                      {!location.isDay && <ComponentIconWeather code={df.code_night} fontSize='fs-40' />}
                       <View className='text-right mg-l-20 cond-txt'>{df.high}/{df.low}℃</View>
                     </View>
                   </View>
