@@ -74,7 +74,7 @@ class App extends Component {
       downloadFile: 10000
     },
     navigateToMiniProgramAppIdList: ['wx2269fb8c2e106c9c'],
-    workers: "workers",
+    // workers: "workers",
     permission: {
       'scope.userLocation': {
         'desc': '你的位置信息将用于小程序查询天气'

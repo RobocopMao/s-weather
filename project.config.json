@@ -4,7 +4,7 @@
   "description": "A weather miniprogram.",
   "appid": "wx892bebdc63488ab2",
   "setting": {
-    "urlCheck": false,
+    "urlCheck": true,
     "es6": false,
     "postcss": false,
     "minified": false
