@@ -51,7 +51,7 @@ function Knowledge() {
         <Text className='gray-900 mg-tb-20'>说明：</Text>
         <Text>· 本表所列风速是指平地上离地10米处的风速值。</Text>
         <Text>· 超级台风（super typhoon）为美国对顶级强度台风的称谓。</Text>
-        </View>
+      </View>
     </View>
   )
 }
