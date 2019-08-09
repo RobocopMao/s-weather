@@ -1,5 +1,5 @@
 import Taro, {useEffect, useState} from '@tarojs/taro'
-import {View, Text, Button} from '@tarojs/components'
+import {View, Text, Button, Block} from '@tarojs/components'
 import {useSelector} from '@tarojs/redux'
 import _ from 'lodash'
 import './index.scss'
@@ -114,46 +114,52 @@ function LocationCollection() {
   };
 
   return (
-    <View className='flex-row flex-wrap location-collection white box-hd-x'>
-      {collectedCity.map((city, index) => {
-        const {active, cityName, tmp, cond_txt, wind_dir, wind_sc, hum, lat, lon} = city;
-        return (
-          <View className={`item-flb-50per flex-row flex-center mg-t-20 ${isEditing ? 'shake' : ''}`} key={String(index)}>
-            <View className={`flex-col flex-spb-start pd-24 bg-gray-800 relative bd-radius-20 item-flg-1 ${isEditing ? 'bd-dashed' : ''} ${index % 2 === 0 ? 'mg-r-10 mg-l-20' : 'mg-l-10 mg-r-20'} ${location.isDay ? (active ? 'bg-gray-800' : 'bg-blue-A700') : (active ? 'bg-blue-A700' : 'bg-gray-800')}`}
-              onClick={() => searchWeather({lat, lon, cityName})}
-              onLongPress={() => editCollection()}
-            >
-              <View className=''>
-                <Text className='fs-50'>{tmp}</Text>
-                <Text className=''>℃</Text>
-                <Text className='mg-l-10'>{cond_txt}</Text>
-              </View>
-              <View className='flex-row flex-start-center mg-tb-20'>
-                <View className='flex-row flex-start-baseline'>
-                  <ComponentIconWindDirection windDirection={wind_dir.replace(/风$/, '')} />
-                  <View>{wind_sc}级</View>
+    <Block>
+      <View className={`flex-row flex-wrap location-collection white box-hd-x ${isEditing ? '' : 'pd-b-20'}`}>
+        {collectedCity.map((city, index) => {
+          const {active, cityName, tmp, cond_txt, wind_dir, wind_sc, hum, lat, lon} = city;
+          return (
+            <View className={`item-flb-50per flex-row flex-center mg-t-20 ${isEditing ? 'shake' : ''}`} key={String(index)}>
+              <View className={`flex-col flex-spb-start pd-24 bg-gray-800 relative bd-radius-20 item-flg-1 ${isEditing ? 'bd-dashed' : ''} ${index % 2 === 0 ? 'mg-r-10 mg-l-20' : 'mg-l-10 mg-r-20'} ${location.isDay ? (active ? 'bg-gray-800' : 'bg-blue-A700') : (active ? 'bg-blue-A700' : 'bg-gray-800')}`}
+                onClick={() => searchWeather({lat, lon, cityName})}
+                onLongPress={() => editCollection()}
+              >
+                <View className=''>
+                  <Text className='fs-50'>{tmp}</Text>
+                  <Text className=''>℃</Text>
+                  <Text className='mg-l-10'>{cond_txt}</Text>
                 </View>
-                <View className='mg-l-10 mg-r-10 h-28 v-line-white' />
-                <View className='flex-row flex-start-baseline'>
-                  <View className='iconfont white mg-r-4 fs-28'>&#xe600;</View>
-                  <View className=''>湿度 {hum}%</View>
+                <View className='flex-row flex-start-center mg-tb-20'>
+                  <View className='flex-row flex-start-baseline'>
+                    <ComponentIconWindDirection windDirection={wind_dir.replace(/风$/, '')} />
+                    <View>{wind_sc}级</View>
+                  </View>
+                  <View className='mg-l-10 mg-r-10 h-28 v-line-white' />
+                  <View className='flex-row flex-start-baseline'>
+                    <View className='iconfont white mg-r-4 fs-28'>&#xe600;</View>
+                    <View className=''>湿度 {hum}%</View>
+                  </View>
                 </View>
-              </View>
-              <View className='fs-26'>{cityName}</View>
+                <View className='fs-26'>{cityName}</View>
 
-              {isEditing && <Button className='iconfont fs-50 mg-0 pd-0 h-50 w-50 icon-btn red-A700 del-icon' hoverClass='icon-btn-hover' onClick={(e) => deleteCollection(city, e)}>&#xe87b;</Button>}{/**删除**/}
-              {isEditing && <Button className='iconfont fs-44 mg-0 pd-0 h-44 w-50 icon-btn white top-icon' hoverClass='icon-btn-hover' onClick={(e) => topCollection(city ,e)}>&#xe75a;</Button>}{/**置顶**/}
+                {isEditing && <Button className='iconfont fs-50 mg-0 pd-0 h-50 w-50 icon-btn red-A700 del-icon' hoverClass='icon-btn-hover' onClick={(e) => deleteCollection(city, e)}>&#xe87b;</Button>}{/**删除**/}
+                {isEditing && <Button className='iconfont fs-44 mg-0 pd-0 h-44 w-50 icon-btn white top-icon' hoverClass='icon-btn-hover' onClick={(e) => topCollection(city ,e)}>&#xe75a;</Button>}{/**置顶**/}
+              </View>
             </View>
-          </View>
-        )
-      })}
-      {isEditing && <View className='h-120 w-100-per' />}
-      {isEditing && <View className='flex-row flex-spb-center h-100 bg-gray-200 pd-lr-20 bd-box edit-bar'>
-        {/*<Button className='iconfont fs-88 mg-0 mg-t-6 pd-0 h-88 w-88 icon-btn red-A700' hoverClass='icon-btn-hover' onClick={() => cancelEdit()}>&#xe87b;</Button>/!**取消**!/*/}
-        <Text className='lh-100 gray-700'>您正在时时编辑，点击右侧按钮退出</Text>
-        <Button className='iconfont fs-88 mg-0 mg-t-6 pd-0 h-88 w-88 icon-btn green-A700' hoverClass='icon-btn-hover' onClick={() => confirmEdit()}>&#xe873;</Button>{/**完成**/}
+          )
+        })}
+        {isEditing && <View className='h-120 w-100-per' />}
+        {isEditing && <View className='flex-row flex-spb-center h-100 bg-gray-200 pd-lr-20 bd-box edit-bar'>
+          {/*<Button className='iconfont fs-88 mg-0 mg-t-6 pd-0 h-88 w-88 icon-btn red-A700' hoverClass='icon-btn-hover' onClick={() => cancelEdit()}>&#xe87b;</Button>/!**取消**!/*/}
+          <Text className='lh-100 gray-700'>您正在时时编辑，点击右侧按钮退出</Text>
+          <Button className='iconfont fs-88 mg-0 mg-t-6 pd-0 h-88 w-88 icon-btn green-A700' hoverClass='icon-btn-hover' onClick={() => confirmEdit()}>&#xe873;</Button>{/**完成**/}
+        </View>}
+      </View>
+      {!collectedCity.length && <View className='flex-col flex-center h-100-per gray-500'>
+        <View className='iconfont gray-500 fs-100'>&#xe669;</View>
+        <View>暂无收藏的城市</View>
       </View>}
-    </View>
+    </Block>
   )
 }
 

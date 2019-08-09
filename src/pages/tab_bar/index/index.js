@@ -637,7 +637,7 @@ function Index() {
 
         <View className='flex-row flex-spa-center h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar' id='tabBar'>
           <View className='iconfont fs-50 black bold' onClick={() => goLocationCollection()}>&#xe87e;</View>{/**收藏**/}
-          <View className='iconfont fs-50 black bold' onClick={() => goLocationSearch()}>&#xe87f;</View>{/**添加**/}
+          <View className='iconfont fs-50 black bold' onClick={() => goLocationSearch()}>&#xe87c;</View>{/**搜索**/}
           <View className={`iconfont fs-50 black bold ${user.isCurrentAddr ? '' : 'self-loc-anim red-A700'}`} onClick={() => locationSelf()}>&#xe875;</View>{/**定位**/}
           <Button className='iconfont fs-50 black bold mg-0 pd-0 h-54 w-50 icon-btn' hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>{/**分享**/}
           <View className='iconfont fs-50 black bold' onClick={() => goSetting()}>&#xe87a;</View>{/**设置**/}
