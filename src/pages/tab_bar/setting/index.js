@@ -3,6 +3,7 @@ import {View, OpenData} from '@tarojs/components'
 import {useSelector} from '@tarojs/redux';
 import './index.scss'
 import {setNavStyle} from '../../../utils';
+import {S_TOOLS_APPID} from '../../../apis/config';
 
 function Setting() {
   const location = useSelector(state => state.location);
@@ -29,7 +30,7 @@ function Setting() {
 
   // 去小工具S小程序
   const goStoolsMiniProgram = () => {
-    Taro.navigateToMiniProgram({appId: 'wx2269fb8c2e106c9c'});
+    Taro.navigateToMiniProgram({appId: S_TOOLS_APPID});
   };
 
   // 去关于页面

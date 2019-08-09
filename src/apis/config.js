@@ -6,6 +6,9 @@ import Base64 from 'crypto-js/enc-base64'
 // import Utf8 from 'crypto-js/enc-utf8'
 // import forEach from 'lodash/each'
 
+// 其他小程序appID
+export const S_TOOLS_APPID = '';
+
 // 腾讯地图key
 export const QQ_MAP_SDK_KEY = '';
 

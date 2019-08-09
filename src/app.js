@@ -3,11 +3,13 @@ import Taro, { Component } from '@tarojs/taro'
 import { Provider } from '@tarojs/redux'
 import moment from 'moment'
 
-import Index from './pages/tab_bar'
+import Index from './pages/tab_bar/index'
 
 import configStore from './redux/store'
 
 import './app.scss'
+
+import {S_TOOLS_APPID} from './apis/config';
 
 // 自定义星期
 moment.updateLocale('en', {
@@ -73,7 +75,7 @@ class App extends Component {
       uploadFile: 10000,
       downloadFile: 10000
     },
-    navigateToMiniProgramAppIdList: ['wx2269fb8c2e106c9c'],
+    navigateToMiniProgramAppIdList: [''],
     // workers: "workers",
     permission: {
       'scope.userLocation': {
