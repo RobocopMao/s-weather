@@ -37,6 +37,10 @@ Taro初始化的redux项目模版，三个文件夹，自己把constant，reduce
 我现在只用了首页的自定义导航栏，代码放在components/base下面。这个百度也很多，我也是参照别人的弄的。参考：https://www.jianshu.com/p/5877a3dc0b1e。
 
 
-小程序目前还没有发布，因为还有页面没写完，开发不易，禁止任何二次打包发布。
+开发不易，禁止任何二次打包发布。
+
+小程序码
+
+![image](src/assets/images/minicode.jpg)
 
 
