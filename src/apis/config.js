@@ -7,7 +7,7 @@ import Base64 from 'crypto-js/enc-base64'
 // import forEach from 'lodash/each'
 
 // 腾讯地图key
-export const QQ_MAP_SDK_KEY = '';
+export const QQ_MAP_SDK_KEY = 'WATBZ-IBNR4-4VHU2-D2LSO-PBQBQ-G3BKJ';
 
 // 和风天气接口标识
 export const HF_HOST_TYPE = 'HF';
@@ -24,8 +24,8 @@ export const XZ_API_HOST = 'https://api.seniverse.com';
 export const createSignParams = (hostType, params) => {
   const ts = moment().unix();
   if (hostType === 'XZ') { // 心知天气生成签名参数 HMAC-SHA1
-    const XZ_API_KEY_PUBLIC = '';
-    const XZ_API_KEY_PRIVATE = '';
+    const XZ_API_KEY_PUBLIC = 'PgW0KnIV52DjqIzd9';
+    const XZ_API_KEY_PRIVATE = 'SnptM2ddu9AyPfjsJ';
     const ttl = 600;
     const signStr = `ts=${ts}&ttl=${ttl}&uid=${XZ_API_KEY_PUBLIC}`;
     const hmacSHA1 = HmacSHA1(signStr, XZ_API_KEY_PRIVATE).toString(Base64);
@@ -34,8 +34,8 @@ export const createSignParams = (hostType, params) => {
     // console.log(sig);
     return {ts, ttl, uid: XZ_API_KEY_PUBLIC, sig}
   } else { // 和风天气生成签名参数 MD5
-    const HF_API_KEY = '';
-    // const HF_USERNAME = '';
+    const HF_API_KEY = '4c2fbe62b94b430281c7244b8cb1da41';
+    // const HF_USERNAME = 'HE1907301107061246';
     // let paramsStr = '';
     // forEach(params, (v, k) => {
     //   if (v !== '') {
