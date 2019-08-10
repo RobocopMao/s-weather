@@ -74,20 +74,20 @@ function Index() {
     {type: 'air_pollution', name:'空气污染扩散条件指数'}
   ];
 
-  // 设置主题颜色,本地没有就使用默认主题
-  useEffect(() => {
-    const theme = Taro.getStorageSync('THEME');
-    if (theme) {
-      dispatch(setUserTheme(theme));
-    }
-  }, []);
-
   // 隐藏骨架屏
   useEffect(() => {
     let tId = setTimeout(() => {
       setShowSkeleton(false);
       clearTimeout(tId);
     }, 2000);
+  }, []);
+
+  // 设置主题颜色,本地没有就使用默认主题
+  useEffect(() => {
+    const theme = Taro.getStorageSync('THEME');
+    if (theme) {
+      dispatch(setUserTheme(theme));
+    }
   }, []);
 
   // 实时天气
