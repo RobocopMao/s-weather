@@ -8,14 +8,15 @@ import windGrade from '../../../../assets/json/wind_grade.json'
 
 function Knowledge() {
   const location = useSelector(state => state.location);
+  const user = useSelector(state => state.user);
 
   // 设置白天、夜晚主题
   useEffect(() => {
-    setNavStyle(location.isDay);
+    setNavStyle(location.isDay, user.theme);
   }, []);
 
   return (
-    <View className='knowledge'>
+    <View className={`knowledge theme-${user.theme}`}>
       {/*风向对照图*/}
       <View className='flex-col mg-20'>
         <Text className='fs-36 gray-900'>风向对照图</Text>

@@ -6,14 +6,15 @@ import {setNavStyle} from '../../../../utils'
 
 function DataSource() {
   const location = useSelector(state => state.location);
+  const user = useSelector(state => state.user);
 
   // 设置白天、夜晚主题
   useEffect(() => {
-    setNavStyle(location.isDay);
+    setNavStyle(location.isDay, user.theme);
   }, []);
 
   return (
-    <View className='flex-col h-100-per data-source'>
+    <View className={`flex-col h-100-per data-source theme-${user.theme}`}>
       <View className='flex-col mg-20'>
         <Text className='bold black mg-b-10'>心知天气</Text>
         <Text>大部分天气数据由心知天气提供。</Text>

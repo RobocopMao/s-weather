@@ -9,12 +9,13 @@ import {getHFWeatherNow} from '../../../apis/weather'
 
 function LocationCollection() {
   const location = useSelector(state => state.location);
+  const user = useSelector(state => state.user);
   const [collectedCity, setCollectedCity] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
 
   // 设置白天、夜晚主题
   useEffect(() => {
-    setNavStyle(location.isDay);
+    setNavStyle(location.isDay, user.theme);
   }, []);
 
   useAsyncEffect(async () => {
@@ -115,12 +116,12 @@ function LocationCollection() {
 
   return (
     <Block>
-      <View className={`flex-row flex-wrap location-collection white box-hd-x ${isEditing ? '' : 'pd-b-20'}`}>
+      <View className={`flex-row flex-wrap location-collection white box-hd-x ${isEditing ? '' : 'pd-b-20'} theme-${user.theme}`}>
         {collectedCity.map((city, index) => {
           const {active, cityName, tmp, cond_txt, wind_dir, wind_sc, hum, lat, lon} = city;
           return (
             <View className={`item-flb-50per flex-row flex-center mg-t-20 ${isEditing ? 'shake' : ''}`} key={String(index)}>
-              <View className={`flex-col flex-spb-start pd-24 bg-gray-800 relative bd-radius-20 item-flg-1 ${isEditing ? 'bd-dashed' : ''} ${index % 2 === 0 ? 'mg-r-10 mg-l-20' : 'mg-l-10 mg-r-20'} ${location.isDay ? (active ? 'bg-gray-800' : 'bg-blue-A700') : (active ? 'bg-blue-A700' : 'bg-gray-800')}`}
+              <View className={`flex-col flex-spb-start pd-24 bg-gray-800 relative bd-radius-20 item-flg-1 ${isEditing ? 'bd-dashed' : ''} ${index % 2 === 0 ? 'mg-r-10 mg-l-20' : 'mg-l-10 mg-r-20'} ${location.isDay ? (active ? 'night-bg' : 'day-bg') : (active ? 'day-bg' : 'night-bg')}`}
                 onClick={() => searchWeather({lat, lon, cityName})}
                 onLongPress={() => editCollection()}
               >

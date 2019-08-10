@@ -22,7 +22,7 @@ const INITIAL_STATE = {
   streetNum: '',
   address: '',
   name: '', // 用于显示最小的位置，比如小区的名称字
-  isDay: true // 用于显示最小的位置，比如小区的名称字
+  isDay: true
 };
 
 export default function reducer (state = INITIAL_STATE, action) {

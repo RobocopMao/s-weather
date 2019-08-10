@@ -7,10 +7,11 @@ import {S_TOOLS_APPID} from '../../../apis/config';
 
 function Setting() {
   const location = useSelector(state => state.location);
+  const user = useSelector(state => state.user);
 
   // 设置白天、夜晚主题
   useEffect(() => {
-    setNavStyle(location.isDay);
+    setNavStyle(location.isDay, user.theme);
   }, []);
 
   // 打开授权
@@ -18,12 +19,17 @@ function Setting() {
     Taro.openSetting();
   };
 
+  // 设置主题
+  const goTheme = () => {
+    Taro.navigateTo({url: `../../setting/pages/theme/index`})
+  };
+
   // 去数据来源页面
   const goDataSource = () => {
     Taro.navigateTo({url: `../../setting/pages/data_source/index`})
   };
 
-  // 去数据来源页面
+  // 去气象知识页面
   const goKnowledge = () => {
     Taro.navigateTo({url: `../../setting/pages/knowledge/index`})
   };
@@ -39,8 +45,8 @@ function Setting() {
   };
 
   return (
-    <View className='flex-col flex-start-center h-100-per bg-gray-100 setting'>
-      <View className={`w-100-per h-300 box-hd relative ${location.isDay ? 'bg-blue-A700' : 'bg-black'}`}>
+    <View className={`flex-col flex-start-center h-100-per bg-gray-100 setting theme-${user.theme}`}>
+      <View className={`w-100-per h-300 box-hd relative ${location.isDay ? 'day-bg' : 'night-bg'}`}>
         <View className='flex-col flex-start-center bg-transparent avatar-box'>
           <View className='circle w-144 h-144 box-hd avatar'>
             <OpenData type='userAvatarUrl' />
@@ -55,16 +61,16 @@ function Setting() {
         <View className='bd-radius-20 pd-lr-20 mg-b-20 bg-white'>
           <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => openSetting()}>
             <View className='flex-row flex-start-baseline'>
-              <View className='iconfont mg-r-10'>&#xe872;</View>
+              <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe872;</View>
               <View>授权管理</View>
             </View>
             <View className='iconfont'>&#xe65b;</View>
           </View>
           <View className='h-line-gray-300' />
-          <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goDataSource()}>
+          <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goTheme()}>
             <View className='flex-row flex-start-baseline'>
-              <View className='iconfont mg-r-10'>&#xe603;</View>
-              <View>数据来源</View>
+              <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe607;</View>
+              <View>主题设置</View>
             </View>
             <View className='iconfont'>&#xe65b;</View>
           </View>
@@ -73,8 +79,15 @@ function Setting() {
         <View className='bd-radius-20 pd-lr-20 mg-b-20 bg-white'>
           <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goKnowledge()}>
             <View className='flex-row flex-start-baseline'>
-              <View className='iconfont mg-r-10'>&#xe601;</View>
+              <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe601;</View>
               <View>气象知识</View>
+            </View>
+            <View className='iconfont'>&#xe65b;</View>
+          </View>
+          <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goDataSource()}>
+            <View className='flex-row flex-start-baseline'>
+              <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe603;</View>
+              <View>数据来源</View>
             </View>
             <View className='iconfont'>&#xe65b;</View>
           </View>
@@ -83,7 +96,7 @@ function Setting() {
         <View className='bd-radius-20 pd-lr-20 bg-white'>
           <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goStoolsMiniProgram()}>
             <View className='flex-row flex-start-baseline'>
-              <View className='iconfont mg-r-10'>&#xe87c;</View>
+              <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe87c;</View>
               <View>其他查询</View>
             </View>
             <View className='iconfont'>&#xe65b;</View>
@@ -91,7 +104,7 @@ function Setting() {
           <View className='h-line-gray-300' />
           <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goAbout()}>
             <View className='flex-row flex-start-baseline'>
-              <View className='iconfont mg-r-10'>&#xe654;</View>
+              <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe654;</View>
               <View>关于</View>
             </View>
             <View className='iconfont'>&#xe65b;</View>

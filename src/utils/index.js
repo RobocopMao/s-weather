@@ -1,5 +1,6 @@
 import Taro, { useEffect, DependencyList } from '@tarojs/taro'
 import windGrade from '../assets/json/wind_grade.json'
+import themeMatch from '../assets/json/theme_match.json'
 
 export function useAsyncEffect (effect, deps = DependencyList) {
   useEffect(() => {
@@ -39,11 +40,11 @@ export const getWindParams = (windSpeed) => {
 };
 
 // 设置导航栏的样式，白天还是夜晚
-export const setNavStyle = (isDay) => {
+export const setNavStyle = (isDay, theme) => {
   if (isDay) {
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
-      backgroundColor: '#2962FF',
+      backgroundColor: themeMatch[theme]['day'],
       animation: {
         duration: 300,
         timingFunc: 'easeInOut'
@@ -52,7 +53,7 @@ export const setNavStyle = (isDay) => {
   } else {
     Taro.setNavigationBarColor({
       frontColor: '#ffffff',
-      backgroundColor: '#000000',
+      backgroundColor: themeMatch[theme]['night'],
       animation: {
         duration: 300,
         timingFunc: 'easeInOut'

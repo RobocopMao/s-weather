@@ -28,15 +28,16 @@ import {
   setUserLocation,
   setUserIsCurAddr,
   setUserGeoSun,
-  setUserLifeSuggestion
+  setUserLifeSuggestion, setUserTheme
 } from '../../../redux/user/action'
 import ComponentBaseNavigation from '../../../components/base/navigation'
 import ComponentIconWindDirection from '../../../components/icon/wind_dir'
 import ComponentIconWeather from '../../../components/icon/weather'
 // import ComponentTagName from '../../components/common/component_tag_name'
 import Skeleton from '../../../components/common/skeleton'
-import xzLogoGrayImg from '../../../assets/images/xinzhi_logo_gray.png';
-import hfLogoGrayImg from '../../../assets/images/hefeng_logo_gray.png';
+import xzLogoGrayImg from '../../../assets/images/xinzhi_logo_gray.png'
+import hfLogoGrayImg from '../../../assets/images/hefeng_logo_gray.png'
+import themeMatch from '../../../assets/json/theme_match.json'
 
 function Index() {
   const location = useSelector(state => state.location);
@@ -50,9 +51,9 @@ function Index() {
   const [nowAir, setNowAir] = useState({});
   const [sun, setSun] = useState({});
   // const [isDay, setIsDay] = useState(true);
-  const [bgPageClass, setBgPageClass] = useState('');
-  const [bgItemClass, setBgItemClass] = useState('');
-  const [navBarBgColor, setNavBarBgColor] = useState('#FFFFFF');
+  // const [bgPageClass, setBgPageClass] = useState('');
+  // const [bgItemClass, setBgItemClass] = useState('');
+  // const [navBarBgColor, setNavBarBgColor] = useState('#FFFFFF');
   const [tmpLineImgPath, setTmpLineImgPath] = useState('');
   const [delayRemoveCanvas, setDelayRemoveCanvas] = useState(true); // 防止移除canvas，加载image时闪烁
   const [scrollHeight, setScrollHeight] = useState(0);
@@ -72,6 +73,14 @@ function Index() {
     {type: 'uv', name: '紫外线指数'},
     {type: 'air_pollution', name:'空气污染扩散条件指数'}
   ];
+
+  // 设置主题颜色,本地没有就使用默认主题
+  useEffect(() => {
+    const theme = Taro.getStorageSync('THEME');
+    if (theme) {
+      dispatch(setUserTheme(theme));
+    }
+  }, []);
 
   // 隐藏骨架屏
   useEffect(() => {
@@ -211,11 +220,12 @@ function Index() {
     // console.log(moment().isAfter(sr), moment().isBefore(ss));
     // setIsDay(isDay);
     dispatch(setIsDay(isDay));
-    setBgPageClass(isDay ? 'weather-day' : 'weather-night');
-    setBgItemClass(isDay ? 'bg-blue-opacity' : 'bg-black-opacity');
-    setNavBarBgColor(isDay ? '#2962FF' : '#000000');
+    // setBgPageClass(isDay ? 'weather-day' : 'weather-night');
+    // setBgItemClass(isDay ? 'bg-blue-opacity' : 'bg-black-opacity');
+    // setNavBarBgColor(isDay ? '#2962FF' : '#000000');
+    // setIsDay(isDay);
 
-    setNavStyle(isDay);
+    setNavStyle(isDay, user.theme);
   };
 
   // 获取用户位置信息
@@ -293,13 +303,14 @@ function Index() {
     let distance= Math.floor((100 / tmpRange));
     let nodeRect = await getNodeRect('#tmpLineBox');
     if (!nodeRect) {return}
+    const strokeColor = '#ffffff';
     let rowWidth = nodeRect.width / hourly.length;
     let ctx = Taro.createCanvasContext('tmpLine', this.$scope);
     // console.log(ctx);
     ctx.save();
 
-    // 画高温线
-    ctx.strokeStyle = '#ffffff';
+    // 画温度线
+    ctx.strokeStyle = strokeColor;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.setLineCap('round');
@@ -310,11 +321,11 @@ function Index() {
       if (i === 0){
         ctx.moveTo(drawX, drawY);
         ctx.setFontSize(12);
-        ctx.fillStyle ='#ffffff';
+        ctx.fillStyle = strokeColor;
         ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
       } else {
         ctx.lineTo(drawX, drawY);
-        ctx.fillStyle ='#ffffff';
+        ctx.fillStyle = strokeColor;
         ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
       }
     }
@@ -460,13 +471,16 @@ function Index() {
           bgcolor='#FFF'
         />
       )}
-      <View className='weather h-100-per skeleton'>
+      <View className={`weather h-100-per skeleton theme-${user.theme} white`}>
         {/*<ComponentTagName />*/}
-        <ComponentBaseNavigation backgroundColor={navBarBgColor} color='white' statusBarHeight={user.systemInfo.statusBarHeight}>
+        <ComponentBaseNavigation backgroundColor={location.isDay ? themeMatch[user.theme]['day'] : themeMatch[user.theme]['night']}
+                                 color={location.isDay ? themeMatch[user.theme]['dayFontColor'] : themeMatch[user.theme]['nightFontColor']}
+                                 statusBarHeight={user.systemInfo.statusBarHeight}
+        >
           <View className='flex-row flex-start-center w-100-per pd-lr-20' onClick={_.debounce(chooseLocation, 5000, {leading: true, trailing: false})}>
             <View className='iconfont mg-r-10 fs-36'>&#xe875;</View>
             <View className={`flex-col  ${scrollTop > 200 ? 'flex-spb-start' : 'flex-center-start'}`}>
-              {scrollTop > 200 && <View className='flex-row flex-start-baseline white fs-26'>
+              {scrollTop > 200 && <View className='flex-row flex-start-baseline fs-26'>
                 <Text>{now.temperature}℃</Text>
                 <Text className='mg-l-10'>{now.text}</Text>
               </View>}
@@ -478,14 +492,14 @@ function Index() {
           </View>
         </ComponentBaseNavigation>
         <ScrollView
-          className={`flex-col relative ${bgPageClass}`}
+          className={`flex-col relative ${location.isDay ? 'day-bg-lg' : 'night-bg-lg'}`}
           scrollY
           scrollWithAnimation
           style={{height: `${scrollHeight}px`}}
           onScroll={e => onContainerScroll(e)}
           scrollTop={scrollToTop}
         >
-          <View className='white flex-col flex-center' id='nowContainer'>
+          <View className='flex-col flex-center' id='nowContainer'>
             <View className='flex-row flex-center mg-t-40'>
               <View className='fs-100 flex-row'>
                 <Text className=''>{now.temperature}</Text>
@@ -501,12 +515,12 @@ function Index() {
               </View>
               <View className='mg-l-10 mg-r-10 h-28 v-line-white' />
               <View className='flex-row flex-center-baseline'>
-                <View className='iconfont white mg-r-4 fs-28'>&#xe600;</View>
+                <View className='iconfont mg-r-4 fs-28'>&#xe600;</View>
                 <View className=''>湿度 {now.humidity}%</View>
               </View>
               <View className='mg-l-10 mg-r-10 h-28 v-line-white' />
               <View className='flex-row flex-center-baseline'>
-                <View className='iconfont white mg-r-4 fs-26'>&#xe68b;</View>
+                <View className='iconfont mg-r-4 fs-26'>&#xe68b;</View>
                 <View className=''>空气{nowAir.city.quality} {nowAir.city.aqi}</View>
               </View>
             </View>
@@ -515,7 +529,7 @@ function Index() {
           {/*{fixedContainerNow && <View style={{height: `${boxNowInitHeight - boxNowSmallHeight}px`}} />}*/}
 
           {/*24小时预报*/}
-          {hourly.length && <View className={`mg-20 white bd-radius-20 ${bgItemClass}`}>
+          {hourly.length && <View className={`mg-20 bd-radius-20 ${location.isDay ? 'day-bg-opacity' : 'night-bg-opacity'}`}>
             <View className='text-center fs-30 pd-30'>24小时逐时预报</View>
             <View className='h-line-white' />
             <ScrollView
@@ -552,7 +566,7 @@ function Index() {
                         <View className='mg-l-4'>{`${getWindParams(h.wind_speed)['windScale']}级`}</View>
                       </View>
                       <View className='flex-row flex-center-baseline'>
-                        <View className='iconfont white mg-r-4 fs-26'>&#xe600;</View>
+                        <View className='iconfont mg-r-4 fs-26'>&#xe600;</View>
                         <View>{h.humidity}%</View>
                       </View>
                       <View className='h-line-white line w-100-per' />
@@ -565,7 +579,7 @@ function Index() {
           </View>}
 
           {/*3天预报*/}
-          {daily.length && <View className={`mg-20 white bd-radius-20 ${bgItemClass}`}>
+          {daily.length && <View className={`mg-20 bd-radius-20 ${location.isDay ? 'day-bg-opacity' : 'night-bg-opacity'}`}>
             <View className='pd-t-10 pd-b-10'>
               {daily.slice(0, 3).map((df, index) => {
                 return (
@@ -592,7 +606,7 @@ function Index() {
           </View>}
 
           {/*今日生活指数,香港澳门没有数据*/}
-          {location.name !== '香港' && location.name !== '澳门' && <View className={`mg-20 white bd-radius-20 ${bgItemClass}`}>
+          {location.name !== '香港' && location.name !== '澳门' && <View className={`mg-20 bd-radius-20 ${location.isDay ? 'day-bg-opacity' : 'night-bg-opacity'}`}>
             <View className='text-center fs-30 pd-30'>今日生活指数</View>
             <View className='h-line-white' />
             <Swiper
@@ -600,21 +614,21 @@ function Index() {
               circular
               autoplay
               indicatorDots
-              indicatorColor='rgba(255, 255, 255, 1)'
-              indicatorActiveColor={navBarBgColor}
+              indicatorColor='#FFFFFF'
+              indicatorActiveColor={location.isDay ? themeMatch[user.theme]['day'] : themeMatch[user.theme]['night']}
             >
               {lifeSuggestion.map((ls) => {
               return (
                 <SwiperItem className='lifestyle-item bd-radius-20 pd-20 bd-box' key={ls.type}>
                   <View className='flex-row flex-start-baseline'>
-                    {ls.type === 'comfort' && <View className='iconfont white mg-r-6 fs-26'>&#xe668;</View>}
-                    {ls.type === 'dressing' && <View className='iconfont white mg-r-6 fs-30'>&#xe67a;</View>}
-                    {ls.type === 'flu' && <View className='iconfont white mg-r-6 fs-28'>&#xe6c8;</View>}
-                    {ls.type === 'sport' && <View className='iconfont white mg-r-6 fs-26'>&#xe6a7;</View>}
-                    {ls.type === 'travel' && <View className='iconfont white mg-r-6 fs-26'>&#xe60c;</View>}
-                    {ls.type === 'car_washing' && <View className='iconfont white mg-r-6 fs-26'>&#xe62f;</View>}
-                    {ls.type === 'uv' && <View className='iconfont white mg-r-6 fs-26'>&#xe773;</View>}
-                    {ls.type === 'air_pollution' && <View className='iconfont white mg-r-6 fs-26'>&#xe74f;</View>}
+                    {ls.type === 'comfort' && <View className='iconfont mg-r-6 fs-26'>&#xe668;</View>}
+                    {ls.type === 'dressing' && <View className='iconfont mg-r-6 fs-30'>&#xe67a;</View>}
+                    {ls.type === 'flu' && <View className='iconfont mg-r-6 fs-28'>&#xe6c8;</View>}
+                    {ls.type === 'sport' && <View className='iconfont mg-r-6 fs-26'>&#xe6a7;</View>}
+                    {ls.type === 'travel' && <View className='iconfont mg-r-6 fs-26'>&#xe60c;</View>}
+                    {ls.type === 'car_washing' && <View className='iconfont mg-r-6 fs-26'>&#xe62f;</View>}
+                    {ls.type === 'uv' && <View className='iconfont mg-r-6 fs-26'>&#xe773;</View>}
+                    {ls.type === 'air_pollution' && <View className='iconfont mg-r-6 fs-26'>&#xe74f;</View>}
                     <View className='font30 mg-b-10'>{ls.name}</View>
                   </View>
                   <View className=''>- {suggestion[ls.type]['brief']} -</View>
@@ -629,18 +643,18 @@ function Index() {
           </View>}
 
           <View className='fs-24 text-center mg-t-20 mg-b-20 flex-row flex-center'>
-            <Text>天气数据来源于</Text>
+            <Text className='gray-700'>天气数据来源于</Text>
             <Image className='h-50 w-144' src={xzLogoGrayImg} />
             <Image className='h-30 w-120' src={hfLogoGrayImg} />
           </View>
         </ScrollView>
 
         <View className='flex-row flex-spa-center h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar' id='tabBar'>
-          <View className='iconfont fs-50 black bold' onClick={() => goLocationCollection()}>&#xe87e;</View>{/**收藏**/}
-          <View className='iconfont fs-50 black bold' onClick={() => goLocationSearch()}>&#xe87c;</View>{/**搜索**/}
-          <View className={`iconfont fs-50 black bold ${user.isCurrentAddr ? '' : 'self-loc-anim red-A700'}`} onClick={() => locationSelf()}>&#xe875;</View>{/**定位**/}
-          <Button className='iconfont fs-50 black bold mg-0 pd-0 h-54 w-50 icon-btn' hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>{/**分享**/}
-          <View className='iconfont fs-50 black bold' onClick={() => goSetting()}>&#xe87a;</View>{/**设置**/}
+          <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goLocationCollection()}>&#xe87e;</View>{/**收藏**/}
+          <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goLocationSearch()}>&#xe87c;</View>{/**搜索**/}
+          <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'} ${user.isCurrentAddr ? '' : 'self-loc-anim red-A700'}`} onClick={() => locationSelf()}>&#xe875;</View>{/**定位**/}
+          <Button className={`iconfont fs-50 bold mg-0 pd-0 h-54 w-50 icon-btn ${location.isDay ? 'day-color' : 'night-color'}`} hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>{/**分享**/}
+          <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goSetting()}>&#xe87a;</View>{/**设置**/}
         </View>
       </View>
     </Block>

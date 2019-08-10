@@ -1,0 +1,32 @@
+@import "../colors/amber_var";
+@import "../colors/orange_var";
+@import "../colors/white_var";
+.theme-3 {
+  // 纯色背景
+  .day-bg {
+    background-color: $amberA700;
+  }
+  .night-bg {
+    background-color: $orangeA700;
+  }
+  // 透明背景
+  .day-bg-opacity {
+    background: rgba(255, 171, 0, 0.4);
+  }
+  .night-bg-opacity {
+    background: rgba(255, 109, 0, 0.3);
+  }
+  // 渐变背景
+  .day-bg-lg {
+    background: linear-gradient(top, $amberA700, $white);
+  }
+  .night-bg-lg {
+    background: linear-gradient(top, $orangeA700, $white);
+  }
+  .day-color {
+    color: $amberA700;
+  }
+  .night-color {
+    color: $orangeA700;
+  }
+}

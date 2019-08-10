@@ -1,0 +1,32 @@
+@import "../colors/green_var";
+@import "../colors/pink_var";
+@import "../colors/white_var";
+.theme-2 {
+  // 纯色背景
+  .day-bg {
+    background-color: $greenA700;
+  }
+  .night-bg {
+    background-color: $pinkA200;
+  }
+  // 透明背景
+  .day-bg-opacity {
+    background: rgba(0, 200, 83, 0.4);
+  }
+  .night-bg-opacity {
+    background: rgba(255, 64, 129, 0.3);
+  }
+  // 渐变背景
+  .day-bg-lg {
+    background: linear-gradient(top, $greenA700, $white);
+  }
+  .night-bg-lg {
+    background: linear-gradient(top, $pinkA200, $white);
+  }
+  .day-color {
+    color: $greenA700;
+  }
+  .night-color {
+    color: $pinkA200;
+  }
+}

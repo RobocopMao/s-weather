@@ -50,6 +50,7 @@ class App extends Component {
           'pages/about/index',
           'pages/data_source/index',
           'pages/knowledge/index',
+          'pages/theme/index',
         ],
       }
     ],

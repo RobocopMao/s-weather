@@ -2,24 +2,25 @@ import Taro, {useEffect, useState} from '@tarojs/taro'
 import {View, ScrollView, Canvas} from '@tarojs/components'
 import moment from 'moment'
 import _ from 'lodash'
-import {useSelector} from '@tarojs/redux';
+import {useSelector} from '@tarojs/redux'
 import './index.scss'
 import {setNavStyle, useAsyncEffect} from '../../../../utils'
 import {getWeatherDaily} from '../../../../apis/weather'
-import ComponentIconWeather from '../../../../components/icon/weather';
-import ComponentIconWindDirection from '../../../../components/icon/wind_dir';
-
+import ComponentIconWeather from '../../../../components/icon/weather'
+import ComponentIconWindDirection from '../../../../components/icon/wind_dir'
+import themeMatch from '../../../../assets/json/theme_match.json'
 
 function DailyForecast() {
   const [daily, setDaily] = useState([]);
   const location = useSelector(state => state.location);
+  const user = useSelector(state => state.user);
   const [scrollHeight, setScrollHeight] = useState(0); // 可使用窗口高度
   const [scrollWidth, setScrollWidth] = useState(0); // 可使用窗口高度
   const [windowWidth, setWindowWidth] = useState(0); // 可使用窗口高度
 
   // 15日预报
   useAsyncEffect(async () => {
-    setNavStyle(location.isDay);
+    setNavStyle(location.isDay, user.theme);
 
     let {lon, lat} = this.$router.params;
     const res = await getWeatherDaily({location: `${lat}:${lon}`, days: 15});
@@ -62,7 +63,7 @@ function DailyForecast() {
     ctx.save();
 
     // 画高温线
-    ctx.strokeStyle = '#FFD600';
+    ctx.strokeStyle = `${location.isDay ? themeMatch[user.theme]['night']: themeMatch[user.theme]['day']}`;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.setLineCap('round');
@@ -85,7 +86,7 @@ function DailyForecast() {
 
     // 画低温线
     ctx.restore();
-    ctx.strokeStyle = '#2962FF';
+    ctx.strokeStyle = `${location.isDay ? themeMatch[user.theme]['day']: themeMatch[user.theme]['night']}`;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.setLineCap('round');
@@ -111,7 +112,7 @@ function DailyForecast() {
 
   return (
     <ScrollView
-      className='daily-forecast'
+      className={`daily-forecast theme-${user.theme}`}
       scrollX
       scrollWithAnimation
       style={{height: `${scrollHeight}px`}}
@@ -129,7 +130,7 @@ function DailyForecast() {
           return (
             <View className={`flex-col flex-spa-center w-150 text-center ${index === 0 ? 'bg-gray-100' : ''}`} key={String(index)}>
               <View>
-                {index === 0 && <View className='blue-A700'>今天</View>}
+                {index === 0 && <View className={`${location.isDay ? 'day-color' : 'night-color'}`}>今天</View>}
                 {index === 1 && <View>明天</View>}
                 {index > 1 && <View>{moment(df.date).format('dddd')}</View>}
                 <View className='fs-20'>{moment(df.date).format('M月D日')}</View>

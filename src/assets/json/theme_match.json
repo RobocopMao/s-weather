@@ -1,0 +1,31 @@
+[{
+  "day": "#2962FF",
+  "night": "#000000",
+  "enName": "default",
+  "cnName": "默认"
+}, {
+  "day": "#2962FF",
+  "night": "#6200EA",
+  "enName": "blue-purple",
+  "cnName": "宁静优雅"
+}, {
+  "day": "#00C853",
+  "night": "#FF4081",
+  "enName": "green-pink",
+  "cnName": "清新可爱"
+}, {
+  "day": "#FFAB00",
+  "night": "#FF6D00",
+  "enName": "amber-orange",
+  "cnName": "热情活泼"
+}, {
+  "day": "#4E342E",
+  "night": "#212121",
+  "enName": "brown-black",
+  "cnName": "沉稳庄重"
+}, {
+  "day": "#00BFA5",
+  "night": "#3D5AFE",
+  "enName": "teal-indigo",
+  "cnName": "希望自由"
+}]

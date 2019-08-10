@@ -9,6 +9,7 @@ import {getTopCity, findCity} from '../../../apis/function'
 
 function LocationSearch() {
   const location = useSelector(state => state.location);
+  const user = useSelector(state => state.user);
   const [topCity, setTopCity] = useState([]);
   const [locationHistory, setLocationHistory] = useState([]);
   const [inputVal, setInputVal] = useState('');
@@ -17,7 +18,7 @@ function LocationSearch() {
 
   // 设置白天、夜晚主题
   useEffect(() => {
-    setNavStyle(location.isDay);
+    setNavStyle(location.isDay, user.theme);
   }, []);
 
   // 读取缓存的搜索历史记录
@@ -168,7 +169,7 @@ function LocationSearch() {
   };
 
   return (
-    <View className='location-search flex-col flex-start-stretch'>
+    <View className={`location-search flex-col flex-start-stretch theme-${user.theme}`}>
       <View className='flex-row flex-start-stretch h-88 bd-radius-20 mg-20 bd-box search-bar'>
         <View className='flex-row flex-start-stretch item-flg-1 bd-w-1 bd-solid bd-gray-300 bd-radius-20'>
           <Input className='item-flg-1 h-88 pd-l-20 pd-r-20 bd-box lh-88' confirmType='search' value={inputVal} placeholder='请输入查询城市'
@@ -179,7 +180,7 @@ function LocationSearch() {
         </View>
       </View>
       {!inputVal && <View className='flex-col mg-20 search-history'>
-        <View className={`fs-40 mg-b-20 ${location.isDay ? 'blue-A700' : 'black'}`}>历史记录</View>
+        <View className={`fs-40 mg-b-20 ${location.isDay ? 'day-color' : 'night-color'}`}>历史记录</View>
         <View className='flex-row flex-start flex-wrap'>
           {locationHistory.map((history, index) => {
             const {lat, lon, cityName} = history;
@@ -198,7 +199,7 @@ function LocationSearch() {
         </View>
       </View>}
       {!inputVal && <View className='flex-col mg-20 top-city'>
-        <View className={`fs-40 mg-b-20 ${location.isDay ? 'blue-A700' : 'black'}`}>热门城市</View>
+        <View className={`fs-40 mg-b-20 ${location.isDay ? 'day-color' : 'night-color'}`}>热门城市</View>
         <View className='flex-row flex-start flex-wrap'>
           {topCity.map((city, index) => {
             const {lat, lon, type} = city;

@@ -1,4 +1,11 @@
-import {SET_SYSTEM_INFO, SET_USER_LOCATION, SET_USER_IS_CUR_ADDR, SET_USER_GEO_SUN, SET_USER_LIFT_SUGGESTION} from './constant'
+import {
+  SET_SYSTEM_INFO,
+  SET_USER_LOCATION,
+  SET_USER_IS_CUR_ADDR,
+  SET_USER_GEO_SUN,
+  SET_USER_LIFT_SUGGESTION,
+  SET_USER_THEME
+} from './constant'
 
 export const setSystemInfo = (systemInfo) => {
   return {
@@ -32,6 +39,13 @@ export const setUserLifeSuggestion = (lifeSuggestion) => {
   return {
     type: SET_USER_LIFT_SUGGESTION,
     lifeSuggestion
+  }
+};
+
+export const setUserTheme = (theme) => {
+  return {
+    type: SET_USER_THEME,
+    theme
   }
 };
 
