@@ -4,7 +4,6 @@ import {useSelector} from '@tarojs/redux'
 import moment from 'moment'
 import './index.scss'
 import {setNavStyle, useAsyncEffect} from '../../../../utils'
-import {getAlarms} from '../../../../apis/weather';
 
 function Alarm() {
   const location = useSelector(state => state.location);
@@ -14,10 +13,7 @@ function Alarm() {
   useAsyncEffect(async () => {
     setNavStyle(location.isDay, user.theme);
 
-    let {lon, lat} = this.$router.params;
-    const res = await getAlarms({location: `${lat}:${lon}`, days: 15});
-    // console.log(res);
-    const {alarms} = res;
+    const alarms = Taro.getStorageSync('ALARMS');
     setAlarms(alarms);
   }, []);
 

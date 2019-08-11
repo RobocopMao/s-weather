@@ -47,7 +47,7 @@ function Index() {
   const [updateTime, setUpdateTime] = useState('');
   const [hourly, setHourly] = useState([]);
   const [daily, setDaily] = useState([]);
-  const [suggestion, setSuggestion] = useState([]);
+  const [suggestion, setSuggestion] = useState({});
   const [nowAir, setNowAir] = useState({});
   const [sun, setSun] = useState({});
   const [alarms, setAlarms] = useState([]);
@@ -176,6 +176,7 @@ function Index() {
     if (!res) {return}
     const {alarms} = res;
     setAlarms(alarms);
+    Taro.setStorageSync('ALARMS', alarms); // alarm详情不用再次请求，直接取本地数据
   }, [location.latAndLon]);
 
   // 设备信息
@@ -424,8 +425,7 @@ function Index() {
 
   // 去气象预警
   const goAlarms = () => {
-    const {longitude, latitude} = location.latAndLon;
-    Taro.navigateTo({url: `../../forecast/pages/alarm/index?lon=${longitude}&lat=${latitude}`});
+    Taro.navigateTo({url: `../../forecast/pages/alarm/index`});
   };
 
   // 去15天天气预报
@@ -629,7 +629,7 @@ function Index() {
           </View>}
 
           {/*今日生活指数,香港澳门没有数据*/}
-          {location.name !== '香港' && location.name !== '澳门' && lifeSuggestion.length
+          {location.name !== '香港' && location.name !== '澳门' && JSON.stringify(suggestion) !== '{}'
           && <View className={`mg-20 bd-radius-20 ${location.isDay ? 'day-bg-opacity' : 'night-bg-opacity'}`}>
             <View className='text-center fs-30 pd-30'>今日生活指数</View>
             <View className='h-line-white' />
@@ -666,11 +666,11 @@ function Index() {
             {/*<View className='text-center fs-30 pd-30'>更多生活指数</View>*/}
           </View>}
 
-          <View className='fs-24 text-center mg-t-20 mg-b-20 flex-row flex-center'>
+          {JSON.stringify(now) !== '{}' && <View className='fs-24 text-center mg-t-20 mg-b-20 flex-row flex-center'>
             <Text className='gray-700'>天气数据来源于</Text>
             <Image className='h-50 w-144' src={xzLogoGrayImg} />
             <Image className='h-30 w-120' src={hfLogoGrayImg} />
-          </View>
+          </View>}
         </ScrollView>
 
         {!showSkeleton && <View className='flex-row flex-spa-center h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar' id='tabBar'>
