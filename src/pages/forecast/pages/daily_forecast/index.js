@@ -63,7 +63,7 @@ function DailyForecast() {
     ctx.save();
 
     // 画高温线
-    ctx.strokeStyle = `${location.isDay ? themeMatch[user.theme]['night']: themeMatch[user.theme]['day']}`;
+    ctx.strokeStyle = themeMatch[user.theme]['day'];
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.setLineCap('round');
@@ -86,7 +86,7 @@ function DailyForecast() {
 
     // 画低温线
     ctx.restore();
-    ctx.strokeStyle = `${location.isDay ? themeMatch[user.theme]['day']: themeMatch[user.theme]['night']}`;
+    ctx.strokeStyle = themeMatch[user.theme]['night'];
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.setLineCap('round');

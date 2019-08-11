@@ -44,6 +44,7 @@ function Theme() {
         )
       })}
 
+      <View className='text-center fs-26 gray-400 mg-t-50 pd-lr-20 bd-box' style={{textDecoration: 'underline'}}>小提示：主题的两种颜色分别为白天和夜间的颜色，颜色会根据当前位置日出日落自动切换</View>
     </View>
   )
 }
