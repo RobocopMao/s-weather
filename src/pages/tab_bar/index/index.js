@@ -7,7 +7,7 @@ import QQMapWX from '../../../utils/qqmap-wx-jssdk'
 import {QQ_MAP_SDK_KEY} from '../../../apis/config'
 import './index.scss'
 import {useAsyncEffect, getNodeRect, getSystemInfo, getWindParams, setNavStyle} from '../../../utils'
-import {getWeatherNow, getWeatherHourly, getWeatherDaily} from '../../../apis/weather'
+import {getWeatherNow, getWeatherHourly, getWeatherDaily, getAlarms} from '../../../apis/weather'
 import {getAirNow} from '../../../apis/air'
 import {getLifeSuggestion} from '../../../apis/life'
 import {getGeoSun} from '../../../apis/goe'
@@ -50,6 +50,7 @@ function Index() {
   const [suggestion, setSuggestion] = useState([]);
   const [nowAir, setNowAir] = useState({});
   const [sun, setSun] = useState({});
+  const [alarms, setAlarms] = useState([]);
   // const [isDay, setIsDay] = useState(true);
   // const [bgPageClass, setBgPageClass] = useState('');
   // const [bgItemClass, setBgItemClass] = useState('');
@@ -79,7 +80,7 @@ function Index() {
     let tId = setTimeout(() => {
       setShowSkeleton(false);
       clearTimeout(tId);
-    }, 2000);
+    }, 3000);
   }, []);
 
   // 设置主题颜色,本地没有就使用默认主题
@@ -89,6 +90,27 @@ function Index() {
       dispatch(setUserTheme(theme));
     }
   }, []);
+
+  // 日出日落
+  useAsyncEffect(async () => {
+    const {from} = this.$router.params;
+    // console.log(user.isCurrentAddr);
+    // console.log(user.geo);
+    if (user.isCurrentAddr && user.geoSun && from !== 'SHARE') { // 当前用户，且日出日落已存在， 比如当用户点击当行定位按钮就不会在此发请求
+      setSun(user.geoSun);
+      setDayNight(user.geoSun);
+    } else { // 否则就去请求
+      const {latitude, longitude} = location.latAndLon;
+      const res = await getGeoSun({location: `${latitude}:${longitude}`, days: 1});
+      if (!res) {return}
+      const {sun} = res;
+      setSun(sun[0]);
+      setDayNight(sun[0]);
+      if (user.isCurrentAddr) {
+        dispatch(setUserGeoSun(sun[0]));
+      }
+    }
+  }, [location.latAndLon]);
 
   // 实时天气
   useAsyncEffect(async () => {
@@ -146,26 +168,14 @@ function Index() {
     }
   }, [location.latAndLon]);
 
-
-  // 日出日落
+  // 气象预警
   useAsyncEffect(async () => {
-    const {from} = this.$router.params;
-    // console.log(user.isCurrentAddr);
-    // console.log(user.geo);
-    if (user.isCurrentAddr && user.geoSun && from !== 'SHARE') { // 当前用户，且日出日落已存在， 比如当用户点击当行定位按钮就不会在此发请求
-      setSun(user.geoSun);
-      setDayNight(user.geoSun);
-    } else { // 否则就去请求
-      const {latitude, longitude} = location.latAndLon;
-      const res = await getGeoSun({location: `${latitude}:${longitude}`, days: 1});
-      if (!res) {return}
-      const {sun} = res;
-      setSun(sun[0]);
-      setDayNight(sun[0]);
-      if (user.isCurrentAddr) {
-        dispatch(setUserGeoSun(sun[0]));
-      }
-    }
+    const {latitude, longitude} = location.latAndLon;
+    const res = await getAlarms({location: `${latitude}:${longitude}`});
+    // console.log(res);
+    if (!res) {return}
+    const {alarms} = res;
+    setAlarms(alarms);
   }, [location.latAndLon]);
 
   // 设备信息
@@ -173,8 +183,9 @@ function Index() {
     const res = await getSystemInfo();
     dispatch(setSystemInfo(res));
     const res1 = await getNodeRect('#tabBar');
+    if (!res1) {return;}
     setScrollHeight(res.windowHeight - res1.height - 44 - user.systemInfo.statusBarHeight);  // 自定义导航固定44
-  }, [scrollHeight]);
+  }, [showSkeleton]);
 
   // 画逐小时图
   useEffect(() => {
@@ -411,6 +422,12 @@ function Index() {
     setScrollToTop(prev => prev === 0 ? 0.1 : 0);
   };
 
+  // 去气象预警
+  const goAlarms = () => {
+    const {longitude, latitude} = location.latAndLon;
+    Taro.navigateTo({url: `../../forecast/pages/alarm/index?lon=${longitude}&lat=${latitude}`});
+  };
+
   // 去15天天气预报
   const goDailyDetails = () => {
     const {longitude, latitude} = location.latAndLon;
@@ -499,7 +516,7 @@ function Index() {
           onScroll={e => onContainerScroll(e)}
           scrollTop={scrollToTop}
         >
-          <View className='flex-col flex-center' id='nowContainer'>
+          {JSON.stringify(now) !== '{}' && <View className='flex-col flex-center relative' id='nowContainer'>
             <View className='flex-row flex-center mg-t-40'>
               <View className='fs-100 flex-row'>
                 <Text className=''>{now.temperature}</Text>
@@ -518,14 +535,20 @@ function Index() {
                 <View className='iconfont mg-r-4 fs-28'>&#xe600;</View>
                 <View className=''>湿度 {now.humidity}%</View>
               </View>
-              <View className='mg-l-10 mg-r-10 h-28 v-line-white' />
-              <View className='flex-row flex-center-baseline'>
+              {JSON.stringify(nowAir) !== '{}' && <View className='mg-l-10 mg-r-10 h-28 v-line-white' />}
+              {JSON.stringify(nowAir) !== '{}' &&<View className='flex-row flex-center-baseline'>
                 <View className='iconfont mg-r-4 fs-26'>&#xe68b;</View>
                 <View className=''>空气{nowAir.city.quality} {nowAir.city.aqi}</View>
-              </View>
+              </View>}
             </View>
             <View className='mg-b-40 fs-24'>天气数据更新于 {moment(updateTime).format('HH:mm')}</View>
-          </View>
+            {/*气象预警*/}
+            {alarms.length && <View className='flex-row flex-center circle w-120 h-120 pd-10 alarm' onClick={() => goAlarms()}>
+              <View className='flex-row flex-center w-40 h-40 circle sound'>
+                <View className='iconfont red-A700 fs-40'>&#xe63a;</View>
+              </View>
+            </View>}
+          </View>}
           {/*{fixedContainerNow && <View style={{height: `${boxNowInitHeight - boxNowSmallHeight}px`}} />}*/}
 
           {/*24小时预报*/}
@@ -606,7 +629,8 @@ function Index() {
           </View>}
 
           {/*今日生活指数,香港澳门没有数据*/}
-          {location.name !== '香港' && location.name !== '澳门' && <View className={`mg-20 bd-radius-20 ${location.isDay ? 'day-bg-opacity' : 'night-bg-opacity'}`}>
+          {location.name !== '香港' && location.name !== '澳门' && lifeSuggestion.length
+          && <View className={`mg-20 bd-radius-20 ${location.isDay ? 'day-bg-opacity' : 'night-bg-opacity'}`}>
             <View className='text-center fs-30 pd-30'>今日生活指数</View>
             <View className='h-line-white' />
             <Swiper
@@ -649,13 +673,13 @@ function Index() {
           </View>
         </ScrollView>
 
-        <View className='flex-row flex-spa-center h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar' id='tabBar'>
+        {!showSkeleton && <View className='flex-row flex-spa-center h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar' id='tabBar'>
           <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goLocationCollection()}>&#xe87e;</View>{/**收藏**/}
           <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goLocationSearch()}>&#xe87c;</View>{/**搜索**/}
           <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'} ${user.isCurrentAddr ? '' : 'self-loc-anim red-A700'}`} onClick={() => locationSelf()}>&#xe875;</View>{/**定位**/}
           <Button className={`iconfont fs-50 bold mg-0 pd-0 h-54 w-50 icon-btn ${location.isDay ? 'day-color' : 'night-color'}`} hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>{/**分享**/}
           <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goSetting()}>&#xe87a;</View>{/**设置**/}
-        </View>
+        </View>}
       </View>
     </Block>
   )

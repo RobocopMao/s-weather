@@ -40,7 +40,8 @@ class App extends Component {
         root: 'pages/forecast/',
         name: 'forecast',  // 预告
         pages: [
-          'pages/daily_forecast/index'
+          'pages/daily_forecast/index',
+          'pages/alarm/index'
         ],
       },
       {

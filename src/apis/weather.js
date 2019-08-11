@@ -40,6 +40,18 @@ export const getWeatherDaily = async (data) => {
   });
 };
 
+// 气象预警
+export const getAlarms = async (data) => {
+  if (data.location === ':' || data.location === '') {
+    return;
+  }
+  return await request.get({
+    url: '/v3/weather/alarm.json',
+    data,
+    hostType: XZ_HOST_TYPE,
+  });
+};
+
 // 以下是和风天气的api
 /**
  * 获取常规天气数据: https://dev.heweather.com/docs/api/weather
