@@ -84,6 +84,7 @@ function Setting() {
             </View>
             <View className='iconfont'>&#xe65b;</View>
           </View>
+          <View className='h-line-gray-300' />
           <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goDataSource()}>
             <View className='flex-row flex-start-baseline'>
               <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe603;</View>
