@@ -5,7 +5,7 @@ import _ from 'lodash'
 import {useSelector} from '@tarojs/redux'
 import './index.scss'
 import {setNavStyle, useAsyncEffect} from '../../../../utils'
-import {getWeatherDaily} from '../../../../apis/weather'
+// import {getWeatherDaily} from '../../../../apis/weather'
 import ComponentIconWeather from '../../../../components/icon/weather'
 import ComponentIconWindDirection from '../../../../components/icon/wind_dir'
 import themeMatch from '../../../../assets/json/theme_match.json'
@@ -22,11 +22,9 @@ function DailyForecast() {
   useAsyncEffect(async () => {
     setNavStyle(location.isDay, user.theme);
 
-    let {lon, lat} = this.$router.params;
-    const res = await getWeatherDaily({location: `${lat}:${lon}`, days: 15});
+    const _daily = Taro.getStorageSync('DAILY_FORECAST');
     // console.log(res);
-    const {daily} = res;
-    setDaily(daily);
+    setDaily(_daily);
   }, []);
 
   useEffect(() => {

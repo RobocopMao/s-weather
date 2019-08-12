@@ -131,6 +131,7 @@ function Index() {
     if (!res) {return}
     const {air} = res;
     setNowAir(air);
+    Taro.setStorageSync('NOW_AIR', air);
   }, [location.latAndLon]);
 
   // 逐小时预报
@@ -146,11 +147,12 @@ function Index() {
   // 3日预报
   useAsyncEffect(async () => {
     const {latitude, longitude} = location.latAndLon;
-    const res = await getWeatherDaily({location: `${latitude}:${longitude}`, days: 3});
+    const res = await getWeatherDaily({location: `${latitude}:${longitude}`, days: 15});
     // console.log(res);
     if (!res) {return}
     const {daily} = res;
     setDaily(daily);
+    Taro.setStorageSync('DAILY_FORECAST', daily);
   }, [location.latAndLon]);
 
   // 生活指数
