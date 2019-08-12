@@ -3,6 +3,11 @@ import {Block, View, Text, ScrollView, Canvas, Image, Swiper, SwiperItem, Button
 import { useSelector, useDispatch } from '@tarojs/redux'
 import moment from 'moment'
 import _ from 'lodash'
+import Core from '@antv/f2/lib/core'
+import Guide from '@antv/f2/lib/plugin/guide'
+import '@antv/f2/lib/geom/line'; // 只加载折线图
+import '@antv/f2/lib/component/guide/text'; // 只加载 Guide.Text 组件
+import '@antv/f2/lib/scale/time-cat'; // 加载 timeCat 类型的度量
 import QQMapWX from '../../../utils/qqmap-wx-jssdk'
 import {QQ_MAP_SDK_KEY} from '../../../apis/config'
 import './index.scss'
@@ -38,6 +43,7 @@ import Skeleton from '../../../components/common/skeleton'
 import xzLogoGrayImg from '../../../assets/images/xinzhi_logo_gray.png'
 import hfLogoGrayImg from '../../../assets/images/hefeng_logo_gray.png'
 import themeMatch from '../../../assets/json/theme_match.json'
+import Renderer from '../../../utils/renderer'
 
 function Index() {
   const location = useSelector(state => state.location);
@@ -56,7 +62,7 @@ function Index() {
   // const [bgItemClass, setBgItemClass] = useState('');
   // const [navBarBgColor, setNavBarBgColor] = useState('#FFFFFF');
   const [tmpLineImgPath, setTmpLineImgPath] = useState('');
-  const [delayRemoveCanvas, setDelayRemoveCanvas] = useState(true); // 防止移除canvas，加载image时闪烁
+  // const [canvasHeight, setCanvasHeight] = useState(100); // 防止移除canvas，加载image时闪烁
   const [scrollHeight, setScrollHeight] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollToTop, setScrollToTop] = useState(0);
@@ -141,6 +147,10 @@ function Index() {
     // console.log(res);
     if (!res) {return}
     const {hourly} = res;
+    for (let [, v] of hourly.entries()) {
+      // console.log(v,i);
+     v.temperature = Number(v.temperature);
+    }
     setHourly(hourly);
   }, [location.latAndLon]);
 
@@ -192,6 +202,8 @@ function Index() {
 
   // 画逐小时图
   useEffect(() => {
+    // setTmpLineImgPath('');
+    // setCanvasHeight(100);
     drawTmpLine();
   }, [hourly]);
 
@@ -231,14 +243,7 @@ function Index() {
     let ss= `${date} ${sunset}`;
 
     let isDay = moment().isAfter(sr) && moment().isBefore(ss); // 判断是不是在白天
-    // console.log(moment().isAfter(sr), moment().isBefore(ss));
-    // setIsDay(isDay);
     dispatch(setIsDay(isDay));
-    // setBgPageClass(isDay ? 'weather-day' : 'weather-night');
-    // setBgItemClass(isDay ? 'bg-blue-opacity' : 'bg-black-opacity');
-    // setNavBarBgColor(isDay ? '#2962FF' : '#000000');
-    // setIsDay(isDay);
-
     setNavStyle(isDay, user.theme);
   };
 
@@ -293,9 +298,10 @@ function Index() {
         }
         dispatch(setUserIsCurAddr(isUser));
       },
-      // fail: _res => {
-      //   // console.log(_res);
-      // },
+      fail: _res => {
+        // console.log(_res);
+        Taro.showToast({title: _res.message, icon: 'none'});
+      },
       // complete: _res => {
       //   // console.log(res);
       // }
@@ -303,51 +309,109 @@ function Index() {
   };
 
   // 画逐小时图
+  // const drawTmpLine = async () => {
+  //   let tmp = [];
+  //
+  //   for (let [, v] of hourly.entries()) {
+  //     // console.log(v,i);
+  //     tmp.push(Number(v.temperature));
+  //   }
+  //   let maxTmp = _.max(tmp) + 3; // 最高温
+  //   let minTmp = _.min(tmp) - 1; // 最低温
+  //   let tmpRange = maxTmp - minTmp;
+  //   // console.log(tmp, maxTmp, minTmp, tmpRange);
+  //   let distance= Math.floor((100 / tmpRange));
+  //   let nodeRect = await getNodeRect('#tmpLineBox');
+  //   if (!nodeRect) {return}
+  //   const strokeColor = '#ffffff';
+  //   let rowWidth = nodeRect.width / hourly.length;
+  //   let ctx = Taro.createCanvasContext('tmpLine', this.$scope);
+  //   // console.log(ctx);
+  //   ctx.save();
+  //
+  //   // 画温度线
+  //   ctx.strokeStyle = strokeColor;
+  //   ctx.lineWidth = 1;
+  //   ctx.beginPath();
+  //   ctx.setLineCap('round');
+  //   for (let [i, v] of tmp.entries()) {
+  //     let drawX = i * rowWidth + (rowWidth / 2);
+  //     let drawY = (maxTmp - v) * distance;
+  //     // console.log(drawX, drawY);
+  //     if (i === 0){
+  //       ctx.moveTo(drawX, drawY);
+  //       ctx.setFontSize(12);
+  //       ctx.fillStyle = strokeColor;
+  //       ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
+  //     } else {
+  //       ctx.lineTo(drawX, drawY);
+  //       ctx.fillStyle = strokeColor;
+  //       ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
+  //     }
+  //   }
+  //   ctx.stroke();
+  //
+  //   ctx.draw(false, () => {
+  //     canvasToImg();
+  //   });
+  // };
+
+  // 画逐小时图
   const drawTmpLine = async () => {
-    let tmp = [];
-
-    for (let [, v] of hourly.entries()) {
-      // console.log(v,i);
-      tmp.push(Number(v.temperature));
-    }
-    let maxTmp = _.max(tmp) + 3; // 最高温
-    let minTmp = _.min(tmp) - 1; // 最低温
-    let tmpRange = maxTmp - minTmp;
-    // console.log(tmp, maxTmp, minTmp, tmpRange);
-    let distance= Math.floor((100 / tmpRange));
-    let nodeRect = await getNodeRect('#tmpLineBox');
+    const nodeRect = await getNodeRect('#tmpLine');
     if (!nodeRect) {return}
-    const strokeColor = '#ffffff';
-    let rowWidth = nodeRect.width / hourly.length;
-    let ctx = Taro.createCanvasContext('tmpLine', this.$scope);
-    // console.log(ctx);
-    ctx.save();
+    const lineColor = '#ffffff';
+    const rowWidth = nodeRect.width / hourly.length;
+    const min = _.minBy(hourly, 'temperature').temperature;
+    const max = _.maxBy(hourly, 'temperature').temperature;
 
-    // 画温度线
-    ctx.strokeStyle = strokeColor;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.setLineCap('round');
-    for (let [i, v] of tmp.entries()) {
-      let drawX = i * rowWidth + (rowWidth / 2);
-      let drawY = (maxTmp - v) * distance;
-      // console.log(drawX, drawY);
-      if (i === 0){
-        ctx.moveTo(drawX, drawY);
-        ctx.setFontSize(12);
-        ctx.fillStyle = strokeColor;
-        ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
-      } else {
-        ctx.lineTo(drawX, drawY);
-        ctx.fillStyle = strokeColor;
-        ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
-      }
-    }
-    ctx.stroke();
+    const {width, height} = nodeRect;
+    const ctx = Taro.createCanvasContext('tmpLine', this.$scope);
+    const canvas = new Renderer(ctx);
 
-    ctx.draw(false, () => {
-      canvasToImg();
+    Core.Chart.plugins.register(Guide);
+    let chart = new Core.Chart({
+      el: canvas,
+      width,
+      height,
+      animate: false,
+      pixelRatio: user.systemInfo.pixelRatio,
+      padding: ['auto', rowWidth / 2, 'auto', rowWidth / 2]
     });
+    console.log(chart)
+
+    const defs = {
+      time: {
+        type: 'timeCat',
+        mask: 'MM/DD',
+        tickCount: 3,
+        range: [0, 1]
+      },
+      temperature: {
+        tickCount: max - min,
+        min: min,
+        alias: '逐小时温度'
+      }
+    };
+    chart.source(hourly, defs);
+    chart.axis(false);
+    hourly.map(function(obj) {
+      chart.guide().text({
+        position: [obj.time, obj.temperature],
+        content: obj.temperature + '℃',
+        style: {
+          fill: lineColor,
+          textAlign: 'center'
+        },
+        offsetY: -15
+      });
+    });
+    chart.line().position('time*temperature').shape('smooth').style({
+      stroke: lineColor
+    });
+
+    chart.render();
+    canvasToImg();
   };
 
   // canvas 换图片，因为canvas层级高，自定义导航栏遮不住
@@ -366,10 +430,6 @@ function Index() {
       // console.log(res);
       // console.log('canvasToImg end');
       setTmpLineImgPath(res.tempFilePath);
-      let tId = setTimeout(() => {
-        setDelayRemoveCanvas(false);
-        clearTimeout(tId);
-      }, 2000);
     }).catch(err => {
       // console.log('canvasToImg err');
       console.log(err);
@@ -564,17 +624,18 @@ function Index() {
               scrollLeft={0}
               style={{height: '300px'}}
             >
-              <View className='flex-row flex-start-stretch pd-t-20 pd-b-40 h-100-per relative' id='tmpLineBox' style={{width: `${Taro.pxTransform(hourly.length * 150)}`}}>
-                {delayRemoveCanvas && <Canvas className='tmp-line' canvasId='tmpLine' id='tmpLine'
+              <View className='flex-row flex-start-stretch pd-t-20 pd-b-40 h-100-per relative box-hd-x' id='tmpLineBox' style={{width: `${Taro.pxTransform(hourly.length * 150)}`}}>
+                <Canvas className='tmp-line' canvasId='tmpLine' id='tmpLine'
                   style={{
                     width: `${Taro.pxTransform(hourly.length * 150)}`,
-                    height: '100px'
+                    height: `100px`,
+                    left: '9999px'
                   }}
-                />}
+                />
                 {tmpLineImgPath && <Image className='tmp-line' src={tmpLineImgPath}
                   style={{
                     width: `${Taro.pxTransform(hourly.length * 150)}`,
-                    height: '100px'
+                    height: '100px',
                   }}
                 />}
                 {hourly.map((h) => {

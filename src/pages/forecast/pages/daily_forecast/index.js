@@ -1,14 +1,20 @@
 import Taro, {useEffect, useState} from '@tarojs/taro'
-import {View, ScrollView, Canvas} from '@tarojs/components'
+import {View, ScrollView, Canvas, Image} from '@tarojs/components'
 import moment from 'moment'
 import _ from 'lodash'
+import Core from '@antv/f2/lib/core'
+import Guide from '@antv/f2/lib/plugin/guide'
+import '@antv/f2/lib/geom/line'; // 只加载折线图
+import '@antv/f2/lib/component/guide/text'; // 只加载 Guide.Text 组件
+import '@antv/f2/lib/scale/time-cat'; // 加载 timeCat 类型的度量
 import {useSelector} from '@tarojs/redux'
 import './index.scss'
-import {setNavStyle, useAsyncEffect} from '../../../../utils'
+import {getNodeRect, setNavStyle} from '../../../../utils'
 // import {getWeatherDaily} from '../../../../apis/weather'
 import ComponentIconWeather from '../../../../components/icon/weather'
 import ComponentIconWindDirection from '../../../../components/icon/wind_dir'
 import themeMatch from '../../../../assets/json/theme_match.json'
+import Renderer from '../../../../utils/renderer'
 
 function DailyForecast() {
   const [daily, setDaily] = useState([]);
@@ -17,9 +23,10 @@ function DailyForecast() {
   const [scrollHeight, setScrollHeight] = useState(0); // 可使用窗口高度
   const [scrollWidth, setScrollWidth] = useState(0); // 可使用窗口高度
   const [windowWidth, setWindowWidth] = useState(0); // 可使用窗口高度
+  const [tmpLineImgPath, setTmpLineImgPath] = useState(''); // 可使用窗口高度
 
   // 15日预报
-  useAsyncEffect(async () => {
+  useEffect(async () => {
     setNavStyle(location.isDay, user.theme);
 
     const _daily = Taro.getStorageSync('DAILY_FORECAST');
@@ -41,71 +48,168 @@ function DailyForecast() {
   }, [scrollHeight, scrollWidth, daily]);
 
   //画图
+  // const drawTmpLine = () => {
+  //   let tmpMax = [],  // 高温
+  //       tmpMin = [];  // 低温
+  //   for (let [, v] of daily.entries()) {
+  //     // console.log(v,i);
+  //     tmpMax.push(Number(v.high));
+  //     tmpMin.push(Number(v.low));
+  //   }
+  //   let maxTmp = _.max(tmpMax) + 5; // 最高温
+  //   let minTmp = _.min(tmpMin) - 5; // 最低温
+  //   let tmpRange = maxTmp - minTmp;
+  //   // console.log(tmpMax, tmpMin, maxTmp, minTmp, tmpRange);
+  //   let distance= Math.floor((scrollHeight / 3)  / tmpRange);
+  //   let windowW1_5 = windowWidth / 5;
+  //
+  //   let ctx = Taro.createCanvasContext('tmpLine', this.$scope);
+  //   // console.log(ctx);
+  //   ctx.save();
+  //
+  //   // 画高温线
+  //   ctx.strokeStyle = themeMatch[user.theme]['day'];
+  //   ctx.lineWidth = 1;
+  //   ctx.beginPath();
+  //   ctx.setLineCap('round');
+  //   for (let [i, v] of tmpMax.entries()) {
+  //     let drawX = i * windowW1_5 + (windowW1_5 / 2);
+  //     let drawY = (maxTmp - v) * distance;
+  //     //console.log(drawX, drawY);
+  //     if (i === 0){
+  //       ctx.moveTo(drawX, drawY);
+  //       ctx.setFontSize(12);
+  //       ctx.fillStyle ='#6e6e6e';
+  //       ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
+  //     } else {
+  //       ctx.lineTo(drawX, drawY);
+  //       ctx.fillStyle ='#6e6e6e';
+  //       ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
+  //     }
+  //   }
+  //   ctx.stroke();
+  //
+  //   // 画低温线
+  //   ctx.restore();
+  //   ctx.strokeStyle = themeMatch[user.theme]['night'];
+  //   ctx.lineWidth = 1;
+  //   ctx.beginPath();
+  //   ctx.setLineCap('round');
+  //   for (let [i, v] of tmpMin.entries()) {
+  //     let drawX = i * windowW1_5 + (windowW1_5 / 2);
+  //     let drawY = (scrollHeight / 3) - (v - minTmp) * distance;
+  //     // console.log(drawX, drawY);
+  //     if (i === 0){
+  //       ctx.moveTo(drawX, drawY);
+  //       ctx.setFontSize(12);
+  //       ctx.fillStyle ='#6e6e6e';
+  //       ctx.fillText(`${v}℃`, drawX - 10, drawY + 15);
+  //     } else {
+  //       ctx.lineTo(drawX, drawY);
+  //       ctx.fillStyle ='#6e6e6e';
+  //       ctx.fillText(`${v}℃`, drawX - 10, drawY + 15);
+  //     }
+  //   }
+  //   ctx.stroke();
+  //
+  //   ctx.draw();
+  // };
+
   const drawTmpLine = () => {
-    let tmpMax = [],  // 高温
-        tmpMin = [];  // 低温
+    if (!daily.length) {
+      return;
+    }
+    let highTmp = [],  // 高温
+        lowTmp = [];  // 低温
     for (let [, v] of daily.entries()) {
       // console.log(v,i);
-      tmpMax.push(Number(v.high));
-      tmpMin.push(Number(v.low));
+      let highTmpObj = {
+        date: v.date,
+        tem: Number(v.high),
+        type: '高温'
+      };
+      let lowTmpObj = {
+        date: v.date,
+        tem: Number(v.low),
+        type: '低温'
+      };
+      highTmp.push(highTmpObj);
+      lowTmp.push(lowTmpObj);
     }
-    let maxTmp = _.max(tmpMax) + 5; // 最高温
-    let minTmp = _.min(tmpMin) - 5; // 最低温
+    let maxTmp = _.maxBy(highTmp, 'tem').tem; // 最高温
+    let minTmp = _.minBy(lowTmp, 'tem').tem; // 最低温
+    const data = [...highTmp, ...lowTmp];
     let tmpRange = maxTmp - minTmp;
-    // console.log(tmpMax, tmpMin, maxTmp, minTmp, tmpRange);
-    let distance= Math.floor((scrollHeight / 3)  / tmpRange);
     let windowW1_5 = windowWidth / 5;
 
     let ctx = Taro.createCanvasContext('tmpLine', this.$scope);
-    // console.log(ctx);
-    ctx.save();
+    const canvas = new Renderer(ctx);
 
-    // 画高温线
-    ctx.strokeStyle = themeMatch[user.theme]['day'];
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.setLineCap('round');
-    for (let [i, v] of tmpMax.entries()) {
-      let drawX = i * windowW1_5 + (windowW1_5 / 2);
-      let drawY = (maxTmp - v) * distance;
-      //console.log(drawX, drawY);
-      if (i === 0){
-        ctx.moveTo(drawX, drawY);
-        ctx.setFontSize(12);
-        ctx.fillStyle ='#6e6e6e';
-        ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
-      } else {
-        ctx.lineTo(drawX, drawY);
-        ctx.fillStyle ='#6e6e6e';
-        ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
+    Core.Chart.plugins.register(Guide);
+    let chart = new Core.Chart({
+      el: canvas,
+      width: scrollWidth,
+      height: scrollHeight / 3,
+      animate: false,
+      pixelRatio: user.systemInfo.pixelRatio,
+      padding: ['auto', windowW1_5 / 2, 'auto', windowW1_5 / 2]
+    });
+
+    const defs = {
+      date: {
+        type: 'timeCat',
+        mask: 'YYYY-MM-DD',
+        tickCount: 3,
+        range: [0, 1]
+      },
+      temperature: {
+        tickCount: tmpRange,
+        min: minTmp,
+        alias: '每日最高/最低温'
       }
-    }
-    ctx.stroke();
-
-    // 画低温线
-    ctx.restore();
-    ctx.strokeStyle = themeMatch[user.theme]['night'];
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.setLineCap('round');
-    for (let [i, v] of tmpMin.entries()) {
-      let drawX = i * windowW1_5 + (windowW1_5 / 2);
-      let drawY = (scrollHeight / 3) - (v - minTmp) * distance;
-      // console.log(drawX, drawY);
-      if (i === 0){
-        ctx.moveTo(drawX, drawY);
-        ctx.setFontSize(12);
-        ctx.fillStyle ='#6e6e6e';
-        ctx.fillText(`${v}℃`, drawX - 10, drawY + 15);
-      } else {
-        ctx.lineTo(drawX, drawY);
-        ctx.fillStyle ='#6e6e6e';
-        ctx.fillText(`${v}℃`, drawX - 10, drawY + 15);
+    };
+    chart.source(data, defs);
+    chart.axis(false);
+    // chart.legend(false);
+    data.map(function(obj) {
+      chart.guide().text({
+        position: [obj.date, obj.tem],
+        content: obj.tem + '℃',
+        style: {
+          fill: '#616161',
+          textAlign: 'center'
+        },
+        offsetY: -15
+      });
+    });
+    chart.line().position('date*tem').color('type', function (type) {
+      if (type === '高温') {
+        return themeMatch[user.theme]['day'];
       }
-    }
-    ctx.stroke();
+      if (type === '低温') {
+        return themeMatch[user.theme]['night'];
+      }
+    }).shape('smooth');
 
-    ctx.draw();
+    chart.render();
+    canvasToImg();
+  };
+
+  // canvas 换图片，因为canvas层级高，自定义导航栏遮不住
+  const canvasToImg = async () => {
+    const canvasNode = await getNodeRect('#tmpLine');
+    const {width, height} = canvasNode;
+    Taro.canvasToTempFilePath({
+      x: 0,
+      y: 0,
+      width,
+      height,
+      canvasId: 'tmpLine',
+    }).then(res => {
+      setTmpLineImgPath(res.tempFilePath);
+    }).catch(err => {
+      console.log(err);
+    })
   };
 
   return (
@@ -116,14 +220,22 @@ function DailyForecast() {
       style={{height: `${scrollHeight}px`}}
     >
 
-      <View className='h-100-per flex-row flex-start-stretch' style={{width: `${scrollWidth}px`}}>
-        <Canvas className='tmp-line' canvasId='tmpLine'
+      <View className='h-100-per flex-row flex-start-stretch relative box-hd-x' style={{width: `${scrollWidth}px`}}>
+        <Canvas className='tmp-line' canvasId='tmpLine' id='tmpLine'
+          style={{
+            top: `${scrollHeight / 3}px`,
+            width: `${scrollWidth}px`,
+            height: `${scrollHeight / 3}px`,
+            left: `9999px`
+          }}
+        />
+        {tmpLineImgPath && <Image className='tmp-line' src={tmpLineImgPath}
           style={{
             top: `${scrollHeight / 3}px`,
             width: `${scrollWidth}px`,
             height: `${scrollHeight / 3}px`
           }}
-        />
+        />}
         {daily.map((df, index) => {
           return (
             <View className={`flex-col flex-spa-center w-150 text-center ${index === 0 ? 'bg-gray-100' : ''}`} key={String(index)}>

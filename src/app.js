@@ -9,8 +9,6 @@ import configStore from './redux/store'
 
 import './app.scss'
 
-import {S_TOOLS_APPID} from './apis/config';
-
 // 自定义星期
 moment.updateLocale('en', {
   weekdays : [
@@ -41,7 +39,8 @@ class App extends Component {
         name: 'forecast',  // 预告
         pages: [
           'pages/daily_forecast/index',
-          'pages/alarm/index'
+          'pages/alarm/index',
+          'pages/air/index'
         ],
       },
       {

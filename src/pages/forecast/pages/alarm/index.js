@@ -1,20 +1,20 @@
-import Taro, {useState} from '@tarojs/taro'
+import Taro, {useState, useEffect} from '@tarojs/taro'
 import {View} from '@tarojs/components'
 import {useSelector} from '@tarojs/redux'
 import moment from 'moment'
 import './index.scss'
-import {setNavStyle, useAsyncEffect} from '../../../../utils'
+import {setNavStyle} from '../../../../utils'
 
 function Alarm() {
   const location = useSelector(state => state.location);
   const user = useSelector(state => state.user);
   const [alarms, setAlarms] = useState([]);
 
-  useAsyncEffect(async () => {
+  useEffect(async () => {
     setNavStyle(location.isDay, user.theme);
 
-    const alarms = Taro.getStorageSync('ALARMS');
-    setAlarms(alarms);
+    const _alarms = Taro.getStorageSync('ALARMS');
+    setAlarms(_alarms);
   }, []);
 
   return (
