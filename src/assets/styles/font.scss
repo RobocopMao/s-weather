@@ -1,5 +1,5 @@
 // font-size 20-100 偶数字大
-@for $i from 20 through 100 {
+@for $i from 10 through 100 {
   .fs-#{$i} {
     @if $i % 2 == 0 {
       font-size: #{$i}px;
@@ -22,7 +22,7 @@
 }
 
 // line-height
-@for $i from 20 through 100 {
+@for $i from 10 through 100 {
   .lh-#{$i} {
      @if $i % 2 == 0 {
        line-height: #{$i}px;

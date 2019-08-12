@@ -487,6 +487,11 @@ function Index() {
     setScrollToTop(prev => prev === 0 ? 0.1 : 0);
   };
 
+  // 去空气质量
+  const goAir = () => {
+    Taro.navigateTo({url: `../../forecast/pages/air/index`});
+  };
+
   // 去气象预警
   const goAlarms = () => {
     Taro.navigateTo({url: `../../forecast/pages/alarm/index`});
@@ -600,7 +605,7 @@ function Index() {
                 <View className=''>湿度 {now.humidity}%</View>
               </View>
               {JSON.stringify(nowAir) !== '{}' && <View className='mg-l-10 mg-r-10 h-28 v-line-white' />}
-              {JSON.stringify(nowAir) !== '{}' &&<View className='flex-row flex-center-baseline'>
+              {JSON.stringify(nowAir) !== '{}' && <View className='flex-row flex-center-baseline' onClick={() => goAir()}>
                 <View className='iconfont mg-r-4 fs-26'>&#xe68b;</View>
                 <View className=''>空气{nowAir.city.quality} {nowAir.city.aqi}</View>
               </View>}
