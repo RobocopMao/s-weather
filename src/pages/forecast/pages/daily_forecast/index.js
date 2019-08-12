@@ -45,7 +45,7 @@ function DailyForecast() {
       .then(res => {
         drawTmpLine();
       })
-  }, [scrollHeight, scrollWidth, daily]);
+  }, [daily]);
 
   //画图
   // const drawTmpLine = () => {
@@ -155,6 +155,8 @@ function DailyForecast() {
       padding: ['auto', windowW1_5 / 2, 'auto', windowW1_5 / 2]
     });
 
+    console.log(chart);
+
     const defs = {
       date: {
         type: 'timeCat',
@@ -192,25 +194,27 @@ function DailyForecast() {
     }).shape('smooth');
 
     chart.render();
-    canvasToImg();
+    // setTimeout(() => {
+    //   canvasToImg();
+    // }, 300);
   };
 
   // canvas 换图片，因为canvas层级高，自定义导航栏遮不住
-  const canvasToImg = async () => {
-    const canvasNode = await getNodeRect('#tmpLine');
-    const {width, height} = canvasNode;
-    Taro.canvasToTempFilePath({
-      x: 0,
-      y: 0,
-      width,
-      height,
-      canvasId: 'tmpLine',
-    }).then(res => {
-      setTmpLineImgPath(res.tempFilePath);
-    }).catch(err => {
-      console.log(err);
-    })
-  };
+  // const canvasToImg = async () => {
+  //   const canvasNode = await getNodeRect('#tmpLine');
+  //   const {width, height} = canvasNode;
+  //   Taro.canvasToTempFilePath({
+  //     x: 0,
+  //     y: 0,
+  //     width,
+  //     height,
+  //     canvasId: 'tmpLine',
+  //   }).then(res => {
+  //     setTmpLineImgPath(res.tempFilePath);
+  //   }).catch(err => {
+  //     console.log(err);
+  //   })
+  // };
 
   return (
     <ScrollView
@@ -226,16 +230,16 @@ function DailyForecast() {
             top: `${scrollHeight / 3}px`,
             width: `${scrollWidth}px`,
             height: `${scrollHeight / 3}px`,
-            left: `9999px`
+            // left: `9999px`
           }}
         />
-        {tmpLineImgPath && <Image className='tmp-line' src={tmpLineImgPath}
-          style={{
-            top: `${scrollHeight / 3}px`,
-            width: `${scrollWidth}px`,
-            height: `${scrollHeight / 3}px`
-          }}
-        />}
+        {/*{tmpLineImgPath && <Image className='tmp-line' src={tmpLineImgPath}*/}
+          {/*style={{*/}
+            {/*top: `${scrollHeight / 3}px`,*/}
+            {/*width: `${scrollWidth}px`,*/}
+            {/*height: `${scrollHeight / 3}px`*/}
+          {/*}}*/}
+        {/*/>}*/}
         {daily.map((df, index) => {
           return (
             <View className={`flex-col flex-spa-center w-150 text-center ${index === 0 ? 'bg-gray-100' : ''}`} key={String(index)}>

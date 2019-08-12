@@ -378,7 +378,7 @@ function Index() {
       pixelRatio: user.systemInfo.pixelRatio,
       padding: ['auto', rowWidth / 2, 'auto', rowWidth / 2]
     });
-    console.log(chart)
+    console.log(chart);
 
     const defs = {
       time: {
@@ -411,7 +411,9 @@ function Index() {
     });
 
     chart.render();
-    canvasToImg();
+    setTimeout(() => {
+      canvasToImg();
+    }, 300);
   };
 
   // canvas 换图片，因为canvas层级高，自定义导航栏遮不住
@@ -624,7 +626,7 @@ function Index() {
               scrollLeft={0}
               style={{height: '300px'}}
             >
-              <View className='flex-row flex-start-stretch pd-t-20 pd-b-40 h-100-per relative box-hd-x' id='tmpLineBox' style={{width: `${Taro.pxTransform(hourly.length * 150)}`}}>
+              <View className='flex-row flex-start-stretch pd-t-20 pd-b-40 h-100-per relative box-hd-x' style={{width: `${Taro.pxTransform(hourly.length * 150)}`}}>
                 <Canvas className='tmp-line' canvasId='tmpLine' id='tmpLine'
                   style={{
                     width: `${Taro.pxTransform(hourly.length * 150)}`,

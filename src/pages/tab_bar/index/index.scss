@@ -44,10 +44,12 @@
       flex: 0 0 100px;
     }
   }
+
   .tmp-line {
     position: absolute;
     top: 140px;
     left: 0;
+    right: 0;
     z-index: 1;
   }
   .tab-bar {
