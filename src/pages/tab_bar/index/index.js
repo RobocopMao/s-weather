@@ -378,7 +378,7 @@ function Index() {
       pixelRatio: user.systemInfo.pixelRatio,
       padding: ['auto', rowWidth / 2, 'auto', rowWidth / 2]
     });
-    console.log(chart);
+    // console.log(chart);
 
     const defs = {
       time: {

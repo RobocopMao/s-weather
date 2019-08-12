@@ -155,7 +155,7 @@ function DailyForecast() {
       padding: ['auto', windowW1_5 / 2, 'auto', windowW1_5 / 2]
     });
 
-    console.log(chart);
+    // console.log(chart);
 
     const defs = {
       date: {
