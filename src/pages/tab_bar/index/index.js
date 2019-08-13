@@ -664,7 +664,9 @@ function Index() {
                         <View>{h.humidity}%</View>
                       </View>
                       <View className='h-line-white line w-100-per' />
-                      <View className='text-center'>{moment(h.time).format('HH:mm')}</View>
+                      <View className='text-center'>
+                        {moment(h.time).format('HH:mm') === '00:00' ? moment(h.time).format('MM-DD') : moment(h.time).format('HH:mm')}
+                      </View>
                     </View>
                   )
                 })}

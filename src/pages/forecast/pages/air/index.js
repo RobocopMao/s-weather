@@ -1,24 +1,26 @@
 import Taro, {useState, useEffect} from '@tarojs/taro'
-import {View, Canvas, Text} from '@tarojs/components'
+import {View, Canvas, Text, Map} from '@tarojs/components'
 import {useSelector} from '@tarojs/redux'
 import moment from 'moment'
 import Core from '@antv/f2/lib/core'
 import Guide from '@antv/f2/lib/plugin/guide'
-import GroupAnimation from '@antv/f2/lib/animation/group';
+import GroupAnimation from '@antv/f2/lib/animation/group'
 import '@antv/f2/lib/coord/polar'; // 极坐标
 import '@antv/f2/lib/component/guide/text' // 只加载 Guide.Text 组件
 import '@antv/f2/lib/component/guide/arc' // 只加载 Guide.Arc 组件
 import '@antv/f2/lib/geom/interval' // 只加载 Guide.Arc 组件
 import './index.scss'
-import {setNavStyle, useAsyncEffect} from '../../../../utils'
-import Renderer from '../../../../utils/renderer';
+import {setNavStyle} from '../../../../utils'
+import Renderer from '../../../../utils/renderer'
 import aqiJson from '../../../../assets/json/aqi.json'
+import locationImg from '../../../../assets/images/location.png'
 
 function Air() {
   const location = useSelector(state => state.location);
   const user = useSelector(state => state.user);
   const [nowAir, setNowAir] = useState({});
   const [nowAirDesc, setNowAirDesc] = useState({});
+  const [markers, setMarkers] = useState([]);
 
   useEffect(async () => {
     setNavStyle(location.isDay, user.theme);
@@ -29,6 +31,7 @@ function Air() {
 
   useEffect(() => {
     drawQai();
+    initMarkers();
   }, [nowAir]);
 
   // 画
@@ -114,52 +117,143 @@ function Air() {
     chart.render();
   };
 
+  // 初始化markers
+  const initMarkers = () => {
+    if (JSON.stringify(nowAir) === '{}') {
+      return;
+    }
+    const {stations} = nowAir;
+    let _markers = [];
+    for (let [i, v] of stations.entries()) {
+      let marker = {
+        id: i,
+        longitude: Number(v.longitude),
+        latitude: Number(v.latitude),
+        iconPath: locationImg,
+        width: 25,
+        height: 25,
+        title: `${v.aqi} ${v.station}`,
+        callout: {
+          content: v.aqi,
+          color: '#fff',
+          fontSize: 13,
+          borderRadius: 8,
+          textAlign: 'center',
+          bgColor: getAqiColor(v.aqi),
+          display: 'ALWAYS',
+          padding: 5,
+          zIndex: 0,
+        },
+      };
+      _markers.push(marker);
+    }
+
+    setMarkers(_markers);
+  };
+
+  // 更具aqi获取不同的颜色
+  const getAqiColor = (aqi) => {
+    const _aqi = Number(aqi);
+    let aqiDesc = aqiJson.find((v, i, arr) => {
+      if (_aqi === 0) {
+        return arr[0];
+      }
+      return _aqi > v.minAqi && _aqi <= v.maxAqi
+    });
+
+    return aqiDesc.color;
+  };
+
+  // 点击marker
+  const markerTap = (e) => {
+    // console.log(e)
+    const {markerId} = e;
+    let _markers = markers;
+    for (let [, v] of _markers.entries()) {
+      if (v.id === markerId) {
+        v.callout.content = v.title;
+        v.callout.zIndex = 1;
+      } else {
+        v.callout.content = v.title.split(' ')[0];
+        v.callout.zIndex = 0;
+      }
+    }
+    setMarkers(_markers)
+  };
+
+  const goAqiForecast = () => {
+    Taro.navigateTo({url: `/pages/forecast/pages/air_forecast/index`});
+  };
+
   return (
     <View className={`air pd-lr-20 bd-box theme-${user.theme}`}>
       <View className='flex-col'>
-      <View className='flex-row flex-start-center'>
-        <Canvas canvasId='nowAirAqi' style={{width: '100px', height: '100px', flex: `0 0 100px`}} />
-        <View className='flex-col mg-l-20'>
-          <View className='fs-36 mg-b-10' style={{color: nowAirDesc.color}}>{nowAirDesc.aqiName}</View>
-          <View>{nowAirDesc.effect}</View>
+        <View className='flex-row flex-start-center'>
+          <Canvas canvasId='nowAirAqi' style={{width: '100px', height: '100px', flex: `0 0 100px`}} />
+          <View className='flex-col mg-l-20'>
+            <View className='fs-36 mg-b-10 bold' style={{color: nowAirDesc.color}}>{nowAirDesc.aqiName}</View>
+            <View>{nowAirDesc.effect}</View>
+          </View>
+          <View className={`flex-col flex-center text-center mg-l-20 white circle w-100 h-100 item-fls-0 item-flg-0 item-flb-100 ${location.isDay ? 'day-bg' : 'night-bg'}`}
+                onClick={() => goAqiForecast()}>
+            <View className='fs-32'>AQI</View>
+            <View className='fs-24'>预报</View>
+          </View>
+        </View>
+        <View className='h-line-gray-300 mg-b-20' />
+        <View className='flex-row flex-spb-center text-center'>
+          <View>
+            <View className={`fs-30 ${location.isDay ? 'day-color' : 'night-color'}`}>{nowAir.city.pm25}</View>
+            <View className='fs-24 mg-t-4'>PM2.5</View>
+          </View>
+          <View>
+            <View className={`fs-30 ${location.isDay ? 'day-color' : 'night-color'}`}>{nowAir.city.pm10}</View>
+            <View className='fs-24 mg-t-4'>PM10</View>
+          </View>
+          <View>
+            <View className={`fs-30 ${location.isDay ? 'day-color' : 'night-color'}`}>{nowAir.city.so2}</View>
+            <View className='fs-24 mg-t-4'>
+              <Text>SO</Text>
+              <Text className='fs-16'>2</Text>
+            </View>
+          </View>
+          <View>
+            <View className={`fs-30 ${location.isDay ? 'day-color' : 'night-color'}`}>{nowAir.city.no2}</View>
+            <View className='fs-24 mg-t-4'>
+              <Text>NO</Text>
+              <Text className='fs-16'>2</Text>
+            </View>
+          </View>
+          <View>
+            <View className={`fs-30 ${location.isDay ? 'day-color' : 'night-color'}`}>{nowAir.city.o3}</View>
+            <View className='fs-24 mg-t-4'>
+              <Text>O</Text>
+              <Text className='fs-16'>3</Text>
+            </View>
+          </View>
+          <View>
+            <View className={`fs-30 ${location.isDay ? 'day-color' : 'night-color'}`}>{nowAir.city.co}</View>
+            <View className='fs-24 mg-t-4'>CO</View>
+          </View>
         </View>
       </View>
-      <View className='h-line-gray-300 mg-b-20' />
-      <View className='flex-row flex-spb-center text-center'>
-        <View>
-          <View className={`fs-30 ${location.isDay ? 'day-color' : 'night-color'}`}>{nowAir.city.pm25}</View>
-          <View className='fs-24 mg-t-4'>PM2.5</View>
+      <View className='flex-col mg-t-20'>
+        <View className='flex-row flex-spb-baseline mg-tb-20 fs-32'>
+          <Text className='gray-900'>附近空气质量</Text>
+          <Text className='fs-24 gray-400'>{moment(nowAir.last_update).format('MM-DD HH:mm')} 发布</Text>
         </View>
-        <View>
-          <View className={`fs-30 ${location.isDay ? 'day-color' : 'night-color'}`}>{nowAir.city.pm10}</View>
-          <View className='fs-24 mg-t-4'>PM10</View>
+        <View className='map'>
+          <Map
+            className='w-100-per h-100-per'
+            longitude={location.latAndLon.longitude}
+            latitude={location.latAndLon.latitude}
+            scale={10}
+            markers={markers}
+            showLocation
+            onMarkerTap={(e) => markerTap(e)}
+            onCalloutTap={(e) => markerTap(e)}
+          />
         </View>
-        <View>
-          <View className={`fs-30 ${location.isDay ? 'day-color' : 'night-color'}`}>{nowAir.city.so2}</View>
-          <View className='fs-24 mg-t-4'>
-            <Text>SO</Text>
-            <Text className='fs-16'>2</Text>
-          </View>
-        </View>
-        <View>
-          <View className={`fs-30 ${location.isDay ? 'day-color' : 'night-color'}`}>{nowAir.city.no2}</View>
-          <View className='fs-24 mg-t-4'>
-            <Text>NO</Text>
-            <Text className='fs-16'>2</Text>
-          </View>
-        </View>
-        <View>
-          <View className={`fs-30 ${location.isDay ? 'day-color' : 'night-color'}`}>{nowAir.city.o3}</View>
-          <View className='fs-24 mg-t-4'>
-            <Text>O</Text>
-            <Text className='fs-16'>3</Text>
-          </View>
-        </View>
-        <View>
-          <View className={`fs-30 ${location.isDay ? 'day-color' : 'night-color'}`}>{nowAir.city.co}</View>
-          <View className='fs-24 mg-t-4'>CO</View>
-        </View>
-      </View>
       </View>
     </View>
   )
