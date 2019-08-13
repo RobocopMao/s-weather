@@ -188,13 +188,13 @@ function Air() {
   return (
     <View className={`air pd-lr-20 bd-box theme-${user.theme}`}>
       <View className='flex-col'>
-        <View className='flex-row flex-start-center'>
-          <Canvas canvasId='nowAirAqi' style={{width: '100px', height: '100px', flex: `0 0 100px`}} />
-          <View className='flex-col mg-l-20'>
+        <View className='flex-row flex-spb-center'>
+          <Canvas className='item-als-center' canvasId='nowAirAqi' style={{width: '100px', height: '100px', flex: `0 0 100px`}} />
+          <View className='flex-col mg-l-20 item-als-center'>
             <View className='fs-36 mg-b-10 bold' style={{color: nowAirDesc.color}}>{nowAirDesc.aqiName}</View>
             <View>{nowAirDesc.effect}</View>
           </View>
-          <View className={`flex-col flex-center text-center mg-l-20 white circle w-100 h-100 item-fls-0 item-flg-0 item-flb-100 ${location.isDay ? 'day-bg' : 'night-bg'}`}
+          <View className={`flex-col flex-center item-als-center text-center mg-l-20 white circle w-100 h-100 item-fls-0 item-flg-0 item-flb-100 ${location.isDay ? 'day-bg' : 'night-bg'}`}
                 onClick={() => goAqiForecast()}>
             <View className='fs-32'>AQI</View>
             <View className='fs-24'>预报</View>

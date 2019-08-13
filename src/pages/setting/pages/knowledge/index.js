@@ -5,6 +5,7 @@ import './index.scss'
 import {setNavStyle} from '../../../../utils'
 import windDirImg from '../../../../assets/images/wind_dir.jpg'
 import windGrade from '../../../../assets/json/wind_grade.json'
+import aqiJson from '../../../../assets/json/aqi.json'
 
 function Knowledge() {
   const location = useSelector(state => state.location);
@@ -52,6 +53,33 @@ function Knowledge() {
         <Text className='gray-900 mg-tb-20'>说明：</Text>
         <Text>· 本表所列风速是指平地上离地10米处的风速值。</Text>
         <Text>· 超级台风（super typhoon）为美国对顶级强度台风的称谓。</Text>
+      </View>
+      {/*空气质量指数*/}
+      <View className='flex-col mg-20 mg-t-40'>
+        <Text className='fs-36 gray-900'>空气质量指数等级表</Text>
+        <View className='h-line-gray-700 mg-tb-20' />
+        <View>
+          <View className='flex-row flex-spb-center bg-gray-200 pd-tb-10 text-center'>
+            <View className='item-flg-0 item-fls-0 item-flb-25per item-als-center'>空气质量指数AQI</View>
+            <View className='item-flg-0 item-fls-0 item-flb-20per item-als-center'>AQI级别</View>
+            <View className='item-flg-0 item-fls-0 item-flb-30per item-als-center'>AQI文字描述</View>
+            <View className='item-flg-0 item-fls-0 item-flb-25per item-als-center'>颜色</View>
+          </View>
+          {aqiJson.map((aqi, index) => {
+            const {minAqi, maxAqi, level, aqiName, colorName, color} = aqi;
+            return (
+              <View className='flex-row flex-spb-center pd-tb-10 text-center' key={String(index)} style={{color}}>
+                {minAqi === 0 && <View className='item-flg-0 item-fls-0 item-flb-25per'>{minAqi}-{maxAqi}</View>}
+                {minAqi > 0 && maxAqi <= 300 && <View className='item-flg-0 item-fls-0 item-flb-25per'>{minAqi + 1}-{maxAqi}</View>}
+                {minAqi >= 300 && <View className='item-flg-0 item-fls-0 item-flb-25per'>{`>300`}</View>}
+                <View className='item-flg-0 item-fls-0 item-flb-20per'>{level}</View>
+                <View className='item-flg-0 item-fls-0 item-flb-30per'>{aqiName}</View>
+                <View className='item-flg-0 item-fls-0 item-flb-25per'>{colorName}</View>
+              </View>
+            )
+          })}
+          <View className='h-line-gray-500' />
+        </View>
       </View>
     </View>
   )

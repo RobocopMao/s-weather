@@ -28,6 +28,7 @@ function AirForecast() {
     setNavStyle(location.isDay, user.theme);
   }, []);
 
+  // 获取数据
   useAsyncEffect(async () => {
     const {latitude, longitude} = location.latAndLon;
     const res = await getAirHourly({location: `${latitude}:${longitude}`, days: 1});
@@ -53,6 +54,7 @@ function AirForecast() {
     drawDailyLine();
   }, [airDaily]);
 
+  // 画逐小时预报图
   const drawHourlyLine = async () => {
     const nodeRect = await getNodeRect('#aqiHourlyLine');
     if (!airHourly.length || !nodeRect) {return}
@@ -128,6 +130,7 @@ function AirForecast() {
     chart.render();
   };
 
+  // 画逐天预报图
   const drawDailyLine = async () => {
     const nodeRect = await getNodeRect('#aqiDailyLine');
     if (!airDaily.length || !nodeRect) {return}
@@ -235,7 +238,7 @@ function AirForecast() {
               height: `220px`,
               // width: `350px`
             }} />
-            <View className='flex-row flex-spb-center text-center pd-lr-10'>
+            <View className='flex-row flex-spb-center text-center pd-lr-10 h-14 lh-14'>
               {times.map((time) => {
                 return (
                   <View className='fs-20' key={time} style={{width: `50px`}}>
@@ -247,9 +250,8 @@ function AirForecast() {
           </View>
         </ScrollView>
       </View>
-      <View className='h-line-gray-300' />
       <View className='flex-col flex-start-stretch bd-box pd-b-40 item-flb-50per'>
-        <View className='text-center lh-88'>5天预报</View>
+        <View className='text-center lh-88 bd-t-thin-gray-300 relative'>5天预报</View>
         <ScrollView
           className='pd-lr-20 bd-box item-flg-1'
           scrollX
@@ -260,7 +262,7 @@ function AirForecast() {
               height: `220px`,
               // width: `350px`
             }} />
-            <View className='flex-row flex-spb-center text-center w-100-per pd-lr-30'>
+            <View className='flex-row flex-spb-center text-center w-100-per pd-lr-30 h-14 lh-14'>
               {dates.map((date) => {
                 return (
                   <View className='fs-20' key={date}>{moment(date).format('MM-DD')}</View>
