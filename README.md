@@ -37,9 +37,9 @@ Taro初始化的redux项目模版，三个文件夹，自己把constant，reduce
 我现在只用了首页的自定义导航栏，代码放在components/base下面。这个百度也很多，我也是参照别人的弄的。参考：https://www.jianshu.com/p/5877a3dc0b1e。
 
 ### 7.antV/F2 图表
-阿里移动端统计图表，参考：https://antv.alipay.com/zh-cn/index.html。
-我没有用wx-f2组件：https://github.com/antvis/wx-f2/tree/custom-components，
-只是借鉴了其绑定小程序上下文的方法，写的时候语法都一样。
+阿里移动端统计图表，参考：https://antv.alipay.com/zh-cn/index.html
+。我没有用wx-f2组件：https://github.com/antvis/wx-f2/tree/custom-components
+，只是借鉴了其绑定小程序上下文的方法，写的时候语法都一样。
 
 ### 8.腾讯地图标记
 空气质量详情附近站点的空气质量采用腾讯地图标记，文档可以直接查看官方Map组件
