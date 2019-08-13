@@ -15,3 +15,27 @@ export const getAirNow = async (data) => {
     hostType: XZ_HOST_TYPE
   });
 };
+
+// 逐小时空气质量预报
+export const getAirDaily = async (data) => {
+  if (data.location === ':' || data.location === '') {
+    return;
+  }
+  return await request.get({
+    url: '/v3/air/daily.json',
+    data,
+    hostType: XZ_HOST_TYPE
+  });
+};
+
+// 逐小时空气质量预报
+export const getAirHourly = async (data) => {
+  if (data.location === ':' || data.location === '') {
+    return;
+  }
+  return await request.get({
+    url: '/v3/air/hourly.json',
+    data,
+    hostType: XZ_HOST_TYPE
+  });
+};

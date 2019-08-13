@@ -132,10 +132,11 @@ function Index() {
   // 空气质量
   useAsyncEffect(async () => {
     const {latitude, longitude} = location.latAndLon;
-    const res = await getAirNow({location: `${latitude}:${longitude}`});
+    const res = await getAirNow({location: `${latitude}:${longitude}`, scope: 'all'});
     // console.log(res);
     if (!res) {return}
-    const {air} = res;
+    const {air, last_update} = res;
+    air.last_update = last_update;
     setNowAir(air);
     Taro.setStorageSync('NOW_AIR', air);
   }, [location.latAndLon]);

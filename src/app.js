@@ -40,7 +40,8 @@ class App extends Component {
         pages: [
           'pages/daily_forecast/index',
           'pages/alarm/index',
-          'pages/air/index'
+          'pages/air/index',
+          'pages/air_forecast/index'
         ],
       },
       {
