@@ -624,7 +624,7 @@ function Index() {
           {/*24小时预报*/}
           {hourly.length && <View className={`mg-20 bd-radius-20 ${location.isDay ? 'day-bg-opacity' : 'night-bg-opacity'}`}>
             <View className='text-center fs-30 pd-30'>24小时逐时预报</View>
-            <View className='h-line-white' />
+            {/*<View className='h-line-white' />*/}
             <ScrollView
               className='flex-col'
               scrollX
@@ -705,7 +705,7 @@ function Index() {
           {location.name !== '香港' && location.name !== '澳门' && JSON.stringify(suggestion) !== '{}'
           && <View className={`mg-20 bd-radius-20 ${location.isDay ? 'day-bg-opacity' : 'night-bg-opacity'}`}>
             <View className='text-center fs-30 pd-30'>今日生活指数</View>
-            <View className='h-line-white' />
+            {/*<View className='h-line-white' />*/}
             <Swiper
               className='pd-t-10 pd-b-10'
               circular
