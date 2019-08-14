@@ -238,10 +238,10 @@ function AirForecast() {
               height: `220px`,
               // width: `350px`
             }} />
-            <View className='flex-row flex-spb-center text-center pd-lr-10 h-14 lh-14'>
+            <View className='flex-row flex-spb-center text-center pd-lr-22 h-28 lh-28'>
               {times.map((time) => {
                 return (
-                  <View className='fs-20' key={time} style={{width: `50px`}}>
+                  <View className='fs-20' key={time} style={{width: `40px`}}>
                     {moment(time).format('H:mm') === '0:00' ? moment(time).format('MM-DD') : moment(time).format('H:mm')}
                   </View>
                 )
@@ -262,10 +262,10 @@ function AirForecast() {
               height: `220px`,
               // width: `350px`
             }} />
-            <View className='flex-row flex-spb-center text-center w-100-per pd-lr-30 h-14 lh-14'>
+            <View className='flex-row flex-spb-center text-center w-100-per pd-lr-22 h-28 lh-28'>
               {dates.map((date) => {
                 return (
-                  <View className='fs-20' key={date}>{moment(date).format('MM-DD')}</View>
+                  <View className='fs-20' key={date} style={{width: `40px`}}>{moment(date).format('MM-DD')}</View>
                 )
               })}
             </View>
