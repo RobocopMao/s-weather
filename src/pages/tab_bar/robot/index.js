@@ -20,13 +20,12 @@ function Robot() {
   const [quickRes, setQuickRes] = useState([]);
   const [showQuickRes, setShowQuickRes] = useState(false);
   const [session, setSession] = useState('');
-  const [talks, setTalks] = useState([{robotReply: `您好，我是天气聊天机器人。您可以对我说：明天${user.location.city}天气怎么样？`, time: moment().format('YYYY-MM-DD HH:mm')}]);
+  const [talks, setTalks] = useState([{robotReply: `您好，我是天气聊天机器人，从现在开始为你在本地保留30分钟内的聊天回话。您可以对我说：明天${user.location.city}天气怎么样？`, time: moment().format('YYYY-MM-DD HH:mm')}]);
   const [quickResAnimation, setQuickResAnimation] = useState({});
 
   // 设置白天、夜晚主题
   useEffect(() => {
     setNavStyle(location.isDay, user.theme);
-    initQuickRes();
   }, []);
 
   // 设备信息
@@ -35,6 +34,33 @@ function Robot() {
     if (!res) {return;}
     const {windowHeight, statusBarHeight} = user.systemInfo;
     setScrollHeight(windowHeight - res.height - 44 - statusBarHeight);  // 自定义导航固定44
+  }, []);
+
+  // 初始化聊天记录,30分钟之内的和会话session
+  useEffect(() => {
+    const ROBOT_SESSION = Taro.getStorageSync('ROBOT_SESSION');
+    const ROBOT_TALKS = Taro.getStorageSync('ROBOT_TALKS');
+    if (ROBOT_TALKS) {
+      const firstTime = ROBOT_TALKS[1].time;
+      if (moment().subtract(30, 'minutes') < moment(firstTime)) {
+        setTalks(ROBOT_TALKS);
+        let tId = setTimeout(() => {
+          setScrollTop(ROBOT_TALKS.length * 200);
+          clearTimeout(tId);
+        }, 1000);
+        setInputVal('');
+        setSession(ROBOT_SESSION);
+      } else {
+        Taro.removeStorageSync('ROBOT_TALKS');
+        Taro.removeStorageSync('ROBOT_SESSION');
+      }
+    }
+
+  }, []);
+
+  // 初始化快捷回复
+  useEffect(() => {
+    initQuickRes();
   }, []);
 
   // 初始化快捷回复
@@ -143,6 +169,7 @@ function Robot() {
     const res = await getRobotTalk({q, session});
     const {query, reply} = res;
     setSession(res.session);
+    Taro.setStorageSync('ROBOT_SESSION', res.session);
     let _talks = talks;
     const onceTalk = {
       robotReply: reply.plain || `ヾ(≧O≦)〃嗷哦~，这个问题有点难，您可以试试其他的，比如：今天天气怎么样？`,
@@ -153,6 +180,7 @@ function Robot() {
     setTalks(_talks);
     setScrollTop(_talks.length * 200);
     setInputVal('');
+    Taro.setStorageSync('ROBOT_TALKS', _talks);
   };
 
   // 设置剪贴板
@@ -189,18 +217,18 @@ function Robot() {
             <View className='flex-col flex-start-stretch white pd-lr-20 relative' key={String(index)}>
               {isTimeShow && <View className='fs-24 text-center w-100-per gray-700 mg-tb-20'>{moment(time).format('HH:mm')}</View>}
               {/*我*/}
-              {myQuery && <View className='flex-row flex-end-start mg-b-30 relative' onLongPress={() => setClipboard(myQuery)}>
+              {myQuery && <View className='flex-row flex-end-start mg-b-30 relative'>
                 <View className='h-100-per item-fls-0 item-flg-0 item-flb-20per' />
-                <View className={`bd-radius-20 pd-20 ${location.isDay ? 'night-bg' : 'day-bg'}`}>{myQuery}</View>
+                <View className={`bd-radius-20 pd-20 ${location.isDay ? 'night-bg' : 'day-bg'}`} onLongPress={() => setClipboard(myQuery)}>{myQuery}</View>
                 <View className='circle w-80 h-80 box-hd mg-l-20'>
                   <OpenData type='userAvatarUrl' />
                 </View>
                 <View className={`iconfont ${location.isDay ? 'night-color' : 'day-color'} my-triangle`}>&#xe617;</View>
               </View>}
               {/*机器人*/}
-              {robotReply && <View className='flex-row flex-start mg-b-30 relative' onLongPress={() => setClipboard(robotReply)}>
+              {robotReply && <View className='flex-row flex-start mg-b-30 relative'>
                 <View className={`iconfont fs-80 w-80 h-80 lh-80 text-center mg-r-20 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe632;</View>
-                <View className={`bd-radius-20 pd-20 ${location.isDay ? 'day-bg' : 'night-bg'}`}>{robotReply}</View>
+                <View className={`bd-radius-20 pd-20 ${location.isDay ? 'day-bg' : 'night-bg'}`} onLongPress={() => setClipboard(robotReply)}>{robotReply}</View>
                 <View className='h-100-per item-fls-0 item-flg-0 item-flb-20per' />
                 <View className={`iconfont ${location.isDay ? 'day-color' : 'night-color'} robot-triangle`}>&#xe617;</View>
               </View>}
