@@ -50,7 +50,6 @@ function Robot() {
     const COLLECTED_CITY = Taro.getStorageSync('COLLECTED_CITY');
     const LOCATION_SEARCH_HISTORY = Taro.getStorageSync('LOCATION_SEARCH_HISTORY');
     let storeCities = [...COLLECTED_CITY, ...LOCATION_SEARCH_HISTORY];
-    console.log(storeCities);
     if (storeCities.length) {
       for (let i = 0; i < storeCities.length; i++) {
         _cities.push(storeCities[i].cityName);
