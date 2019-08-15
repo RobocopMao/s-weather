@@ -1,11 +1,11 @@
 import Taro, {useEffect, useState} from '@tarojs/taro'
-import {Button, Input, OpenData, ScrollView, Text, View} from '@tarojs/components'
-import {useDispatch, useSelector} from '@tarojs/redux';
+import {Button, Input, OpenData, ScrollView, View} from '@tarojs/components'
+import {useSelector} from '@tarojs/redux';
 import _ from 'lodash/lodash.min'
+import moment from 'moment';
 import './index.scss'
 import {setNavStyle, getNodeRect} from '../../../utils'
-import {getRobotTalk} from "../../../apis/function";
-import moment from "moment";
+import {getRobotTalk} from '../../../apis/function'
 // import ComponentBaseNavigation from '../../../components/base/navigation'
 // import themeMatch from '../../../assets/json/theme_match.json'
 
@@ -90,7 +90,7 @@ function Robot() {
     // 初始化常用时间
     let date = {
       desc: '查询时间',
-      quickRes: ['昨天', '今天', '明天', '后天', '未来24小时', '未来7天', '未来14天', '早上', '下午', '晚上']
+      quickRes: ['昨天', '今天', '明天', '后天', '未来24小时', '未来3天', '未来7天', '未来14天', '早上', '下午', '晚上']
     };
 
     // 常用快捷组合
@@ -238,7 +238,7 @@ function Robot() {
       </ScrollView>
       {/*快捷回复*/}
       {quickRes.length && <ScrollView
-        className='flex-col bg-white pd-20 bd-box quick-res-box'
+        className='flex-col bg-white pd-lr-20 bd-box quick-res-box'
         scrollY
         scrollWithAnimation
         enableBackToTop
@@ -249,7 +249,7 @@ function Robot() {
         {quickRes.map((res, index) => {
           return (
             <View className='flex-row flex-wrap' key={String(index)}>
-              <View className='mg-b-20 mg-t-10 fs-26 w-100-per'>{res.desc}</View>
+              <View className='mg-b-20 mg-t-20 fs-26 w-100-per'>{res.desc}</View>
               {res.quickRes.map((res1, index1) => {
                 return (
                   <View className={`bd-radius-50 white pd-lr-20 pd-tb-10 mg-b-20 mg-r-20 inline-block ${location.isDay ? 'night-bg' : 'day-bg'}`}
