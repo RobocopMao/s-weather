@@ -32,6 +32,7 @@ class App extends Component {
       'pages/tab_bar/setting/index',
       'pages/tab_bar/location_collection/index',
       'pages/tab_bar/location_search/index',
+      'pages/tab_bar/robot/index',
     ],
     subpackages: [  // 分包配置
       {

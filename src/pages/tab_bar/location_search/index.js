@@ -1,6 +1,6 @@
 import Taro, {useEffect, useState} from '@tarojs/taro'
 import {View, Input, Button, Text} from '@tarojs/components'
-import _ from 'lodash'
+import _ from 'lodash/lodash.min'
 import moment from 'moment'
 import {useSelector} from '@tarojs/redux';
 import './index.scss'
@@ -58,13 +58,17 @@ function LocationSearch() {
   // 搜索输入
   const searchInput = (e) => {
     const {value} = e.detail;
-    setInputVal(value.replace(/\s+/g, ''));
+    setInputVal(value);
   };
 
   // input change
   const searchInputChange = async (e) => {
     // console.log(e);
-    const {value} = e.detail;
+    let {value} = e.detail;
+    value = value.replace(/\s+/g, '');
+    if (!value) {
+      return;
+    }
     setIsSearching(true);
     const res = await findCity({location: value, group: 'cn', number: 20});
     setSearchResult(res.basic || []);
@@ -171,7 +175,7 @@ function LocationSearch() {
   return (
     <View className={`location-search flex-col flex-start-stretch theme-${user.theme}`}>
       <View className='flex-row flex-start-stretch h-88 bd-radius-20 mg-20 bd-box search-bar'>
-        <View className='flex-row flex-start-stretch item-flg-1 bd-w-1 bd-solid bd-gray-300 bd-radius-20'>
+        <View className='flex-row flex-start-stretch item-flg-1 bd-w-1 bd-solid bd-gray-300 bd-radius-50'>
           <Input className='item-flg-1 h-88 pd-l-20 pd-r-20 bd-box lh-88' confirmType='search' value={inputVal} placeholder='请输入查询城市'
             onInput={_.throttle((e) => searchInput(e), 500, {leading: false, trailing: true})} onChange={(e) => searchInputChange(e)}
           />

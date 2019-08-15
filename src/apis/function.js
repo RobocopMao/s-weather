@@ -1,6 +1,6 @@
 // 功能类
 import Request from './request';
-import {HF_HOST_TYPE, HF_API_HOST_SEARCH} from './config';
+import {HF_HOST_TYPE, HF_API_HOST_SEARCH, XZ_HOST_TYPE} from './config';
 
 const request = new Request();
 
@@ -21,5 +21,14 @@ export const findCity = async (data) => {
     url: '/find',
     data,
     hostType: HF_HOST_TYPE
+  });
+};
+
+// 天气聊天机器人
+export const getRobotTalk = async (data) => {
+  return await request.get({
+    url: '/v3/robot/talk.json',
+    data,
+    hostType: XZ_HOST_TYPE
   });
 };

@@ -2,7 +2,7 @@ import Taro, {useState, useEffect} from '@tarojs/taro'
 import {View, Canvas, ScrollView} from '@tarojs/components'
 import {useSelector} from '@tarojs/redux'
 import moment from 'moment'
-import _ from 'lodash'
+import _ from 'lodash/lodash.min'
 import Core from '@antv/f2/lib/core'
 import Guide from '@antv/f2/lib/plugin/guide'
 import '@antv/f2/lib/geom/line'; // 只加载折线图

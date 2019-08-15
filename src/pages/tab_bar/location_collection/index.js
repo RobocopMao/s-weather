@@ -1,7 +1,7 @@
 import Taro, {useEffect, useState} from '@tarojs/taro'
 import {View, Text, Button, Block} from '@tarojs/components'
 import {useSelector} from '@tarojs/redux'
-import _ from 'lodash'
+import _ from 'lodash/lodash.min'
 import './index.scss'
 import ComponentIconWindDirection from '../../../components/icon/wind_dir'
 import {setNavStyle, useAsyncEffect} from '../../../utils'

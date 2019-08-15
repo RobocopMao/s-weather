@@ -1,7 +1,7 @@
 import Taro, {useEffect, useState} from '@tarojs/taro'
-import {View, ScrollView, Canvas, Image} from '@tarojs/components'
+import {View, ScrollView, Canvas} from '@tarojs/components'
 import moment from 'moment'
-import _ from 'lodash'
+import _ from 'lodash/lodash.min'
 import Core from '@antv/f2/lib/core'
 import Guide from '@antv/f2/lib/plugin/guide'
 import '@antv/f2/lib/geom/line'; // 只加载折线图
@@ -9,7 +9,7 @@ import '@antv/f2/lib/component/guide/text'; // 只加载 Guide.Text 组件
 import '@antv/f2/lib/scale/time-cat'; // 加载 timeCat 类型的度量
 import {useSelector} from '@tarojs/redux'
 import './index.scss'
-import {getNodeRect, setNavStyle} from '../../../../utils'
+import {setNavStyle} from '../../../../utils'
 // import {getWeatherDaily} from '../../../../apis/weather'
 import ComponentIconWeather from '../../../../components/icon/weather'
 import ComponentIconWindDirection from '../../../../components/icon/wind_dir'
@@ -23,7 +23,7 @@ function DailyForecast() {
   const [scrollHeight, setScrollHeight] = useState(0); // 可使用窗口高度
   const [scrollWidth, setScrollWidth] = useState(0); // 可使用窗口高度
   const [windowWidth, setWindowWidth] = useState(0); // 可使用窗口高度
-  const [tmpLineImgPath, setTmpLineImgPath] = useState(''); // 可使用窗口高度
+  // const [tmpLineImgPath, setTmpLineImgPath] = useState(''); // 可使用窗口高度
 
   // 15日预报
   useEffect(async () => {

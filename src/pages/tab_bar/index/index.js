@@ -2,7 +2,7 @@ import Taro, {useEffect, useState} from '@tarojs/taro'
 import {Block, View, Text, ScrollView, Canvas, Image, Swiper, SwiperItem, Button} from '@tarojs/components'
 import { useSelector, useDispatch } from '@tarojs/redux'
 import moment from 'moment'
-import _ from 'lodash'
+import _ from 'lodash/lodash.min'
 import Core from '@antv/f2/lib/core'
 import Guide from '@antv/f2/lib/plugin/guide'
 import '@antv/f2/lib/geom/line'; // 只加载折线图
@@ -68,6 +68,8 @@ function Index() {
   const [scrollToTop, setScrollToTop] = useState(0);
   const [showSkeleton, setShowSkeleton] = useState(true);
   const [previous , setPrevious ] = useState(0);
+  const [tabBarAnimation, setTabBarAnimation] = useState({});
+  const [tabBarHeight, setTabBarHeight] = useState({});
 
   const lifeSuggestion = [
     {type: 'comfort', name: '舒适度指数'},
@@ -198,6 +200,7 @@ function Index() {
     dispatch(setSystemInfo(res));
     const res1 = await getNodeRect('#tabBar');
     if (!res1) {return;}
+    setTabBarHeight(res1.height);
     setScrollHeight(res.windowHeight - res1.height - 44 - user.systemInfo.statusBarHeight);  // 自定义导航固定44
   }, [showSkeleton]);
 
@@ -549,6 +552,28 @@ function Index() {
     });
   };
 
+  // 去语音
+  const goVoice = () => {
+    Taro.navigateTo({url: `../../tab_bar/robot/index`});
+  };
+
+  // 更多tabBar
+  const goUp = () => {
+    this.animation = Taro.createAnimation({
+      duration: 1000,
+      timingFunction: 'ease',
+    });
+
+    this.animation.translateY(-tabBarHeight).step();
+    setTabBarAnimation(this.animation.export());
+  };
+
+  // 还原tabBar
+  const goDown = () => {
+    this.animation.translateY(tabBarHeight).step();
+    setTabBarAnimation(this.animation.export());
+  };
+
   return (
     <Block>
       {showSkeleton && (
@@ -750,8 +775,15 @@ function Index() {
           <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goLocationCollection()}>&#xe87e;</View>{/**收藏**/}
           <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goLocationSearch()}>&#xe87c;</View>{/**搜索**/}
           <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'} ${user.isCurrentAddr ? '' : 'self-loc-anim red-A700'}`} onClick={() => locationSelf()}>&#xe875;</View>{/**定位**/}
-          <Button className={`iconfont fs-50 bold mg-0 pd-0 h-54 w-50 icon-btn ${location.isDay ? 'day-color' : 'night-color'}`} hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>{/**分享**/}
-          <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goSetting()}>&#xe87a;</View>{/**设置**/}
+          {/*<Button className={`iconfont fs-50 bold mg-0 pd-0 h-54 w-50 icon-btn ${location.isDay ? 'day-color' : 'night-color'}`} hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>/!**分享**!/*/}
+          <View className={`iconfont fs-50 ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goVoice()}>&#xf016;</View>{/**聊天**/}
+          <View className={`iconfont fs-46 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goUp()}>&#xe634;</View>{/**更多**/}
+        </View>}
+
+        {!showSkeleton && <View className='flex-row flex-start-center h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar-more' animation={tabBarAnimation}>
+          <Button className={`iconfont item-flb-20per text-center fs-50 bold mg-0 pd-0 h-54 w-50 icon-btn ${location.isDay ? 'day-color' : 'night-color'}`} hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>{/**分享**/}
+          <View className={`iconfont item-flb-20per text-center fs-52 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goSetting()}>&#xe87a;</View>{/**设置**/}
+          <View className={`iconfont item-flb-20per text-center fs-46 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goDown()} style={{transform: `rotate(180deg)`}}>&#xe634;</View>{/**还原**/}
         </View>}
       </View>
     </Block>

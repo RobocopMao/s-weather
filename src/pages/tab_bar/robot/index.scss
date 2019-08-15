@@ -1,0 +1,33 @@
+@import "../../../assets/styles/colors/gray_var";
+.robot {
+  .search-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+  }
+  .quick-res-box {
+    position: fixed;
+    top: 0;
+    bottom: 120px;
+    left: -750px;
+    right: 0;
+    z-index: 2;
+    & > view {
+      box-shadow: 0 0 10px 5px $gray300;;
+    }
+  }
+  .robot-triangle {
+    position: absolute;
+    top: 0;
+    left: 80px;
+    z-index: 1;
+  }
+  .my-triangle {
+    position: absolute;
+    top: 0;
+    right: 100px;
+    z-index: 1;
+  }
+}

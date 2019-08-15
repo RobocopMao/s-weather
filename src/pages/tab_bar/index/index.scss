@@ -52,13 +52,19 @@
     right: 0;
     z-index: 1;
   }
-  .tab-bar {
+  .tab-bar, .tab-bar-more {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
+  }
+  .tab-bar {
     z-index: 1;
     box-shadow: 0 0 10px 5px $gray300;
+  }
+  .tab-bar-more {
+    bottom: -88px;
+    z-index: 2;
   }
   .self-loc-anim {
     animation: selfLocation 2s ease-in-out 0s infinite;
