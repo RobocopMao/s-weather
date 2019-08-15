@@ -777,13 +777,13 @@ function Index() {
           <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'} ${user.isCurrentAddr ? '' : 'self-loc-anim red-A700'}`} onClick={() => locationSelf()}>&#xe875;</View>{/**定位**/}
           {/*<Button className={`iconfont fs-50 bold mg-0 pd-0 h-54 w-50 icon-btn ${location.isDay ? 'day-color' : 'night-color'}`} hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>/!**分享**!/*/}
           <View className={`iconfont fs-50 ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goVoice()}>&#xf016;</View>{/**聊天**/}
-          <View className={`iconfont fs-46 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goUp()}>&#xe634;</View>{/**更多**/}
+          <View className={`iconfont fs-44 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goUp()}>&#xe634;</View>{/**更多**/}
         </View>}
 
         {!showSkeleton && <View className='flex-row flex-start-center h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar-more' animation={tabBarAnimation}>
           <Button className={`iconfont item-flb-20per text-center fs-50 bold mg-0 pd-0 h-54 w-50 icon-btn ${location.isDay ? 'day-color' : 'night-color'}`} hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>{/**分享**/}
           <View className={`iconfont item-flb-20per text-center fs-52 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goSetting()}>&#xe87a;</View>{/**设置**/}
-          <View className={`iconfont item-flb-20per text-center fs-46 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goDown()} style={{transform: `rotate(180deg)`}}>&#xe634;</View>{/**还原**/}
+          <View className={`iconfont item-flb-20per text-center fs-44 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goDown()} style={{transform: `rotate(180deg)`}}>&#xe634;</View>{/**还原**/}
         </View>}
       </View>
     </Block>
