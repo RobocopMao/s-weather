@@ -190,7 +190,7 @@ function Robot() {
             <View className='flex-col flex-start-stretch white pd-lr-20 relative' key={String(index)}>
               {isTimeShow && <View className='fs-24 text-center w-100-per gray-700 mg-tb-20'>{moment(time).format('HH:mm')}</View>}
               {/*我*/}
-              {myQuery && <View className='flex-row flex-end-start mg-b-30' onLongPress={() => setClipboard(myQuery)}>
+              {myQuery && <View className='flex-row flex-end-start mg-b-30 relative' onLongPress={() => setClipboard(myQuery)}>
                 <View className='h-100-per item-fls-0 item-flg-0 item-flb-20per' />
                 <View className={`bd-radius-20 pd-20 ${location.isDay ? 'night-bg' : 'day-bg'}`}>{myQuery}</View>
                 <View className='circle w-80 h-80 box-hd mg-l-20'>
