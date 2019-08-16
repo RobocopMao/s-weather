@@ -29,7 +29,7 @@ function Robot() {
   // 获取全局唯一的语音识别管理器recordRecoManager，注意：这个不能写在useEffect里面，不然状态获取不到，比如发送请求时的session
   const manager = plugin.getRecordRecognitionManager();
   manager.onRecognize = function(res) {
-    console.log('current result', res.result);
+    // console.log('current result', res.result);
   };
   manager.onStop = function(res) {
     // console.log('record file path', res.tempFilePath);
@@ -45,8 +45,8 @@ function Robot() {
     Taro.showToast({title: '正在录音中', image: recordingImg, duration: 10000});
   };
   manager.onError = function(res) {
-    console.error('error msg', res.msg);
-    console.error('error retcode', res.retcode);
+    // console.error('error msg', res.msg);
+    // console.error('error retcode', res.retcode);
     Taro.showToast({title: res.msg, icon: 'none', duration: 2000});
     // stopRecord();
   };
@@ -226,7 +226,7 @@ function Robot() {
       return;
     }
 
-    console.log('session2:', session);
+    // console.log('session2:', session);
     const res = await getRobotTalk({q, session});
     const {query, reply} = res;
     setSession(res.session);
@@ -242,7 +242,7 @@ function Robot() {
     setScrollTop(_talks.length * 200);
     setInputVal('');
     Taro.setStorageSync('ROBOT_TALKS', _talks);
-    console.log('session3:', session);
+    // console.log('session3:', session);
   };
 
   // 设置剪贴板
