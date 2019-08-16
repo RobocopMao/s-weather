@@ -70,6 +70,7 @@ function Index() {
   const [previous , setPrevious ] = useState(0);
   const [tabBarAnimation, setTabBarAnimation] = useState({});
   const [tabBarHeight, setTabBarHeight] = useState({});
+  const [userLocationAuth, setUserLocationAuth] = useState(true);
 
   const lifeSuggestion = [
     {type: 'comfort', name: '舒适度指数'},
@@ -224,6 +225,9 @@ function Index() {
             },
             fail() {
               Taro.showToast({title: '地理位置授权失败，请在设置里面开启', icon: 'none'});
+              setUserLocationAuth(false);
+              dispatch(setLatAndLon({longitude: '', latitude: ''}));
+              dispatch(setUserLocation({longitude: '', latitude: ''}));
             }
           })
         } else {
@@ -575,6 +579,27 @@ function Index() {
     setTabBarAnimation(this.animation.export());
   };
 
+  // 打开授权
+  const openSetting = () => {
+    Taro.openSetting({
+      success(res) {
+        const AUTH_SETTING = Taro.getStorageSync('AUTH_SETTING');
+        // console.log(AUTH_SETTING === res.authSetting);
+        // console.log(res);
+        const isEqual = _.isEqual(AUTH_SETTING, res.authSetting);
+        if (!isEqual) { // 不一样，更新权限，返回首页
+          Taro.setStorageSync('AUTH_SETTING', res.authSetting);
+          Taro.showToast({title: '权限设置已更新，即将重启', icon: 'none', duration: 2000});
+          let tId = setTimeout(() => {
+            Taro.reLaunch({url: '/pages/tab_bar/index/index'});
+            clearTimeout(tId);
+          }, 2000);
+        }
+        // console.log(isEqual);
+      }
+    });
+  };
+
   return (
     <Block>
       {showSkeleton && (
@@ -598,8 +623,9 @@ function Index() {
                 <Text className='mg-l-10'>{now.text}</Text>
               </View>}
               <View className={`flex-row flex-start-baseline ${scrollTop > 200 ? 'fs-26' : 'fs-30'}`}>
-                {user.isCurrentAddr && <View className='nav-addr-box'>{user.location.district} {user.location.streetNum}</View>}
-                {!user.isCurrentAddr && <View className='nav-addr-box'>{location.name ? location.name : `${location.district} ${location.streetNum}`}</View>}
+                {userLocationAuth && user.isCurrentAddr && <View className='nav-addr-box'>{user.location.district} {user.location.streetNum}</View>}
+                {userLocationAuth && !user.isCurrentAddr && <View className='nav-addr-box'>{location.name ? location.name : `${location.district} ${location.streetNum}`}</View>}
+                {!userLocationAuth && <View className='nav-addr-box' onClick={() => openSetting()}>用户地理位置权限已关闭，点击开启</View>}
               </View>
             </View>
           </View>

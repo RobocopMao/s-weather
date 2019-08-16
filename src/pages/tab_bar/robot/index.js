@@ -18,11 +18,11 @@ function Robot() {
   const [scrollHeight, setScrollHeight] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
   const [quickResScrollTop, setQuickResScrollTop] = useState(0);
-  const [inputVal, setInputVal] = useState(`明天${user.location.city}天气怎么样？`);
+  const [inputVal, setInputVal] = useState(`明天${user.location.city || ''}天气怎么样？`);
   const [quickRes, setQuickRes] = useState([]);
   const [showQuickRes, setShowQuickRes] = useState(false);
   const [session, setSession] = useState('');
-  const [talks, setTalks] = useState([{robotReply: `您好，我是天气聊天机器人，从现在开始为你在本地保留30分钟内的聊天回话。您可以对我说：明天${user.location.city}天气怎么样？`, time: moment().format('YYYY-MM-DD HH:mm')}]);
+  const [talks, setTalks] = useState([{robotReply: `您好，我是天气聊天机器人，从现在开始为你在本地保留30分钟内的聊天回话。您可以对我说：明天${user.location.city || ''}天气怎么样？`, time: moment().format('YYYY-MM-DD HH:mm')}]);
   const [quickResAnimation, setQuickResAnimation] = useState({});
   const [showVoiceBtn, setShowVoiceBtn] = useState(false); // 语音按钮默认不显示
 
@@ -157,12 +157,12 @@ function Robot() {
     let quickResComb = {
       desc: '常用组合',
       quickRes: [
-        `${user.location.city}今天天气怎么样？`,
-        `${user.location.city}今天空气质量怎么样？`,
-        `${user.location.city}明天天气怎么样？`,
-        `${user.location.city}明天空气质量怎么样？`,
-        `${user.location.city}今天出门我要带伞吗？`,
-        `${user.location.city}今天洗车可以吗？`,
+        `${user.location.city || ''}今天天气怎么样？`,
+        `${user.location.city || ''}今天空气质量怎么样？`,
+        `${user.location.city || ''}明天天气怎么样？`,
+        `${user.location.city || ''}明天空气质量怎么样？`,
+        `${user.location.city || ''}今天出门我要带伞吗？`,
+        `${user.location.city || ''}今天洗车可以吗？`,
       ]
     };
 

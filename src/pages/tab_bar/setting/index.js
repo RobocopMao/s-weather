@@ -31,7 +31,6 @@ function Setting() {
             Taro.reLaunch({url: '../../../pages/tab_bar/index/index'});
             clearTimeout(tId);
           }, 2000);
-
         }
         // console.log(isEqual);
       }

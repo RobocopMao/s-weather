@@ -23,7 +23,12 @@ function Theme() {
     }
     Taro.setStorageSync('THEME', index);
     dispatch(setUserTheme(index));
-    Taro.reLaunch({url: '../../../../pages/tab_bar/index/index'});
+
+    Taro.showToast({title: '主题设置成功，重启生效', icon: 'none', duration: 2000});
+    let tId = setTimeout(() => {
+      Taro.reLaunch({url: '../../../../pages/tab_bar/index/index'});
+      clearTimeout(tId);
+    }, 2000);
   };
 
   return (
