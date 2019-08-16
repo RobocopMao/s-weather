@@ -48,9 +48,13 @@ Taro初始化的redux项目模版，三个文件夹，自己把constant，reduce
 ### 8.腾讯地图标记
 空气质量详情附近站点的空气质量采用腾讯地图标记，文档可以直接查看官方Map组件。
 
+### 9.微信同声传译
+微信同声传译插件是微信自研的语音输入，文本翻译等功能的插件封装，用于提供给第三方小程序调用。我在天气聊天机器人语音转文字时用到，参考：https://developers.weixin.qq.com/miniprogram/dev/extended/service/translator.html
+。
+
 开发不易，禁止任何二次打包发布。
 
-小程序码
+小程序码，微信扫码体验。
 
 ![image](src/assets/images/minicode.jpg)
 
