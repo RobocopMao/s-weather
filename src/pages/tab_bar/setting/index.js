@@ -4,6 +4,7 @@ import {useSelector} from '@tarojs/redux';
 import './index.scss'
 import {setNavStyle} from '../../../utils';
 import {S_TOOLS_APPID} from '../../../apis/config';
+import themeMatch from '../../../assets/json/theme_match.json'
 
 function Setting() {
   const location = useSelector(state => state.location);
@@ -39,6 +40,34 @@ function Setting() {
     Taro.navigateToMiniProgram({appId: S_TOOLS_APPID});
   };
 
+  // 去用户手册
+  const goUserManual = () => {
+    Taro.navigateTo({url: `../../setting/pages/user_manual/index`})
+  };
+
+  // 联系作者
+  const contactAuthor = () => {
+    Taro.showModal({
+      title: '作者联系方式',
+      content: 'QQ：410503915\r\n微信：m410503915',  // \r\n换行
+      confirmText: '复制微信',
+      cancelText: '复制QQ',
+      confirmColor: location.isDay ? themeMatch[user.theme]['night'] : themeMatch[user.theme]['day'],
+      cancelColor: location.isDay ? themeMatch[user.theme]['day'] : themeMatch[user.theme]['night'],
+      success: res => {
+        const {cancel, confirm} = res;
+        // 复制邮箱
+        if (cancel) {
+          Taro.setClipboardData({data: '410503915'});
+        }
+        // 复制微信
+        if (confirm) {
+          Taro.setClipboardData({data: 'm410503915'});
+        }
+      }
+    });
+  };
+
   // 去关于页面
   const goAbout = () => {
     Taro.navigateTo({url: `../../setting/pages/about/index`})
@@ -51,7 +80,7 @@ function Setting() {
           <View className='circle w-144 h-144 box-hd avatar'>
             <OpenData type='userAvatarUrl' />
           </View>
-          <View className='fs-40 text-center'>
+          <View className={`fs-40 text-center mg-t-10 ${location.isDay ? 'day-color' : 'night-color'}`}>
             <OpenData type='userNickName' />
           </View>
         </View>
@@ -99,6 +128,22 @@ function Setting() {
             <View className='flex-row flex-start-baseline'>
               <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe87c;</View>
               <View>其他查询</View>
+            </View>
+            <View className='iconfont'>&#xe65b;</View>
+          </View>
+          <View className='h-line-gray-300' />
+          <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goUserManual()}>
+            <View className='flex-row flex-start-baseline'>
+              <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe611;</View>
+              <View>用户手册</View>
+            </View>
+            <View className='iconfont'>&#xe65b;</View>
+          </View>
+          <View className='h-line-gray-300' />
+          <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => contactAuthor()}>
+            <View className='flex-row flex-start-baseline'>
+              <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe709;</View>
+              <View>联系作者</View>
             </View>
             <View className='iconfont'>&#xe65b;</View>
           </View>

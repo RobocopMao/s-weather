@@ -1,5 +1,5 @@
 import Taro, {useEffect} from '@tarojs/taro'
-import {View, Text} from '@tarojs/components'
+import {View} from '@tarojs/components'
 import {useSelector, useDispatch} from '@tarojs/redux'
 import './index.scss'
 import {setNavStyle} from '../../../../utils'
