@@ -96,7 +96,23 @@ function Robot() {
     if (showQuickRes) {
       return;
     }
-    manager.start({duration:10000, lang: 'zh_CN'});
+    Taro.getSetting({ // 获取设置
+      success(res) {
+        if (!res.authSetting['scope.record']) {
+          Taro.authorize({ // 地理位置授权
+            scope: 'scope.record',
+            success() {
+              // manager.start({duration:10000, lang: 'zh_CN'});
+            },
+            fail() {
+              Taro.showToast({title: '录音功能授权失败，请在设置里面开启', icon: 'none'});
+            }
+          })
+        } else {
+          manager.start({duration:10000, lang: 'zh_CN'});
+        }
+      }
+    })
   };
 
   // 结束录音

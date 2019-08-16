@@ -215,6 +215,7 @@ function Index() {
   useAsyncEffect(() => {
     Taro.getSetting({ // 获取设置
       success(res) {
+        Taro.setStorageSync('AUTH_SETTING', res.authSetting);
         if (!res.authSetting['scope.userLocation']) {
           Taro.authorize({ // 地理位置授权
             scope: 'scope.userLocation',

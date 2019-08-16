@@ -1,6 +1,7 @@
 import Taro, {useEffect} from '@tarojs/taro'
 import {View, OpenData} from '@tarojs/components'
 import {useSelector} from '@tarojs/redux';
+import _ from 'lodash/lodash.min'
 import './index.scss'
 import {setNavStyle} from '../../../utils';
 import {S_TOOLS_APPID} from '../../../apis/config';
@@ -17,7 +18,24 @@ function Setting() {
 
   // 打开授权
   const openSetting = () => {
-    Taro.openSetting();
+    Taro.openSetting({
+      success(res) {
+        const AUTH_SETTING = Taro.getStorageSync('AUTH_SETTING');
+        // console.log(AUTH_SETTING === res.authSetting);
+        // console.log(res);
+        const isEqual = _.isEqual(AUTH_SETTING, res.authSetting);
+        if (!isEqual) { // 不一样，更新权限，返回首页
+          Taro.setStorageSync('AUTH_SETTING', res.authSetting);
+          Taro.showToast({title: '权限设置已更新，即将重启', icon: 'none', duration: 2000});
+          let tId = setTimeout(() => {
+            Taro.reLaunch({url: '../../../pages/tab_bar/index/index'});
+            clearTimeout(tId);
+          }, 2000);
+
+        }
+        // console.log(isEqual);
+      }
+    });
   };
 
   // 设置主题
