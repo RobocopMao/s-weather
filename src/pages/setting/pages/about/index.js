@@ -18,7 +18,7 @@ function About() {
     <View className={`flex-col flex-center h-100-per about them-${user.theme}`}>
       <Image className='w-144 h-144' src={weatherLogoImg} />
       <View className='fs-36 mg-tb-30'>天气晴报</View>
-      <View className='fs-26 gray-500'>版本：1.3.20190816</View>
+      <View className='fs-26 gray-500'>版本：1.4.20190816</View>
     </View>
   )
 }
