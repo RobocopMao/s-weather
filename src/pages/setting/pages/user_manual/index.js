@@ -76,9 +76,9 @@ function UserManual() {
         <View className='fs-36'>四、天气聊天机器人</View>
         <View className='h-line-gray-300 mg-tb-20' />
         <View className='flex-col gray-500 mg-b-20'>
-          <View className='mg-t-10'>可以通过对话的方式（文字）查询天气。</View>
+          <View className='mg-t-10'>可以通过对话的方式查询天气。</View>
           <View className='mg-t-10'>由于保持会话上下文的session过期时间为30分钟，所以为您在本地保存30分内的聊天记录。</View>
-          <View className='mg-t-10'>您可以通过底部输入框主动输入来查询天气，或者使用左下角的快捷回复来快速查询。</View>
+          <View className='mg-t-10'>您可以通过底部输入框主动输入来查询天气，或者使用左下角的快捷回复来快速查询，或者直接用语音来输入。</View>
         </View>
       </View>
       <View className='flex-col mg-tb-20'>

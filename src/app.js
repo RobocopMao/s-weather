@@ -85,6 +85,12 @@ class App extends Component {
       'scope.userLocation': {
         'desc': '你的位置信息将用于小程序查询天气'
       }
+    },
+    plugins: {
+      WechatSI: {
+        version: '0.3.0',
+        provider: 'wx069ba97219f66d99'
+      }
     }
   };
 

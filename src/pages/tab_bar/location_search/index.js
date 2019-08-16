@@ -189,13 +189,13 @@ function LocationSearch() {
           {locationHistory.map((history, index) => {
             const {lat, lon, cityName} = history;
             return (
-                <Button className='h-50 pd-lr-10 mg-0 mg-r-20 mg-b-20 lh-50-i bg-gray-100-i gray-700 fs-28'
+                <Button className='h-50 pd-lr-20 mg-0 mg-r-20 mg-b-20 lh-50-i bg-gray-100-i gray-700 fs-28 bd-radius-50'
                   hoverClass='btn-hover' key={String(index)} onClick={() => searchWeather({lat, lon, cityName})}
                   onLongPress={() => collectCity({lat, lon, cityName})}
                 >{cityName}</Button>
               )
           })}
-          <Button className='h-50 pd-lr-10 mg-0 mg-r-20 mg-b-20 lh-50-i bg-gray-100-i gray-700 fs-28' hoverClass='btn-hover'
+          <Button className='h-50 pd-lr-20 mg-0 mg-r-20 mg-b-20 lh-50-i bg-gray-100-i gray-700 fs-28 bd-radius-50' hoverClass='btn-hover'
             onClick={() => clearSearchHistory()}
           >
             {locationHistory.length ? '清空历史记录' : '暂无搜索历史'}
@@ -213,7 +213,7 @@ function LocationSearch() {
                 onClick={() => searchWeather({lat, lon, cityName: `${_location}${type === 'city' ? '市' : ''}`})}
                 onLongPress={() => collectCity({lat, lon, cityName: `${_location}${type === 'city' ? '市' : ''}`})}
               >
-                <Button className='h-56 pd-lr-10 mg-0 mg-b-20 lh-56-i bg-gray-100-i gray-700 fs-28 item-flb-20per' hoverClass='btn-hover'>{_location}</Button>
+                <Button className='h-56 pd-lr-10 mg-0 mg-b-20 lh-56-i bg-gray-100-i gray-700 fs-28 item-flb-20per bd-radius-50' hoverClass='btn-hover'>{_location}</Button>
               </View>
             )
           })}
@@ -228,14 +228,14 @@ function LocationSearch() {
         <View className='flex-row flex-start flex-wrap'>
           {searchResult.map((result, index) => {
             return (
-              <Button className='h-50 pd-lr-10 mg-0 mg-r-20 mg-b-20 lh-50-i bg-gray-100-i gray-700 fs-28'
+              <Button className='h-50 pd-lr-20 mg-0 mg-r-20 mg-b-20 lh-50-i bg-gray-100-i gray-700 fs-28 bd-radius-50'
                 hoverClass='btn-hover' key={String(index)} onClick={() => searchWeather({lat: result.lat, lon: result.lon, cityName: formatSearchLocation(result,2), store: true})}
               >
                 <Text>{formatSearchLocation(result, 1)}</Text>
               </Button>
             )
           })}
-          {!isSearching && !searchResult.length && <Button className='h-50 pd-lr-10 mg-0 mg-r-20 mg-b-20 lh-50-i bg-gray-100-i gray-700 fs-28' hoverClass='btn-hover'>无搜索结果</Button>}
+          {!isSearching && !searchResult.length && <Button className='h-50 pd-lr-20 mg-0 mg-r-20 mg-b-20 lh-50-i bg-gray-100-i gray-700 fs-28 bd-radius-50' hoverClass='btn-hover'>无搜索结果</Button>}
         </View>
       </View>}
     </View>

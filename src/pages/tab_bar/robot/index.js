@@ -6,8 +6,10 @@ import moment from 'moment';
 import './index.scss'
 import {setNavStyle, getNodeRect} from '../../../utils'
 import {getRobotTalk} from '../../../apis/function'
+import recordingImg from '../../../assets/images/recoding.png'
 // import ComponentBaseNavigation from '../../../components/base/navigation'
 // import themeMatch from '../../../assets/json/theme_match.json'
+const plugin = requirePlugin('WechatSI');
 
 function Robot() {
   const location = useSelector(state => state.location);
@@ -22,6 +24,32 @@ function Robot() {
   const [session, setSession] = useState('');
   const [talks, setTalks] = useState([{robotReply: `您好，我是天气聊天机器人，从现在开始为你在本地保留30分钟内的聊天回话。您可以对我说：明天${user.location.city}天气怎么样？`, time: moment().format('YYYY-MM-DD HH:mm')}]);
   const [quickResAnimation, setQuickResAnimation] = useState({});
+  const [showVoiceBtn, setShowVoiceBtn] = useState(false); // 语音按钮默认不显示
+
+  // 获取全局唯一的语音识别管理器recordRecoManager，注意：这个不能写在useEffect里面，不然状态获取不到，比如发送请求时的session
+  const manager = plugin.getRecordRecognitionManager();
+  manager.onRecognize = function(res) {
+    console.log('current result', res.result);
+  };
+  manager.onStop = function(res) {
+    // console.log('record file path', res.tempFilePath);
+    // console.log('result', res.result);
+    // console.log(Taro.getStorageSync('ROBOT_SESSION'));
+    // console.log('session1:', session);
+    Taro.hideToast();
+    setInputVal('');
+    sendTalk(res.result);
+  };
+  manager.onStart = function(res) {
+    // console.log('成功开始录音识别', res);
+    Taro.showToast({title: '正在录音中', image: recordingImg, duration: 10000});
+  };
+  manager.onError = function(res) {
+    console.error('error msg', res.msg);
+    console.error('error retcode', res.retcode);
+    Taro.showToast({title: res.msg, icon: 'none', duration: 2000});
+    // stopRecord();
+  };
 
   // 设置白天、夜晚主题
   useEffect(() => {
@@ -62,6 +90,22 @@ function Robot() {
   useEffect(() => {
     initQuickRes();
   }, []);
+
+  // 开始录音
+  const startRecord = () => {
+    if (showQuickRes) {
+      return;
+    }
+    manager.start({duration:10000, lang: 'zh_CN'});
+  };
+
+  // 结束录音
+  const stopRecord = () => {
+    if (showQuickRes) {
+      return;
+    }
+    manager.stop();
+  };
 
   // 初始化快捷回复
   const initQuickRes = () => {
@@ -166,6 +210,7 @@ function Robot() {
       return;
     }
 
+    console.log('session2:', session);
     const res = await getRobotTalk({q, session});
     const {query, reply} = res;
     setSession(res.session);
@@ -181,6 +226,7 @@ function Robot() {
     setScrollTop(_talks.length * 200);
     setInputVal('');
     Taro.setStorageSync('ROBOT_TALKS', _talks);
+    console.log('session3:', session);
   };
 
   // 设置剪贴板
@@ -194,6 +240,11 @@ function Robot() {
         // Taro.showToast({title: '复制失败', icon: 'none'});
       }
     });
+  };
+
+  // 语音/键盘切换
+  const switchVoiceBtn = () => {
+    setShowVoiceBtn(prev => !prev);
   };
 
   return (
@@ -262,14 +313,23 @@ function Robot() {
       </ScrollView>}
       {/*输入框*/}
       <View className='flex-row flex-start-stretch h-120 pd-tb-20 pd-lr-20 bd-box bg-gray-100 search-bar' id='searchBar'>
-        <Button className='iconfont icon-btn fs-50 pd-0 mg-0 h-100-per w-100 lh-80-i gray-700' onClick={() => showHideQuickRes()}>&#xe87f;</Button>
-        <View className={`flex-row flex-start-stretch item-flg-1 bd-w-1 bd-solid bd-gray-300 bd-radius-50 ${showQuickRes ? 'bg-gray-100' : 'bg-white'}`}>
+        <Button className='iconfont icon-btn fs-58 pd-0 mg-0 h-100-per w-80 lh-80-i gray-700' onClick={() => showHideQuickRes()}>&#xe87f;</Button>
+        {!showVoiceBtn && <Button className='iconfont icon-btn fs-52 pd-0 mg-0 h-100-per w-80 lh-80-i gray-700'
+                 disabled={showQuickRes} onClick={() => switchVoiceBtn()}>&#xe63b;</Button>}{/*键盘*/}
+        {showVoiceBtn && <Button className='iconfont icon-btn fs-52 pd-0 mg-0 h-100-per w-80 lh-80-i gray-700'
+                disabled={showQuickRes} onClick={() => switchVoiceBtn()}>&#xe635;</Button>}{/*语音*/}
+        {!showVoiceBtn && <View className={`flex-row flex-start-stretch item-flg-1 bd-w-1 bd-solid bd-gray-300 bd-radius-50 mg-lr-10 ${showQuickRes ? 'bg-gray-100' : 'bg-white'}`}>
           <Input className={`item-flg-1 h-80 pd-l-20 pd-r-20 bd-box lh-80 ${showQuickRes ? 'gray-400' : 'gray-700'}`} confirmType='search' value={inputVal} placeholder='' cursorSpacing={24 / user.systemInfo.pixelRatio}
                  onInput={_.throttle((e) => searchInput(e), 500, {leading: false, trailing: true})} disabled={showQuickRes}
           />
           {inputVal && <Button className='iconfont icon-btn fs-50 pd-0 mg-0 h-100-per w-100 lh-80-i gray-700' disabled={showQuickRes} onClick={() => resetInput()}>&#xe87b;</Button>}
-        </View>
-        <Button className='iconfont icon-btn fs-50 pd-0 mg-0 h-100-per w-100 lh-80-i gray-700' disabled={showQuickRes || !inputVal.replace(/\s+/g, '')} onClick={_.throttle(() => sendTalk(), 1000, {leading: true, trailing:false})}>&#xe87c;</Button>
+        </View>}
+        {showVoiceBtn && <View className='flex-row flex-start-stretch item-flg-1 mg-lr-10 box-hidden'>
+          <Button className={`item-flg-1 h-100-per pd-l-20 pd-r-20 bd-box lh-80-i bg-white fs-32 bd-radius-50 bd-w-1 bd-solid bd-gray-300 ${showQuickRes ? 'gray-400 bg-gray-100' : 'gray-700 bg-white'}`}
+                  disabled={showQuickRes} hoverClass='btn-hover' onLongPress={() => startRecord()} onTouchEnd={() => stopRecord()}>按住 说话</Button>
+        </View>}
+        {inputVal.replace(/\s+/g, '') && !showVoiceBtn && <Button className='iconfont icon-btn fs-50 pd-0 mg-0 h-100-per w-80 lh-80-i gray-700'
+                 disabled={showQuickRes || !inputVal.replace(/\s+/g, '')} onClick={_.throttle(() => sendTalk(), 1000, {leading: true, trailing:false})}>&#xe87c;</Button>}{/*查询*/}
       </View>
     </View>
   )
