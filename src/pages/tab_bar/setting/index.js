@@ -42,6 +42,11 @@ function Setting() {
     Taro.navigateTo({url: `../../setting/pages/theme/index`})
   };
 
+  // 设置tabBar
+  const goTabBar = () => {
+    Taro.navigateTo({url: `../../setting/pages/tab_bar/index`})
+  };
+
   // 去数据来源页面
   const goDataSource = () => {
     Taro.navigateTo({url: `../../setting/pages/data_source/index`})
@@ -91,7 +96,7 @@ function Setting() {
   };
 
   return (
-    <View className={`flex-col flex-start-center h-100-per bg-gray-100 setting theme-${user.theme}`}>
+    <View className={`flex-col flex-start-center bg-gray-100 setting theme-${user.theme}`}>
       <View className={`w-100-per h-300 box-hd relative ${location.isDay ? 'day-bg' : 'night-bg'}`}>
         <View className='flex-col flex-start-center bg-transparent avatar-box'>
           <View className='circle w-144 h-144 box-hd avatar'>
@@ -103,7 +108,7 @@ function Setting() {
         </View>
         <View className='relative bg-gray-100 h-144 half-circle' />
       </View>
-      <View className='flex-col flex-start-stretch w-100-per pd-tb-50 pd-lr-20 bd-box'>
+      <View className='flex-col flex-start-stretch w-100-per pd-t-50 pd-lr-20 bd-box'>
         <View className='bd-radius-20 pd-lr-20 mg-b-20 bg-white'>
           <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => openSetting()}>
             <View className='flex-row flex-start-baseline'>
@@ -117,6 +122,14 @@ function Setting() {
             <View className='flex-row flex-start-baseline'>
               <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe607;</View>
               <View>主题设置</View>
+            </View>
+            <View className='iconfont'>&#xe65b;</View>
+          </View>
+          <View className='h-line-gray-300' />
+          <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goTabBar()}>
+            <View className='flex-row flex-start-baseline'>
+              <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe611;</View>
+              <View>标签设置</View>
             </View>
             <View className='iconfont'>&#xe65b;</View>
           </View>
@@ -140,7 +153,7 @@ function Setting() {
           </View>
         </View>
 
-        <View className='bd-radius-20 pd-lr-20 bg-white'>
+        <View className='bd-radius-20 pd-lr-20 bg-white mg-b-20'>
           <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goStoolsMiniProgram()}>
             <View className='flex-row flex-start-baseline'>
               <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe87c;</View>
@@ -151,7 +164,7 @@ function Setting() {
           <View className='h-line-gray-300' />
           <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goUserManual()}>
             <View className='flex-row flex-start-baseline'>
-              <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe611;</View>
+              <View className={`iconfont mg-l-2 mg-r-12 fs-28 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe728;</View>
               <View>用户手册</View>
             </View>
             <View className='iconfont'>&#xe65b;</View>

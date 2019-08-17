@@ -57,20 +57,15 @@ function Index() {
   const [nowAir, setNowAir] = useState({});
   const [sun, setSun] = useState({});
   const [alarms, setAlarms] = useState([]);
-  // const [isDay, setIsDay] = useState(true);
-  // const [bgPageClass, setBgPageClass] = useState('');
-  // const [bgItemClass, setBgItemClass] = useState('');
-  // const [navBarBgColor, setNavBarBgColor] = useState('#FFFFFF');
   const [tmpLineImgPath, setTmpLineImgPath] = useState('');
-  // const [canvasHeight, setCanvasHeight] = useState(100); // 防止移除canvas，加载image时闪烁
   const [scrollHeight, setScrollHeight] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollToTop, setScrollToTop] = useState(0);
   const [showSkeleton, setShowSkeleton] = useState(true);
   const [previous , setPrevious ] = useState(0);
-  const [tabBarAnimation, setTabBarAnimation] = useState({});
-  const [tabBarHeight, setTabBarHeight] = useState({});
   const [userLocationAuth, setUserLocationAuth] = useState(true);
+  const [tabBarCircular, setTabBarCircular] = useState(false);
+  const [tabBarItemNum, setTabBarItemNum] = useState(5);
 
   const lifeSuggestion = [
     {type: 'comfort', name: '舒适度指数'},
@@ -89,7 +84,7 @@ function Index() {
     let tId = setTimeout(() => {
       setShowSkeleton(false);
       clearTimeout(tId);
-    }, 3000);
+    }, 5000);  // 默认设置最多5s就移除，还有就是画完图立即移除
   }, []);
 
   // 设置主题颜色,本地没有就使用默认主题
@@ -97,6 +92,18 @@ function Index() {
     const theme = Taro.getStorageSync('THEME');
     if (theme) {
       dispatch(setUserTheme(theme));
+    }
+  }, []);
+
+  // 设置tabBar
+  useEffect(() => {
+    const TAB_BAR_SETTING = Taro.getStorageSync('TAB_BAR_SETTING');
+    if (TAB_BAR_SETTING) {
+      const {displayMultipleItems, circular} = TAB_BAR_SETTING;
+      setTabBarCircular(circular); // 是否循环滚动
+      setTabBarItemNum(displayMultipleItems); // 显示item的数量
+    } else {
+      Taro.setStorageSync('TAB_BAR_SETTING', {circular: tabBarCircular, displayMultipleItems: tabBarItemNum});
     }
   }, []);
 
@@ -201,7 +208,7 @@ function Index() {
     dispatch(setSystemInfo(res));
     const res1 = await getNodeRect('#tabBar');
     if (!res1) {return;}
-    setTabBarHeight(res1.height);
+    // setTabBarHeight(res1.height);
     setScrollHeight(res.windowHeight - res1.height - 44 - user.systemInfo.statusBarHeight);  // 自定义导航固定44
   }, [showSkeleton]);
 
@@ -318,54 +325,6 @@ function Index() {
   };
 
   // 画逐小时图
-  // const drawTmpLine = async () => {
-  //   let tmp = [];
-  //
-  //   for (let [, v] of hourly.entries()) {
-  //     // console.log(v,i);
-  //     tmp.push(Number(v.temperature));
-  //   }
-  //   let maxTmp = _.max(tmp) + 3; // 最高温
-  //   let minTmp = _.min(tmp) - 1; // 最低温
-  //   let tmpRange = maxTmp - minTmp;
-  //   // console.log(tmp, maxTmp, minTmp, tmpRange);
-  //   let distance= Math.floor((100 / tmpRange));
-  //   let nodeRect = await getNodeRect('#tmpLineBox');
-  //   if (!nodeRect) {return}
-  //   const strokeColor = '#ffffff';
-  //   let rowWidth = nodeRect.width / hourly.length;
-  //   let ctx = Taro.createCanvasContext('tmpLine', this.$scope);
-  //   // console.log(ctx);
-  //   ctx.save();
-  //
-  //   // 画温度线
-  //   ctx.strokeStyle = strokeColor;
-  //   ctx.lineWidth = 1;
-  //   ctx.beginPath();
-  //   ctx.setLineCap('round');
-  //   for (let [i, v] of tmp.entries()) {
-  //     let drawX = i * rowWidth + (rowWidth / 2);
-  //     let drawY = (maxTmp - v) * distance;
-  //     // console.log(drawX, drawY);
-  //     if (i === 0){
-  //       ctx.moveTo(drawX, drawY);
-  //       ctx.setFontSize(12);
-  //       ctx.fillStyle = strokeColor;
-  //       ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
-  //     } else {
-  //       ctx.lineTo(drawX, drawY);
-  //       ctx.fillStyle = strokeColor;
-  //       ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
-  //     }
-  //   }
-  //   ctx.stroke();
-  //
-  //   ctx.draw(false, () => {
-  //     canvasToImg();
-  //   });
-  // };
-
-  // 画逐小时图
   const drawTmpLine = async () => {
     const nodeRect = await getNodeRect('#tmpLine');
     if (!nodeRect) {return}
@@ -441,6 +400,7 @@ function Index() {
       // console.log(res);
       // console.log('canvasToImg end');
       setTmpLineImgPath(res.tempFilePath);
+      setShowSkeleton(false);  // 画完图立即移除骨架屏
     }).catch(err => {
       // console.log('canvasToImg err');
       console.log(err);
@@ -560,23 +520,6 @@ function Index() {
   // 去语音
   const goVoice = () => {
     Taro.navigateTo({url: `../../tab_bar/robot/index`});
-  };
-
-  // 更多tabBar
-  const goUp = () => {
-    this.animation = Taro.createAnimation({
-      duration: 1000,
-      timingFunction: 'ease',
-    });
-
-    this.animation.translateY(-tabBarHeight).step();
-    setTabBarAnimation(this.animation.export());
-  };
-
-  // 还原tabBar
-  const goDown = () => {
-    this.animation.translateY(tabBarHeight).step();
-    setTabBarAnimation(this.animation.export());
   };
 
   // 打开授权
@@ -798,19 +741,32 @@ function Index() {
           </View>}
         </ScrollView>
 
-        {!showSkeleton && <View className='flex-row flex-spa-center h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar' id='tabBar'>
-          <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goLocationCollection()}>&#xe87e;</View>{/**收藏**/}
-          <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goLocationSearch()}>&#xe87c;</View>{/**搜索**/}
-          <View className={`iconfont fs-50 bold ${location.isDay ? 'day-color' : 'night-color'} ${user.isCurrentAddr ? '' : 'self-loc-anim red-A700'}`} onClick={() => locationSelf()}>&#xe875;</View>{/**定位**/}
-          {/*<Button className={`iconfont fs-50 bold mg-0 pd-0 h-54 w-50 icon-btn ${location.isDay ? 'day-color' : 'night-color'}`} hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>/!**分享**!/*/}
-          <View className={`iconfont fs-50 ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goVoice()}>&#xf016;</View>{/**聊天**/}
-          <View className={`iconfont fs-44 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goUp()}>&#xe634;</View>{/**更多**/}
-        </View>}
-
-        {!showSkeleton && <View className='flex-row flex-start-center h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar-more' animation={tabBarAnimation}>
-          <Button className={`iconfont item-flb-20per text-center fs-50 bold mg-0 pd-0 h-54 w-50 icon-btn ${location.isDay ? 'day-color' : 'night-color'}`} hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>{/**分享**/}
-          <View className={`iconfont item-flb-20per text-center fs-52 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goSetting()}>&#xe87a;</View>{/**设置**/}
-          <View className={`iconfont item-flb-20per text-center fs-44 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goDown()} style={{transform: `rotate(180deg)`}}>&#xe634;</View>{/**还原**/}
+        {!showSkeleton && <View className='flex-row h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar' id='tabBar'>
+          <Swiper
+            className='h-100-per w-100-per'
+            circular={tabBarCircular}
+            displayMultipleItems={tabBarItemNum}
+            easingFunction='linear'
+          >
+            <SwiperItem className='flex-row flex-center'>
+              <View className={`iconfont text-center fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goLocationCollection()}>&#xe87e;</View>{/**收藏**/}
+            </SwiperItem>
+            <SwiperItem className='flex-row flex-center'>
+              <View className={`iconfont text-center fs-50 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goLocationSearch()}>&#xe87c;</View>{/**搜索**/}
+            </SwiperItem>
+            <SwiperItem className='flex-row flex-center'>
+            <View className={`iconfont text-center fs-50 bold ${location.isDay ? 'day-color' : 'night-color'} ${user.isCurrentAddr ? '' : 'self-loc-anim red-A700'}`} onClick={() => locationSelf()}>&#xe875;</View>{/**定位**/}
+            </SwiperItem>
+            <SwiperItem className='flex-row flex-center'>
+              <View className={`iconfont text-center fs-50 text-center ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goVoice()}>&#xf016;</View>{/**聊天**/}
+            </SwiperItem>
+            <SwiperItem className='flex-row flex-center'>
+              <Button className={`iconfont text-center fs-50 bold mg-0 pd-0 h-54 w-50 icon-btn ${location.isDay ? 'day-color' : 'night-color'}`} hoverClass='icon-btn-hover' openType='share'>&#xe874;</Button>{/**分享**/}
+            </SwiperItem>
+            <SwiperItem className='flex-row flex-center'>
+              <View className={`iconfont text-center fs-52 bold ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goSetting()}>&#xe87a;</View>{/**设置**/}
+            </SwiperItem>
+          </Swiper>
         </View>}
       </View>
     </Block>

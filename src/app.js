@@ -2,6 +2,7 @@ import '@tarojs/async-await'
 import Taro, { Component } from '@tarojs/taro'
 import { Provider } from '@tarojs/redux'
 import moment from 'moment'
+// import 'weui-miniprogram/src/weui-wxss/dist/style/weui.wxss'
 
 import Index from './pages/tab_bar/index'
 
@@ -54,6 +55,7 @@ class App extends Component {
           'pages/knowledge/index',
           'pages/theme/index',
           'pages/user_manual/index',
+          'pages/tab_bar/index',
         ],
       }
     ],

@@ -1,7 +1,8 @@
 @import "../../../assets/styles/colors/gray_var";
+page {
+  background-color: $gray100;
+}
 .setting {
-  .ctn-box {
-  }
   .h-300 {
     height: 280px;
   }

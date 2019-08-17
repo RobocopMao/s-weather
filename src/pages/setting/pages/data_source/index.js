@@ -16,16 +16,24 @@ function DataSource() {
   return (
     <View className={`flex-col h-100-per data-source theme-${user.theme}`}>
       <View className='flex-col mg-20'>
-        <Text className='bold black mg-b-10'>心知天气</Text>
+        <Text className='fs-36 gray-900'>心知天气</Text>
+        <View className='h-line-gray-300 mg-tb-20' />
         <Text>大部分天气数据由心知天气提供。</Text>
       </View>
       <View className='flex-col mg-20'>
-        <Text className='bold black mg-b-10'>和风天气</Text>
+        <Text className='fs-36 gray-900'>和风天气</Text>
+        <View className='h-line-gray-300 mg-tb-20' />
         <Text>城市搜索、热门城市、收藏夹里面的实况天气数据由和风天气提供。</Text>
       </View>
       <View className='flex-col mg-20'>
-        <Text className='bold black mg-b-10'>腾讯地图</Text>
+        <Text className='fs-36 gray-900'>腾讯地图</Text>
+        <View className='h-line-gray-300 mg-tb-20' />
         <Text>定位服务由腾讯地图提供。</Text>
+      </View>
+      <View className='flex-col mg-20'>
+        <Text className='fs-36 gray-900'>微信同声传译</Text>
+        <View className='h-line-gray-300 mg-tb-20' />
+        <Text>语音转文字服务由微信同声传译提供。</Text>
       </View>
     </View>
   )
