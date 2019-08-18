@@ -18,11 +18,11 @@ function Robot() {
   const [scrollHeight, setScrollHeight] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
   const [quickResScrollTop, setQuickResScrollTop] = useState(0);
-  const [inputVal, setInputVal] = useState(`明天${user.location.city || ''}天气怎么样？`);
+  const [inputVal, setInputVal] = useState(`今天${user.location.city || ''}天气怎么样？`);
   const [quickRes, setQuickRes] = useState([]);
   const [showQuickRes, setShowQuickRes] = useState(false);
   const [session, setSession] = useState('');
-  const [talks, setTalks] = useState([{robotReply: `您好，我是天气聊天机器人，从现在开始为你在本地保留30分钟内的聊天会话。您可以对我说：明天${user.location.city || ''}天气怎么样？`, time: moment().format('YYYY-MM-DD HH:mm')}]);
+  const [talks, setTalks] = useState([{robotReply: `您好，我是天气聊天机器人，从现在开始为你在本地保留30分钟内的聊天会话。您可以对我说：今天${user.location.city || ''}天气怎么样？`, time: moment().format('YYYY-MM-DD HH:mm')}]);
   const [quickResAnimation, setQuickResAnimation] = useState({});
   const [showVoiceBtn, setShowVoiceBtn] = useState(false); // 语音按钮默认不显示
 
