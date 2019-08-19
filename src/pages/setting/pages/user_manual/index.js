@@ -135,8 +135,8 @@ function UserManual() {
           <View className='mg-t-10'>请合理使用本小程序，严禁非法使用。</View>
           <View className='mg-t-10'>本小程序为用户提供免费的天气等查询服务，不会收集用户的任何信息，用户所有数据均记录在用户本地，用户的头像和昵称均使用微信开放数据。
             如果用户从小程序列表删除小程序，所有数据清空；再次进入，城市收藏夹等需要重新收藏。</View>
-          <View className='mg-t-10'>如果您是开发者，可以去github：<Text className='blue-A700' onClick={() => copyUrl()}>https://github.com/RobocopMao/s-weather</Text>，查看源码，交流学习，详细请看说明。</View>
           <View className='mg-t-10'>为了配合微信版本的更新，小程序会不定期更新基础库版本到最新，届时如果你的微信版本过低可能无法访问小程序，请按提示升级微信版本后即可正常使用。</View>
+          <View className='mg-t-10'>如果您是开发者，可以去github：<Text className='blue-A700' onClick={() => copyUrl()}>https://github.com/RobocopMao/s-weather</Text>，查看源码，交流学习，详细请看说明。</View>
         </View>
       </View>
     </View>
