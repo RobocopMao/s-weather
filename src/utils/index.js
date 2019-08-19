@@ -33,7 +33,7 @@ export const getSystemInfo = () => {
 
 // 获取风里等级参数
 export const getWindParams = (windSpeed) => {
-  let speed = windSpeed * 1000 / 3600; // km/h换算成m/s
+  let speed = Number(windSpeed) * 1000 / 3600; // km/h换算成m/s
   return windGrade.find((v, i, ) => {
     return speed >= v.min && speed <=v.max;
   });
