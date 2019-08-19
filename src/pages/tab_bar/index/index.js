@@ -212,6 +212,22 @@ function Index() {
     setScrollHeight(res.windowHeight - res1.height - 44 - user.systemInfo.statusBarHeight);  // 自定义导航固定44
   }, [showSkeleton]);
 
+  // 处理hourly数据，让其和now的数据更衔接吻合
+  useEffect(() => {
+    if (!hourly.length || !updateTime) {
+      return;
+    }
+    const {code, humidity, temperature, text, wind_direction, wind_speed} = now;
+    let firstHourly = {code, humidity, temperature: Number(temperature), text, wind_direction, wind_speed, time: updateTime};
+    let _hourly = hourly;
+    if (moment().isBefore(hourly[0].time)) {  // 在hourly第一个时间前直接加上
+      _hourly.unshift(firstHourly);
+    } else {  // 和hourly第一个时间相等或在hourly第一个时间之后， 替换hourly第一个
+      _hourly.splice(0, 1, firstHourly);
+    }
+    setHourly(_hourly);
+  }, [updateTime, hourly]);
+
   // 画逐小时图
   useEffect(() => {
     // setTmpLineImgPath('');
@@ -641,7 +657,7 @@ function Index() {
                     height: '100px',
                   }}
                 />}
-                {hourly.map((h) => {
+                {hourly.map((h, index) => {
                   return (
                     <View className='flex-col flex-spa-center w-150 flex-center fs-24' key={h.time}>
                       <View className='flex-col flex-center'>
@@ -660,7 +676,7 @@ function Index() {
                       </View>
                       <View className='h-line-white line w-100-per' />
                       <View className='text-center'>
-                        {moment(h.time).format('HH:mm') === '00:00' ? moment(h.time).format('MM-DD') : moment(h.time).format('HH:mm')}
+                        {index === 0 ? '现在' : moment(h.time).format('HH:mm') === '00:00' ? moment(h.time).format('MM-DD') : moment(h.time).format('HH:mm')}
                       </View>
                     </View>
                   )

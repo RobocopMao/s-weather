@@ -33,6 +33,15 @@ function AirForecast() {
     const {latitude, longitude} = location.latAndLon;
     const res = await getAirHourly({location: `${latitude}:${longitude}`, days: 1});
     const {hourly} = res;
+
+    // 处理hourly，使其和前面的空气质量指数更吻合
+    const {aqi, co, no2, o3, pm10, pm25,so2, quality, last_update} = Taro.getStorageSync('NOW_AIR').city;
+    const firstHourly = {aqi, co, no2, o3, pm10, pm25,so2, quality, time: last_update};
+    if (moment().isBefore(hourly[0].time)) {  // 在hourly第一个时间前直接加上
+      hourly.unshift(firstHourly);
+    } else {  // 和hourly第一个时间相等或在hourly第一个时间之后，替换hourly第一个
+      hourly.splice(0, 1, firstHourly);
+    }
     for (let [, v] of hourly.entries()) {
       v.aqi = Number(v.aqi);
     }
@@ -239,10 +248,10 @@ function AirForecast() {
               // width: `350px`
             }} />
             <View className='flex-row flex-spb-center text-center pd-lr-22 h-28 lh-28'>
-              {times.map((time) => {
+              {times.map((time, index) => {
                 return (
                   <View className='fs-20' key={time} style={{width: `40px`}}>
-                    {moment(time).format('H:mm') === '0:00' ? moment(time).format('MM-DD') : moment(time).format('H:mm')}
+                    {index === 0 ? '现在' : moment(time).format('H:mm') === '0:00' ? moment(time).format('MM-DD') : moment(time).format('H:mm')}
                   </View>
                 )
               })}
