@@ -494,8 +494,8 @@ function Index() {
       url: `../../tab_bar/location_collection/index`,
       events: {
         acceptDataFromLocationCollection(data) {  // 监听事件
-          console.log('acceptDataFromLocationCollection');
-          console.log(data);
+          // console.log('acceptDataFromLocationCollection');
+          // console.log(data);
           const {lat, lon, cityName} = data;
           qqMapSetLocation({latitude: lat, longitude: lon, isUser: false, name: cityName});  // 重新获取数据
           scrollToPageTop();
@@ -510,8 +510,8 @@ function Index() {
       url: `../../tab_bar/location_search/index`,
       events: {
         acceptDataFromLocationSearch(data) {  // 监听事件
-          console.log('acceptDataFromLocationSearch');
-          console.log(data);
+          // console.log('acceptDataFromLocationSearch');
+          // console.log(data);
           const {lat, lon, cityName} = data;
           qqMapSetLocation({latitude: lat, longitude: lon, isUser: false, name: cityName});  // 重新获取数据
           scrollToPageTop();
@@ -526,8 +526,8 @@ function Index() {
       url: `../../tab_bar/setting/index`,
       events: {
         acceptDataFromSetting(data) {  // 监听事件
-          console.log('acceptDataFromSetting');
-          console.log(data);
+          // console.log('acceptDataFromSetting');
+          // console.log(data);
         }
       }
     });
@@ -608,8 +608,8 @@ function Index() {
             <View className='mg-20 fs-30'>{now.text}</View>
             <View className='flex-row flex-center mg-b-20'>
               <View className='flex-row flex-center-baseline'>
-                <ComponentIconWindDirection windDirection={now.wind_direction} />
-                <View className='mg-l-4'>{now.wind_scale}级</View>
+                {Number(now.wind_speed) && <ComponentIconWindDirection windDirection={now.wind_direction} />}
+                <View className='mg-l-4'>{Number(now.wind_speed) ? `${getWindParams(now.wind_speed)['windScale']}级` : '无风'}</View>
               </View>
               <View className='mg-l-10 mg-r-10 h-28 v-line-white' />
               <View className='flex-row flex-center-baseline'>
@@ -667,8 +667,8 @@ function Index() {
                       </View>
                       <View className='' style={{flex: `0 0 100px`}} />
                       <View className='flex-row flex-center-baseline'>
-                        <ComponentIconWindDirection windDirection={h.wind_direction} />
-                        <View className='mg-l-4'>{`${getWindParams(h.wind_speed)['windScale']}级`}</View>
+                        {Number(h.wind_speed) && <ComponentIconWindDirection windDirection={h.wind_direction} />}
+                        <View className='mg-l-4'>{Number(h.wind_speed) ? `${getWindParams(h.wind_speed)['windScale']}级` : '无风'}</View>
                       </View>
                       <View className='flex-row flex-center-baseline'>
                         <View className='iconfont mg-r-4 fs-26'>&#xe600;</View>

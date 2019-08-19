@@ -47,74 +47,6 @@ function DailyForecast() {
       })
   }, [daily]);
 
-  //画图
-  // const drawTmpLine = () => {
-  //   let tmpMax = [],  // 高温
-  //       tmpMin = [];  // 低温
-  //   for (let [, v] of daily.entries()) {
-  //     // console.log(v,i);
-  //     tmpMax.push(Number(v.high));
-  //     tmpMin.push(Number(v.low));
-  //   }
-  //   let maxTmp = _.max(tmpMax) + 5; // 最高温
-  //   let minTmp = _.min(tmpMin) - 5; // 最低温
-  //   let tmpRange = maxTmp - minTmp;
-  //   // console.log(tmpMax, tmpMin, maxTmp, minTmp, tmpRange);
-  //   let distance= Math.floor((scrollHeight / 3)  / tmpRange);
-  //   let windowW1_5 = windowWidth / 5;
-  //
-  //   let ctx = Taro.createCanvasContext('tmpLine', this.$scope);
-  //   // console.log(ctx);
-  //   ctx.save();
-  //
-  //   // 画高温线
-  //   ctx.strokeStyle = themeMatch[user.theme]['day'];
-  //   ctx.lineWidth = 1;
-  //   ctx.beginPath();
-  //   ctx.setLineCap('round');
-  //   for (let [i, v] of tmpMax.entries()) {
-  //     let drawX = i * windowW1_5 + (windowW1_5 / 2);
-  //     let drawY = (maxTmp - v) * distance;
-  //     //console.log(drawX, drawY);
-  //     if (i === 0){
-  //       ctx.moveTo(drawX, drawY);
-  //       ctx.setFontSize(12);
-  //       ctx.fillStyle ='#6e6e6e';
-  //       ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
-  //     } else {
-  //       ctx.lineTo(drawX, drawY);
-  //       ctx.fillStyle ='#6e6e6e';
-  //       ctx.fillText(`${v}℃`, drawX - 10, drawY - 5);
-  //     }
-  //   }
-  //   ctx.stroke();
-  //
-  //   // 画低温线
-  //   ctx.restore();
-  //   ctx.strokeStyle = themeMatch[user.theme]['night'];
-  //   ctx.lineWidth = 1;
-  //   ctx.beginPath();
-  //   ctx.setLineCap('round');
-  //   for (let [i, v] of tmpMin.entries()) {
-  //     let drawX = i * windowW1_5 + (windowW1_5 / 2);
-  //     let drawY = (scrollHeight / 3) - (v - minTmp) * distance;
-  //     // console.log(drawX, drawY);
-  //     if (i === 0){
-  //       ctx.moveTo(drawX, drawY);
-  //       ctx.setFontSize(12);
-  //       ctx.fillStyle ='#6e6e6e';
-  //       ctx.fillText(`${v}℃`, drawX - 10, drawY + 15);
-  //     } else {
-  //       ctx.lineTo(drawX, drawY);
-  //       ctx.fillStyle ='#6e6e6e';
-  //       ctx.fillText(`${v}℃`, drawX - 10, drawY + 15);
-  //     }
-  //   }
-  //   ctx.stroke();
-  //
-  //   ctx.draw();
-  // };
-
   const drawTmpLine = () => {
     if (!daily.length) {
       return;
@@ -266,8 +198,8 @@ function DailyForecast() {
                 <View>{df.text_night}</View>
               </View>
               <View className='fs-24 flex-row flex-center-baseline'>
-                <ComponentIconWindDirection windDirection={df.wind_direction} />
-                {df.wind_scale && <View className='mg-l-4'>{`${df.wind_scale}级`}</View>}
+                {Number(df.wind_scale) && <ComponentIconWindDirection windDirection={df.wind_direction} />}
+                {df.wind_scale && <View className='mg-l-4'>{Number(df.wind_scale) ? `${df.wind_scale}级` : '无风'}</View>}
                 {!df.wind_scale && <View className='mg-l-4'>未知</View>}
               </View>
               {df.precip && <View className='fs-24 flex-row flex-center-baseline'>
