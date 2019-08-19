@@ -439,7 +439,7 @@ function Index() {
   const onShareAppMessage = () => {
     this.$scope.onShareAppMessage = (res) => {
       return {
-        title: `我这儿现在天气${now.text},气温${now.temperature}℃,你那儿呢？`,
+        title: `我这儿天气${now.text},气温${now.temperature}℃,你那儿呢？`,
         path: `/pages/tab_bar/index/index?from=SHARE`,
       }
     };

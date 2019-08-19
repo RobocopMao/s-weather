@@ -154,18 +154,18 @@ function Setting() {
         </View>
 
         <View className='bd-radius-20 pd-lr-20 bg-white mg-b-20'>
-          <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goStoolsMiniProgram()}>
-            <View className='flex-row flex-start-baseline'>
-              <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe87c;</View>
-              <View>其他查询</View>
-            </View>
-            <View className='iconfont'>&#xe65b;</View>
-          </View>
-          <View className='h-line-gray-300' />
           <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goUserManual()}>
             <View className='flex-row flex-start-baseline'>
               <View className={`iconfont mg-l-2 mg-r-12 fs-28 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe728;</View>
               <View>用户手册</View>
+            </View>
+            <View className='iconfont'>&#xe65b;</View>
+          </View>
+          <View className='h-line-gray-300' />
+          <View className='flex-row flex-spb-baseline pd-tb-30' onClick={() => goStoolsMiniProgram()}>
+            <View className='flex-row flex-start-baseline'>
+              <View className={`iconfont mg-r-10 ${location.isDay ? 'day-color' : 'night-color'}`}>&#xe87c;</View>
+              <View>更多查询</View>
             </View>
             <View className='iconfont'>&#xe65b;</View>
           </View>
