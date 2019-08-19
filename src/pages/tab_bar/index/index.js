@@ -420,6 +420,7 @@ function Index() {
     }).catch(err => {
       // console.log('canvasToImg err');
       console.log(err);
+      setShowSkeleton(false);  // 画完图立即移除骨架屏
     })
   };
 
@@ -608,8 +609,8 @@ function Index() {
             <View className='mg-20 fs-30'>{now.text}</View>
             <View className='flex-row flex-center mg-b-20'>
               <View className='flex-row flex-center-baseline'>
-                {Number(now.wind_speed) && <ComponentIconWindDirection windDirection={now.wind_direction} />}
-                <View className='mg-l-4'>{Number(now.wind_speed) ? `${getWindParams(now.wind_speed)['windScale']}级` : '无风'}</View>
+                <ComponentIconWindDirection windDirection={now.wind_direction} />
+                <View className='mg-l-4'>{`${getWindParams(now.wind_speed)['windScale']}级`}</View>
               </View>
               <View className='mg-l-10 mg-r-10 h-28 v-line-white' />
               <View className='flex-row flex-center-baseline'>
@@ -667,8 +668,8 @@ function Index() {
                       </View>
                       <View className='' style={{flex: `0 0 100px`}} />
                       <View className='flex-row flex-center-baseline'>
-                        {Number(h.wind_speed) && <ComponentIconWindDirection windDirection={h.wind_direction} />}
-                        <View className='mg-l-4'>{Number(h.wind_speed) ? `${getWindParams(h.wind_speed)['windScale']}级` : '无风'}</View>
+                        <ComponentIconWindDirection windDirection={h.wind_direction} />
+                        <View className='mg-l-4'>{`${getWindParams(h.wind_speed)['windScale']}级`}</View>
                       </View>
                       <View className='flex-row flex-center-baseline'>
                         <View className='iconfont mg-r-4 fs-26'>&#xe600;</View>

@@ -133,7 +133,7 @@ function LocationCollection() {
                 <View className='flex-row flex-start-center mg-tb-20'>
                   <View className='flex-row flex-start-baseline'>
                     <ComponentIconWindDirection windDirection={wind_dir.replace(/风$/, '')} />
-                    <View>{wind_sc}级</View>
+                    <View className='mg-l-4'>{wind_sc}级</View>
                   </View>
                   <View className='mg-l-10 mg-r-10 h-28 v-line-white' />
                   <View className='flex-row flex-start-baseline'>
