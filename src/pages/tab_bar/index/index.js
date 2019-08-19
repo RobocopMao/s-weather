@@ -421,6 +421,7 @@ function Index() {
       // console.log('canvasToImg err');
       console.log(err);
       setShowSkeleton(false);  // 画完图立即移除骨架屏
+      Taro.showToast({title: '逐时温度曲线图绘制失败，请刷新页面重新绘制', icon: 'none', duration: 2500});
     })
   };
 

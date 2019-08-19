@@ -60,6 +60,7 @@ function UserManual() {
           <View className='mg-t-10'>以卡片的形式展示用户收藏的城市，用户点击后回到首页查询该城市天气，再次进入会以不同的颜色记录上次的点击状态。</View>
           <View className='mg-t-10'>编辑：长按卡片可以进入编辑状态，对收藏的城市进行置顶和删除操作，点击右下角按钮退出编辑。</View>
           <View className='mg-t-10'>收藏：需要到城市搜索中收藏，最多收藏10个城市。</View>
+          <View className='mg-t-10'>注意：由于城市收藏夹中天气接口和首页的实况天气接口来自不同的提供者，同一个地区数据可能会存在差异。</View>
         </View>
       </View>
       <View className='flex-col mg-tb-20'>
