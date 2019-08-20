@@ -66,6 +66,10 @@ function Index() {
   const [userLocationAuth, setUserLocationAuth] = useState(true);
   const [tabBarCircular, setTabBarCircular] = useState(false);
   const [tabBarItemNum, setTabBarItemNum] = useState(5);
+  const [tabBarSlideUpHide, setTabBarSlideUpHide] = useState(false);
+  const [startPageY, setStartPageY] = useState(0);
+  const [tabBarAnimation, setTabBarAnimation] = useState(null);
+  const [tabBarHeight, setTabBarHeight] = useState(0);
 
   const lifeSuggestion = [
     {type: 'comfort', name: '舒适度指数'},
@@ -99,12 +103,23 @@ function Index() {
   useEffect(() => {
     const TAB_BAR_SETTING = Taro.getStorageSync('TAB_BAR_SETTING');
     if (TAB_BAR_SETTING) {
-      const {displayMultipleItems, circular} = TAB_BAR_SETTING;
+      const {displayMultipleItems, circular, slideUpHide} = TAB_BAR_SETTING;
       setTabBarCircular(circular); // 是否循环滚动
       setTabBarItemNum(displayMultipleItems); // 显示item的数量
+      setTabBarSlideUpHide(slideUpHide); // 上滑隐藏
+
+      if (!slideUpHide) { // 不存在
+        return;
+      }
+      this.animation = Taro.createAnimation({
+        duration: 300,
+        timingFunction: 'ease',
+      });
+
     } else {
-      Taro.setStorageSync('TAB_BAR_SETTING', {circular: tabBarCircular, displayMultipleItems: tabBarItemNum});
+      Taro.setStorageSync('TAB_BAR_SETTING', {circular: tabBarCircular, displayMultipleItems: tabBarItemNum, slideUpHide: tabBarSlideUpHide});
     }
+
   }, []);
 
   // 日出日落
@@ -208,7 +223,7 @@ function Index() {
     dispatch(setSystemInfo(res));
     const res1 = await getNodeRect('#tabBar');
     if (!res1) {return;}
-    // setTabBarHeight(res1.height);
+    setTabBarHeight(res1.height);
     setScrollHeight(res.windowHeight - res1.height - 44 - user.systemInfo.statusBarHeight);  // 自定义导航固定44
   }, [showSkeleton]);
 
@@ -561,6 +576,35 @@ function Index() {
     });
   };
 
+  const pageTouchStart = (e) => {
+    if (!tabBarSlideUpHide) {
+      return;
+    }
+    const {pageY} = e.changedTouches[0];
+    setStartPageY(pageY);
+  };
+
+  const pageTouchEnd = (e) => {
+    if (!tabBarSlideUpHide) {
+      return;
+    }
+    const {pageY} = e.changedTouches[0];
+    if (pageY - startPageY < -tabBarHeight) {  // 上滑
+      // console.log('up');
+      this.animation.translateY(tabBarHeight + 10).step();  // +10隐藏box-shadow
+      setScrollHeight(user.systemInfo.windowHeight - 44 - user.systemInfo.statusBarHeight);
+      setTabBarAnimation(this.animation.export());
+    } else if (pageY - startPageY > tabBarHeight) {  //下滑
+      // console.log('down');
+      this.animation.translateY(0).step();
+      setTabBarAnimation(this.animation.export());
+      let tId = setTimeout(() => {
+        setScrollHeight(user.systemInfo.windowHeight - tabBarHeight - 44 - user.systemInfo.statusBarHeight);
+        clearTimeout(tId);
+      }, 300);
+    }
+  };
+
   return (
     <Block>
       {showSkeleton && (
@@ -570,7 +614,7 @@ function Index() {
           bgcolor='#FFF'
         />
       )}
-      <View className={`weather h-100-per skeleton theme-${user.theme} white`}>
+      <View className={`weather h-100-per skeleton theme-${user.theme} white`} onTouchStart={(e) => pageTouchStart(e)} onTouchEnd={(e) => pageTouchEnd(e)}>
         {/*<ComponentTagName />*/}
         <ComponentBaseNavigation backgroundColor={location.isDay ? themeMatch[user.theme]['day'] : themeMatch[user.theme]['night']}
                                  color={location.isDay ? themeMatch[user.theme]['dayFontColor'] : themeMatch[user.theme]['nightFontColor']}
@@ -608,7 +652,7 @@ function Index() {
               <ComponentIconWeather code={now.code} fontSize='fs-100' />
             </View>
             <View className='mg-20 fs-30'>{now.text}</View>
-            <View className='flex-row flex-center mg-b-20'>
+            <View className='flex-row flex-center mg-b-40'>
               <View className='flex-row flex-center-baseline'>
                 <ComponentIconWindDirection windDirection={now.wind_direction} />
                 <View className='mg-l-4'>{`${getWindParams(now.wind_speed)['windScale']}级`}</View>
@@ -624,7 +668,7 @@ function Index() {
                 <View className=''>空气{nowAir.city.quality} {nowAir.city.aqi}</View>
               </View>}
             </View>
-            <View className='mg-b-40 fs-24'>天气数据更新于 {moment(updateTime).format('HH:mm')}</View>
+            {/*<View className='mg-b-40 fs-24'>天气数据更新于 {moment(updateTime).format('HH:mm')}</View>*/}
             {/*气象预警*/}
             {alarms.length && <View className='flex-row flex-center circle w-120 h-120 pd-10 alarm' onClick={() => goAlarms()}>
               <View className='flex-row flex-center w-40 h-40 circle sound'>
@@ -748,8 +792,8 @@ function Index() {
                 )
               })}
             </Swiper>
-            {/*<View className='h-line-white' />*/}
-            {/*<View className='text-center fs-30 pd-30'>更多生活指数</View>*/}
+            <View className='h-line-white' />
+            <View className='text-center fs-30 pd-30'>更多生活指数</View>
           </View>}
 
           {JSON.stringify(now) !== '{}' && <View className='fs-24 text-center mg-t-20 mg-b-20 flex-row flex-center'>
@@ -759,7 +803,7 @@ function Index() {
           </View>}
         </ScrollView>
 
-        {!showSkeleton && <View className='flex-row h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar' id='tabBar'>
+        {!showSkeleton && <View className='flex-row h-88 w-100-per bg-white bd-tl-radius-40 bd-tr-radius-40 tab-bar' id='tabBar' animation={tabBarAnimation}>
           <Swiper
             className='h-100-per w-100-per'
             circular={tabBarCircular}

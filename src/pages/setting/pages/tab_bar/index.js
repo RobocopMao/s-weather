@@ -13,7 +13,10 @@ function TabBarSetting() {
   const [circularItems, setCircularItems] = useState([]);
   const [tabBarItemNum, setTabBarItemNum] = useState(5); // tabBar显示标签个数，默认5个
   const [tabBarItems, setTabBarItems] = useState([]);
+  const [slideUpHide, setSlideUpHide] = useState(false);  // tabBar是否上滑隐藏
+  const [slideUpHideItems, setSlideUpHideItems] = useState([]);
   const [initTabBarSetting, setInitTabBarSetting] = useState({}); // tabBar设置的初始值,用于比较是否有更改
+
 
   // 设置白天、夜晚主题
   useEffect(() => {
@@ -46,6 +49,13 @@ function TabBarSetting() {
     ];
     setTabBarItemNum(TAB_BAR_SETTING.displayMultipleItems);
     setTabBarItems(_tabBarItems);
+
+    const _slideUpHideItems = [
+      {name: '是', value: true, checked: typeof TAB_BAR_SETTING.slideUpHide === 'undefined' ? false : TAB_BAR_SETTING.slideUpHide === true},  // 之前的用户没有这个，所以判断
+      {name: '否', value: false, checked: typeof TAB_BAR_SETTING.slideUpHide === 'undefined' ? true : TAB_BAR_SETTING.slideUpHide === false}
+    ];
+    setSlideUpHide(TAB_BAR_SETTING.slideUpHide);
+    setSlideUpHideItems(_slideUpHideItems);
   }, []);
 
   // tabBar循环滚动事件
@@ -58,9 +68,14 @@ function TabBarSetting() {
     setTabBarItemNum(Number(e.detail.value));
   };
 
+  // tabBar上滑隐藏
+  const onSlideUpHideChange = (e) => {
+    setSlideUpHide(e.detail.value === 'true')
+  };
+
   // 保存
   const saveSetting = () => {
-    const TAB_BAR_SETTING = {circular, displayMultipleItems: tabBarItemNum};
+    const TAB_BAR_SETTING = {circular, displayMultipleItems: tabBarItemNum, slideUpHide};
     Taro.setStorageSync('TAB_BAR_SETTING', TAB_BAR_SETTING);
 
     Taro.showToast({title: '设置成功，重启生效', icon: 'none', duration: 2000});
@@ -102,9 +117,21 @@ function TabBarSetting() {
             )
           })}
         </RadioGroup>
+        <View className='mg-b-20 mg-t-20 fs-36 gray-900'>上滑隐藏</View>
+        <View className='h-line-gray-300 mg-t-20' />
+        <RadioGroup onChange={(e) => onSlideUpHideChange(e)}>
+          {slideUpHideItems.map((item, index) => {
+            return (
+              <Label className='flex-row flex-spb-baseline pd-20' key={String(index)}>
+                <View>{item.name}</View>
+                <Radio value={item.value} checked={item.checked} />
+              </Label>
+            )
+          })}
+        </RadioGroup>
       </ScrollView>
       <Button className={`h-88 w-100-per white bd-radius-0 fs-32 ${location.isDay ? 'day-bg' : 'night-bg'} confirm-btn`}
-              id='confirmBtn' disabled={_.isEqual(initTabBarSetting, {circular, displayMultipleItems: tabBarItemNum})} onClick={() => saveSetting()}>保存设置</Button>
+              id='confirmBtn' disabled={_.isEqual(initTabBarSetting, {circular, displayMultipleItems: tabBarItemNum, slideUpHide})} onClick={() => saveSetting()}>保存设置</Button>
     </View>
   )
 }
