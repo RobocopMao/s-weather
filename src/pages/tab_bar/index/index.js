@@ -64,12 +64,13 @@ function Index() {
   const [showSkeleton, setShowSkeleton] = useState(true);
   const [previous , setPrevious ] = useState(0);
   const [userLocationAuth, setUserLocationAuth] = useState(true);
-  const [tabBarCircular, setTabBarCircular] = useState(false);
-  const [tabBarItemNum, setTabBarItemNum] = useState(5);
-  const [tabBarSlideUpHide, setTabBarSlideUpHide] = useState(false);
+  const [tabBarCircular, setTabBarCircular] = useState(false); // 设置tanBar
+  const [tabBarItemNum, setTabBarItemNum] = useState(5); // 设置tanBar
+  const [tabBarSlideUpHide, setTabBarSlideUpHide] = useState(false); // 设置tanBar
   const [startPageY, setStartPageY] = useState(0);
   const [tabBarAnimation, setTabBarAnimation] = useState(null);
   const [tabBarHeight, setTabBarHeight] = useState(0);
+  const [isTabBarHide, setIsTabBarHide] = useState(false);
 
   const lifeSuggestion = [
     {type: 'comfort', name: '舒适度指数'},
@@ -594,6 +595,7 @@ function Index() {
       this.animation.translateY(tabBarHeight + 10).step();  // +10隐藏box-shadow
       setScrollHeight(user.systemInfo.windowHeight - 44 - user.systemInfo.statusBarHeight);
       setTabBarAnimation(this.animation.export());
+      setIsTabBarHide(true);
     } else if (pageY - startPageY > tabBarHeight) {  //下滑
       // console.log('down');
       this.animation.translateY(0).step();
@@ -602,6 +604,7 @@ function Index() {
         setScrollHeight(user.systemInfo.windowHeight - tabBarHeight - 44 - user.systemInfo.statusBarHeight);
         clearTimeout(tId);
       }, 300);
+      setIsTabBarHide(false);
     }
   };
 
@@ -651,8 +654,8 @@ function Index() {
               </View>
               <ComponentIconWeather code={now.code} fontSize='fs-100' />
             </View>
-            <View className='mg-20 fs-30'>{now.text}</View>
-            <View className='flex-row flex-center mg-b-40'>
+            <View className='mg-20 fs-50'>{now.text}</View>
+            <View className='flex-row flex-center mg-b-40 mg-t-20'>
               <View className='flex-row flex-center-baseline'>
                 <ComponentIconWindDirection windDirection={now.wind_direction} />
                 <View className='mg-l-4'>{`${getWindParams(now.wind_speed)['windScale']}级`}</View>
@@ -760,7 +763,7 @@ function Index() {
 
           {/*今日生活指数,香港澳门没有数据*/}
           {location.name !== '香港' && location.name !== '澳门' && JSON.stringify(suggestion) !== '{}'
-          && <View className={`mg-20 bd-radius-20 ${location.isDay ? 'day-bg-opacity' : 'night-bg-opacity'}`}>
+          && <View className={`mg-lr-20 mg-t-20 bd-radius-20 ${location.isDay ? 'day-bg-opacity' : 'night-bg-opacity'}`}>
             <View className='text-center fs-30 pd-30'>今日生活指数</View>
             {/*<View className='h-line-white' />*/}
             <Swiper
@@ -792,11 +795,11 @@ function Index() {
                 )
               })}
             </Swiper>
-            <View className='h-line-white' />
-            <View className='text-center fs-30 pd-30'>更多生活指数</View>
+            {/*<View className='h-line-white' />*/}
+            {/*<View className='text-center fs-30 pd-30'>更多生活指数</View>*/}
           </View>}
 
-          {JSON.stringify(now) !== '{}' && <View className='fs-24 text-center mg-t-20 mg-b-20 flex-row flex-center'>
+          {JSON.stringify(now) !== '{}' && (tabBarSlideUpHide ? isTabBarHide : true) && <View className='fs-24 text-center h-88 lh-88 flex-row flex-center'>
             <Text className='gray-700'>天气数据来源于</Text>
             <Image className='h-50 w-144' src={xzLogoGrayImg} />
             <Image className='h-30 w-120' src={hfLogoGrayImg} />
