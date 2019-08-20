@@ -506,6 +506,11 @@ function Index() {
     Taro.navigateTo({url: `../../forecast/pages/daily_forecast/index?lon=${longitude}&lat=${latitude}`});
   };
 
+  // 去更多生活指数
+  const goLifeSuggestion = () => {
+    Taro.navigateTo({url: `../../forecast/pages/life_suggestion/index`});
+  };
+
   // 去城市收藏夹
   const goLocationCollection = () => {
     Taro.navigateTo({
@@ -577,6 +582,7 @@ function Index() {
     });
   };
 
+  // 页面的touchStart事件
   const pageTouchStart = (e) => {
     if (!tabBarSlideUpHide) {
       return;
@@ -585,6 +591,7 @@ function Index() {
     setStartPageY(pageY);
   };
 
+  // 页面的touchEnd事件，显示/隐藏tabBar
   const pageTouchEnd = (e) => {
     if (!tabBarSlideUpHide) {
       return;
@@ -795,8 +802,8 @@ function Index() {
                 )
               })}
             </Swiper>
-            {/*<View className='h-line-white' />*/}
-            {/*<View className='text-center fs-30 pd-30'>更多生活指数</View>*/}
+            <View className='h-line-white' />
+            <View className='text-center fs-30 pd-30' onClick={() => goLifeSuggestion()}>更多生活指数</View>
           </View>}
 
           {JSON.stringify(now) !== '{}' && (tabBarSlideUpHide ? isTabBarHide : true) && <View className='fs-24 text-center h-88 lh-88 flex-row flex-center'>

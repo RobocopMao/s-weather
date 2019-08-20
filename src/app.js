@@ -43,7 +43,8 @@ class App extends Component {
           'pages/daily_forecast/index',
           'pages/alarm/index',
           'pages/air/index',
-          'pages/air_forecast/index'
+          'pages/air_forecast/index',
+          'pages/life_suggestion/index'
         ],
       },
       {
