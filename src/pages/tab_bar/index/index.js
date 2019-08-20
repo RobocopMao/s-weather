@@ -70,7 +70,7 @@ function Index() {
   const [startPageY, setStartPageY] = useState(0);
   const [tabBarAnimation, setTabBarAnimation] = useState(null);
   const [tabBarHeight, setTabBarHeight] = useState(0);
-  const [isTabBarHide, setIsTabBarHide] = useState(false);
+  const [isTabBarHide, setIsTabBarHide] = useState(false); // 通过tabBar是否隐藏来显示数据来源View，间接解决生活指数可能错位的问题
 
   const lifeSuggestion = [
     {type: 'comfort', name: '舒适度指数'},
