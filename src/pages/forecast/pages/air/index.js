@@ -10,7 +10,8 @@ import '@antv/f2/lib/component/guide/text' // 只加载 Guide.Text 组件
 import '@antv/f2/lib/component/guide/arc' // 只加载 Guide.Arc 组件
 import '@antv/f2/lib/geom/interval' // 只加载 Guide.Arc 组件
 import './index.scss'
-import {setNavStyle} from '../../../../utils'
+import {setNavStyle, useAsyncEffect, getAqiColor} from '../../../../utils'
+import {getAirRanking} from '../../../../apis/air'
 import Renderer from '../../../../utils/renderer'
 import aqiJson from '../../../../assets/json/aqi.json'
 import locationImg from '../../../../assets/images/location.png'
@@ -21,6 +22,8 @@ function Air() {
   const [nowAir, setNowAir] = useState({});
   const [nowAirDesc, setNowAirDesc] = useState({});
   const [markers, setMarkers] = useState([]);
+  const [aqiTop10, setAqiTop10] = useState([]);
+  const [loadingAqiRanking, setLoadingAqiRanking] = useState(false);
 
   useEffect(async () => {
     setNavStyle(location.isDay, user.theme);
@@ -33,6 +36,10 @@ function Air() {
     drawQai();
     initMarkers();
   }, [nowAir]);
+
+  useAsyncEffect(async () => {
+    getAqiRanking();
+  }, []);
 
   // 画
   const drawQai = () => {
@@ -125,43 +132,33 @@ function Air() {
     const {stations} = nowAir;
     let _markers = [];
     for (let [i, v] of stations.entries()) {
-      let marker = {
-        id: i,
-        longitude: Number(v.longitude),
-        latitude: Number(v.latitude),
-        iconPath: locationImg,
-        width: 25,
-        height: 25,
-        title: `${v.aqi} ${v.station}`,
-        callout: {
-          content: v.aqi,
-          color: '#fff',
-          fontSize: 13,
-          borderRadius: 8,
-          textAlign: 'center',
-          bgColor: getAqiColor(v.aqi),
-          display: 'ALWAYS',
-          padding: 5,
-          zIndex: 0,
-        },
-      };
-      _markers.push(marker);
+      if (v.aqi !== null) {
+        let marker = {
+          id: i,
+          longitude: Number(v.longitude),
+          latitude: Number(v.latitude),
+          iconPath: locationImg,
+          width: 25,
+          height: 25,
+          title: `${v.aqi} ${v.station}`,
+          callout: {
+            content: v.aqi,
+            color: '#fff',
+            fontSize: 13,
+            borderRadius: 8,
+            textAlign: 'center',
+            bgColor: getAqiColor(v.aqi),
+            display: 'ALWAYS',
+            padding: 5,
+            zIndex: 0,
+          },
+        };
+
+        _markers.push(marker);
+      }
     }
 
     setMarkers(_markers);
-  };
-
-  // 更具aqi获取不同的颜色
-  const getAqiColor = (aqi) => {
-    const _aqi = Number(aqi);
-    let aqiDesc = aqiJson.find((v, i, arr) => {
-      if (_aqi === 0) {
-        return arr[0];
-      }
-      return _aqi > v.minAqi && _aqi <= v.maxAqi
-    });
-
-    return aqiDesc.color;
   };
 
   // 点击marker
@@ -181,8 +178,20 @@ function Air() {
     setMarkers(_markers)
   };
 
+  const getAqiRanking = async () => {
+    setLoadingAqiRanking(true);
+    const {results} = await getAirRanking();
+    Taro.setStorageSync('AQI_RANKING', results);
+    setAqiTop10(results.slice(0, 10));
+    setLoadingAqiRanking(false);
+  };
+
   const goAqiForecast = () => {
     Taro.navigateTo({url: `/pages/forecast/pages/air_forecast/index`});
+  };
+
+  const goAqiRanking = () => {
+    Taro.navigateTo({url: `/pages/forecast/pages/air_ranking/index`});
   };
 
   return (
@@ -254,6 +263,31 @@ function Air() {
             onCalloutTap={(e) => markerTap(e)}
           />
         </View>
+      </View>
+      <View className='flex-col mg-b-20'>
+        <View className='flex-row flex-spb-baseline mg-b-20 mg-t-40 fs-32'>
+          <Text className='gray-900'>全国城市AQI排行榜TOP10</Text>
+          {aqiTop10.length && <View className={`flex-row flex-row-baseline pd-tb-10 ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goAqiRanking()}>
+            <View className='fs-28'>更多</View>
+            <View className='iconfont fs-36 bold'>&#xe65b;</View>
+          </View>}
+        </View>
+        <View className='h-line-gray-300 mg-b-10' />
+        {aqiTop10.map((ranking, index) => {
+          let cityArr = [...new Set(ranking.location.path.split(','))].reverse();
+          cityArr.shift();
+          let city = cityArr.join(' ');
+          return (
+            <View className='flex-row flex-spb-center' key={String(index)}>
+              <View className='item-flb-60per lh-60'>{city}</View>
+              <View className='item-flb-40per lh-60 text-center' style={{color: getAqiColor(ranking.aqi)}}>{ranking.aqi}</View>
+            </View>
+          )
+        })}
+        {!aqiTop10.length && <View className='flex-col flex-start-center pd-tb-30 gray-300' onClick={() => getAqiRanking()}>
+          <View className='iconfont fs-100 mg-20'>&#xe66b;</View>
+          <View>数据加载失败，点击刷新</View>
+        </View>}
       </View>
     </View>
   )

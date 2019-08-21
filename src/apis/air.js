@@ -39,3 +39,13 @@ export const getAirHourly = async (data) => {
     hostType: XZ_HOST_TYPE
   });
 };
+
+// 获取全国城市空气质量AQI排行榜
+export const getAirRanking = async (data) => {
+  return await request.get({
+    url: '/v3/air/ranking.json',
+    data,
+    hostType: XZ_HOST_TYPE,
+    needCode: true
+  });
+};

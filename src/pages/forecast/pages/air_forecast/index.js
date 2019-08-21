@@ -10,9 +10,8 @@ import '@antv/f2/lib/geom/area'; // 只加载面积图
 import '@antv/f2/lib/component/guide/text'; // 只加载 Guide.Text 组件
 import '@antv/f2/lib/scale/time-cat'; // 加载 timeCat 类型的度量
 import './index.scss'
-import {getNodeRect, setNavStyle, useAsyncEffect} from '../../../../utils'
+import {getNodeRect, setNavStyle, useAsyncEffect, getAqiColor} from '../../../../utils'
 import Renderer from '../../../../utils/renderer'
-import aqiJson from '../../../../assets/json/aqi.json'
 import themeMatch from '../../../../assets/json/theme_match.json'
 import {getAirDaily, getAirHourly} from '../../../../apis/air'
 
@@ -214,19 +213,6 @@ function AirForecast() {
     chart.area().position('date*aqi').color(`l(90) 0:${topColor} 1:${bottomColor}`).shape('smooth');
 
     chart.render();
-  };
-
-  // 更具aqi获取不同的颜色
-  const getAqiColor = (aqi) => {
-    const _aqi = Number(aqi);
-    let aqiDesc = aqiJson.find((v, i, arr) => {
-      if (_aqi === 0) {
-        return arr[0];
-      }
-      return _aqi > v.minAqi && _aqi <= v.maxAqi
-    });
-
-    return aqiDesc.color;
   };
 
   return (

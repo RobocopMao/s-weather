@@ -1,6 +1,7 @@
 import Taro, { useEffect, DependencyList } from '@tarojs/taro'
 import windGrade from '../assets/json/wind_grade.json'
 import themeMatch from '../assets/json/theme_match.json'
+import aqiJson from '../assets/json/aqi.json';
 
 export function useAsyncEffect (effect, deps = DependencyList) {
   useEffect(() => {
@@ -60,4 +61,17 @@ export const setNavStyle = (isDay, theme) => {
       }
     });
   }
+};
+
+// 更具aqi获取不同的颜色
+export const getAqiColor = (aqi) => {
+  const _aqi = Number(aqi);
+  let aqiDesc = aqiJson.find((v, i, arr) => {
+    if (_aqi === 0) {
+      return arr[0];
+    }
+    return _aqi > v.minAqi && _aqi <= v.maxAqi
+  });
+
+  return aqiDesc.color;
 };

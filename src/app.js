@@ -44,7 +44,8 @@ class App extends Component {
           'pages/alarm/index',
           'pages/air/index',
           'pages/air_forecast/index',
-          'pages/life_suggestion/index'
+          'pages/life_suggestion/index',
+          'pages/air_ranking/index'
         ],
       },
       {
