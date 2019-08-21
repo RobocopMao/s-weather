@@ -624,7 +624,7 @@ function Index() {
           bgcolor='#FFF'
         />
       )}
-      <View className={`weather h-100-per skeleton theme-${user.theme} white`} onTouchStart={(e) => pageTouchStart(e)} onTouchEnd={(e) => pageTouchEnd(e)}>
+      <View className={`weather h-100-per skeleton theme-${user.theme} white`}>
         {/*<ComponentTagName />*/}
         <ComponentBaseNavigation backgroundColor={location.isDay ? themeMatch[user.theme]['day'] : themeMatch[user.theme]['night']}
                                  color={location.isDay ? themeMatch[user.theme]['dayFontColor'] : themeMatch[user.theme]['nightFontColor']}
@@ -652,6 +652,7 @@ function Index() {
           style={{height: `${scrollHeight}px`}}
           onScroll={e => onContainerScroll(e)}
           scrollTop={scrollToTop}
+          onTouchStart={(e) => pageTouchStart(e)} onTouchEnd={(e) => pageTouchEnd(e)}
         >
           {JSON.stringify(now) !== '{}' && <View className='flex-col flex-center relative' id='nowContainer'>
             <View className='flex-row flex-center mg-t-40'>
