@@ -1,6 +1,7 @@
 import Taro, {useState, useEffect} from '@tarojs/taro'
 import {View, Canvas, Text, Map} from '@tarojs/components'
 import {useSelector} from '@tarojs/redux'
+import _ from 'lodash/lodash.min'
 import moment from 'moment'
 import Core from '@antv/f2/lib/core'
 import Guide from '@antv/f2/lib/plugin/guide'
@@ -23,7 +24,6 @@ function Air() {
   const [nowAirDesc, setNowAirDesc] = useState({});
   const [markers, setMarkers] = useState([]);
   const [aqiTop10, setAqiTop10] = useState([]);
-  const [loadingAqiRanking, setLoadingAqiRanking] = useState(false);
 
   useEffect(async () => {
     setNavStyle(location.isDay, user.theme);
@@ -32,14 +32,14 @@ function Air() {
     setNowAir(_nowAir);
   }, []);
 
+  useAsyncEffect(async () => {
+    getAqiRanking();
+  }, []);
+
   useEffect(() => {
     drawQai();
     initMarkers();
   }, [nowAir]);
-
-  useAsyncEffect(async () => {
-    getAqiRanking();
-  }, []);
 
   // 画
   const drawQai = () => {
@@ -179,11 +179,9 @@ function Air() {
   };
 
   const getAqiRanking = async () => {
-    setLoadingAqiRanking(true);
     const {results} = await getAirRanking();
     Taro.setStorageSync('AQI_RANKING', results);
     setAqiTop10(results.slice(0, 10));
-    setLoadingAqiRanking(false);
   };
 
   const goAqiForecast = () => {
@@ -267,9 +265,9 @@ function Air() {
       <View className='flex-col mg-b-20'>
         <View className='flex-row flex-spb-baseline mg-b-20 mg-t-40 fs-32'>
           <Text className='gray-900'>全国城市AQI排行榜TOP10</Text>
-          {aqiTop10.length && <View className={`flex-row flex-row-baseline pd-tb-10 ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goAqiRanking()}>
-            <View className='fs-28'>更多</View>
-            <View className='iconfont fs-36 bold'>&#xe65b;</View>
+          {aqiTop10.length && <View className={`flex-row flex-start-baseline ${location.isDay ? 'day-color' : 'night-color'}`} onClick={() => goAqiRanking()}>
+            <View>更多</View>
+            <View className='iconfont bold'>&#xe65b;</View>
           </View>}
         </View>
         <View className='h-line-gray-300 mg-b-10' />
@@ -284,7 +282,7 @@ function Air() {
             </View>
           )
         })}
-        {!aqiTop10.length && <View className='flex-col flex-start-center pd-tb-30 gray-300' onClick={() => getAqiRanking()}>
+        {!aqiTop10.length && <View className='flex-col flex-start-center pd-tb-30 gray-300' onClick={_.throttle(getAqiRanking, 2000, {leading: false, trailing: true})}>
           <View className='iconfont fs-100 mg-20'>&#xe66b;</View>
           <View>数据加载失败，点击刷新</View>
         </View>}
