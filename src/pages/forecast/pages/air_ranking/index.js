@@ -4,6 +4,7 @@ import {useSelector} from '@tarojs/redux'
 import _ from 'lodash/lodash.min'
 import './index.scss'
 import {setNavStyle, getAqiColor} from '../../../../utils'
+import {getAirRanking} from "../../../../apis/air";
 
 function AirRanking() {
   const location = useSelector(state => state.location);
@@ -16,9 +17,16 @@ function AirRanking() {
   useEffect(async () => {
     setNavStyle(location.isDay, user.theme);
 
-    const AQI_RANKING = Taro.getStorageSync('AQI_RANKING');
+    let aqiRankingData = [];
+    if (this.$router.params.from) {  // 来自分享
+      const {results} = await getAirRanking(); // 去请求
+      aqiRankingData = results;
+    } else { // 来自前一个页面
+      aqiRankingData = Taro.getStorageSync('AQI_RANKING'); // 用缓存
+    }
+
     let _aqiRanking = [];
-    for (let [, v] of AQI_RANKING.entries()) {
+    for (let [, v] of aqiRankingData.entries()) {
       let cityArr = [...new Set(v.location.path.split(','))].reverse();
       cityArr.shift();
       let city = cityArr.join(' ');
@@ -30,6 +38,24 @@ function AirRanking() {
     setShowAqiRanking(_aqiRanking);
     setInitComplete(true);
   }, []);
+
+  // 显示转发按钮
+  useEffect(() => {
+    Taro.showShareMenu({
+      withShareTicket: true
+    });
+    onShareAppMessage();
+  }, [aqiRanking]);
+
+  // 分享的事件
+  const onShareAppMessage = () => {
+    this.$scope.onShareAppMessage = (res) => {
+      return {
+        title: `${aqiRanking[0].city.split(' ').reverse()[0]}AQI高居榜首,不服来PK`,
+        path: `/pages/forecast/pages/air_ranking/index?from=SHARE`,
+      }
+    };
+  };
 
   const searchInput = (e) => {
     const {value} = e.detail;
@@ -66,21 +92,30 @@ function AirRanking() {
 
   return (
     <View className={`air-ranking theme-${user.theme}`}>
-      <View className={`search-bar pd-20 ${location.isDay ? 'day-bg' : 'night-bg'}`}>
-        <View className='flex-row bd-radius-50 bg-white'>
-          <Input className='item-flg-1 h-80 pd-l-20 pd-lr-30 lh-80 ' confirmType='search' value={inputVal} placeholder='请输入城市名称关键字'
-                 onInput={_.throttle((e) => searchInput(e), 500, {leading: false, trailing: true})}
-          />
-          {inputVal && <Button className='iconfont icon-btn fs-50 pd-0 mg-0 h-100-per w-100 lh-80-i gray-700 reset-btn' onClick={() => resetInput()}>&#xe87b;</Button>}
+      <View className='top-bar'>
+        <View className={`pd-20 ${location.isDay ? 'day-bg' : 'night-bg'}`}>
+          <View className='flex-row bd-radius-50 bg-white'>
+            <Input className='item-flg-1 h-80 pd-l-20 pd-lr-30 lh-80 ' confirmType='search' value={inputVal} placeholder='请输入城市名称关键字'
+                   onInput={_.throttle((e) => searchInput(e), 500, {leading: false, trailing: true})}
+            />
+            {inputVal && <Button className='iconfont icon-btn fs-50 pd-0 mg-0 h-100-per w-100 lh-80-i gray-700 reset-btn' onClick={() => resetInput()}>&#xe87b;</Button>}
+          </View>
         </View>
+        <View className='flex-row flex-spb-center fs-32 gray-900 pd-tb-4 pd-lr-20 bg-white'>
+          <View className='item-flb-20per lh-60'>排行</View>
+          <View className='item-flb-50per lh-60'>城市名</View>
+          <View className='item-flb-30per lh-60 text-center'>AQI</View>
+        </View>
+        <View className='h-line-gray-300 mg-b-10' />
       </View>
-      <View className='flex-col pd-20'>
+      <View className='flex-col pd-lr-20 pd-b-20'>
         {showAqiRanking.map((ranking, index) => {
           const {city, aqi} = ranking;
           return (
             <View className='flex-row flex-spb-center' key={String(index)}>
-              <View className='item-flb-60per lh-60'>{city}</View>
-              <View className='item-flb-40per lh-60 text-center' style={{color: getAqiColor(aqi)}}>{aqi}</View>
+              <View className='item-flb-20per lh-60'>{index + 1}</View>
+              <View className='item-flb-50per lh-60'>{city}</View>
+              <View className='item-flb-30per lh-60 text-center' style={{color: getAqiColor(aqi)}}>{aqi}</View>
             </View>
           )
         })}

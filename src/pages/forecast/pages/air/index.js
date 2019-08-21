@@ -277,8 +277,9 @@ function Air() {
           let city = cityArr.join(' ');
           return (
             <View className='flex-row flex-spb-center' key={String(index)}>
-              <View className='item-flb-60per lh-60'>{city}</View>
-              <View className='item-flb-40per lh-60 text-center' style={{color: getAqiColor(ranking.aqi)}}>{ranking.aqi}</View>
+              <View className='item-flb-20per lh-60'>{index + 1}</View>
+              <View className='item-flb-50per lh-60'>{city}</View>
+              <View className='item-flb-30per lh-60 text-center' style={{color: getAqiColor(ranking.aqi)}}>{ranking.aqi}</View>
             </View>
           )
         })}

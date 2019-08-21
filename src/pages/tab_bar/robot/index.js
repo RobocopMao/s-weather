@@ -25,6 +25,7 @@ function Robot() {
   const [talks, setTalks] = useState([{robotReply: `您好，我是天气聊天机器人，从现在开始为你在本地保留30分钟内的聊天会话。您可以对我说：今天${user.location.city || ''}天气怎么样？`, time: moment().format('YYYY-MM-DD HH:mm')}]);
   const [quickResAnimation, setQuickResAnimation] = useState({});
   const [showVoiceBtn, setShowVoiceBtn] = useState(false); // 语音按钮默认不显示
+  const [from, setFrom] = useState(''); // 页面来自哪里？SHARE
 
   // 获取全局唯一的语音识别管理器recordRecoManager，注意：这个不能写在useEffect里面，不然状态获取不到，比如发送请求时的session
   const manager = plugin.getRecordRecognitionManager();
@@ -54,6 +55,8 @@ function Robot() {
   // 设置白天、夜晚主题
   useEffect(() => {
     setNavStyle(location.isDay, user.theme);
+
+    setFrom(this.$router.params.from);
   }, []);
 
   // 设备信息
@@ -90,6 +93,24 @@ function Robot() {
   useEffect(() => {
     initQuickRes();
   }, []);
+
+  // 显示转发按钮
+  useEffect(() => {
+    Taro.showShareMenu({
+      withShareTicket: true
+    });
+    onShareAppMessage();
+  }, []);
+
+  // 分享的事件
+  const onShareAppMessage = () => {
+    this.$scope.onShareAppMessage = (res) => {
+      return {
+        title: `我是一个爱聊天的呆萌机器人`,
+        path: `/pages/tab_bar/robot/index?from=SHARE`,
+      }
+    };
+  };
 
   // 开始录音
   const startRecord = () => {
@@ -329,7 +350,7 @@ function Robot() {
       </ScrollView>}
       {/*输入框*/}
       <View className='flex-row flex-start-stretch h-120 pd-tb-20 pd-lr-20 bd-box bg-gray-100 search-bar' id='searchBar'>
-        <Button className='iconfont icon-btn fs-58 pd-0 mg-0 h-100-per w-80 lh-80-i gray-700' onClick={() => showHideQuickRes()}>&#xe87f;</Button>
+        {!from && <Button className='iconfont icon-btn fs-58 pd-0 mg-0 h-100-per w-80 lh-80-i gray-700' onClick={() => showHideQuickRes()}>&#xe87f;</Button>}
         {!showVoiceBtn && <Button className='iconfont icon-btn fs-52 pd-0 mg-0 h-100-per w-80 lh-80-i gray-700'
                  disabled={showQuickRes} onClick={() => switchVoiceBtn()}>&#xe63b;</Button>}{/*键盘*/}
         {showVoiceBtn && <Button className='iconfont icon-btn fs-52 pd-0 mg-0 h-100-per w-80 lh-80-i gray-700'
